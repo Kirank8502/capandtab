@@ -1,0 +1,113 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" form="form-order" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>Order</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
+      <div class="card-body">
+        <form id="form-order" action="{{ action }}" method="post" data-oc-toggle="ajax">
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="order_name" value="{{ name }}" placeholder="Name" id="order_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Product</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="product_id" id="input-product-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for product in products %}
+                          <option value="{{ product.product_id }}"{% if product.product_id == product_id %} selected{% endif %}>{{ product.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Client</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="client_id" id="input-client-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for client in clients %}
+                          <option value="{{ client.client_id }}"{% if client.client_id == client_id %} selected{% endif %}>{{ client.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Powder</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="powder_id" id="input-powder-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for powder in powders %}
+                          <option value="{{ powder.powder_id }}"{% if powder.powder_id == powder_id %} selected{% endif %}>{{ powder.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Colour</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="colour_id" id="input-colour-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for colour in colours %}
+                          <option value="{{ colour.colour_id }}"{% if colour.colour_id == colour_id %} selected{% endif %}>{{ colour.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Address</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                      <input type="text" name="address" value="{{ address }}" placeholder="Address" id="input-address" class="form-control"/>
+                    {# <input type="number" name="order_qty" value="{{ qty }}" placeholder="Quantity" id="order_qty" class="form-control"/> #}
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Remark</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                      <input type="text" name="Remark" value="{{ remark }}" placeholder="Remark" id="input-remark" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Status</label>
+              <div class="col-sm-11">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="order_status" value="0"/>
+                    <input type="checkbox" name="order_status" value="1" id="order_status" class="form-check-input" {% if status %}checked{% endif %}/>
+                  </div>
+              </div>
+            </div>
+          <input type="hidden" name="order_id" value="{{ order_id }}" id="input-order-id"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

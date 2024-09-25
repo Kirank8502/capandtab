@@ -1,0 +1,97 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        {# <button type="button" data-bs-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-product').toggleClass('d-none');" class="btn btn-light"><i class="fa-solid fa-filter"></i></button> #}
+        <a href="{{ add }}" data-bs-toggle="tooltip" title="Add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
+        {# <button type="submit" form="form-product" formaction="{{ copy }}" data-bs-toggle="tooltip" title="{{ button_copy }}" class="btn btn-light"><i class="fa-regular fa-copy"></i></button> #}
+        <button type="submit" form="form-product" formaction="{{ delete }}" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+      </div>
+      <h1>Product</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col col-md-12">
+        <div class="card">
+          <div class="card-header"><i class="fa-solid fa-list"></i>Product List</div>
+          <div id="product" class="card-body">{{ list }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$('#product').on('click', 'thead a, .pagination a', function (e) {
+    e.preventDefault();
+
+    $('#product').load(this.href);
+});
+
+$('#button-filter').on('click', function () {
+    var url = '';
+
+    var filter_name = $('#input-name').val();
+
+    if (filter_name) {
+        url += '&filter_name=' + encodeURIComponent(filter_name);
+    }
+
+    var filter_status = $('#input-status').val();
+
+    if (filter_status !== '') {
+        url += '&filter_status=' + filter_status;
+    }
+
+    window.history.pushState({}, null, 'index.php?route=masters/product&user_token={{ user_token }}' + url);
+
+    $('#product').load('index.php?route=masters/product|list&user_token={{ user_token }}' + url);
+});
+
+$('#input-name').autocomplete({
+    'source': function (request, response) {
+        $.ajax({
+            url: 'index.php?route=masters/product|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+            dataType: 'json',
+            success: function (json) {
+                response($.map(json, function (item) {
+                    return {
+                        label: item['name'],
+                        value: item['product_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function (item) {
+        $('#input-name').val(item['label']);
+    }
+});
+
+$('#input-model').autocomplete({
+    'source': function (request, response) {
+        $.ajax({
+            url: 'index.php?route=masters/product|autocomplete&user_token={{ user_token }}&filter_model=' + encodeURIComponent(request),
+            dataType: 'json',
+            success: function (json) {
+                response($.map(json, function (item) {
+                    return {
+                        label: item['model'],
+                        value: item['product_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function (item) {
+        $('#input-model').val(item['label']);
+    }
+});
+//--></script>
+{{ footer }}

@@ -1,0 +1,59 @@
+CREATE TABLE `dd_assembler` (
+  `assembler_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`assembler_id`)
+);
+
+CREATE TABLE `dd_client` (
+  `client_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`client_id`)
+);
+
+CREATE TABLE `dd_powder` (
+  `powder_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `qty` int(10) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`powder_id`)
+);
+
+CREATE TABLE `dd_colour` (
+  `colour_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `qty` int(10) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`colour_id`)
+);
+
+CREATE TABLE `dd_shape` (
+  `shape_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`shape_id`)
+);
+
+RENAME TABLE `dd_product` TO `dd_product_1`;
+
+CREATE TABLE `dd_product` ( 
+  `product_id` int(11) NOT NULL AUTO_INCREMENT, 
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`product_id`) 
+);
+
+CREATE TABLE `dd_orders` (
+  `orders_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL DEFAULT '',
+  `client_id` int(11) NOT NULL,
+  `powder_id` int(11) NOT NULL,
+  `colour_id` int(11) NOT NULL,
+  `address` varchar(255) NOT NULL DEFAULT '',
+  `remark` varchar(255) NOT NULL DEFAULT '',
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `date_added` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`orders_id`)
+);

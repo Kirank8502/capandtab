@@ -1,0 +1,36 @@
+<form id="form-client" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#client">
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
+          <td class="text-center">Name</td>
+          <td class="text-center">Status</td>
+          <td class="text-end">Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% if clients %}
+          {% for client in clients %}
+            <tr>
+              <td class="text-center"><input type="checkbox" name="selected[]" value="{{ client.client_id }}" class="form-check-input"/></td>
+              <td class="text-center">{{ client.name }}</td>
+              <td class="text-center">{% if client.status %}Enabled{% else %}Disabled{% endif %}</td>
+              <td class="text-end">
+                <a href="{{ client.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td class="text-center" colspan="7">{{ text_no_results }}</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 text-start">{{ pagination }}</div>
+    <div class="col-sm-6 text-end">{{ results }}</div>
+  </div>
+</form>

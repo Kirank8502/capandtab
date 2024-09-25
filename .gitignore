@@ -1,0 +1,51 @@
+# Config and Htaccess Files
+/.htaccess
+/config.php
+/erpadmin/config.php
+
+# Image Cache Files
+/image/cache/*
+!/image/cache/index.html
+
+# Backup Files
+/system/storage/backup/*
+!/system/storage/backup/index.html
+
+# System Cache Files
+/system/storage/cache/*
+!/system/storage/cache/index.html
+
+# Download Files
+/system/storage/download/*
+!/system/storage/download/index.html
+
+# Log Files
+/system/storage/logs/*
+!/system/storage/logs/index.html
+
+# Marketplace Files
+# /upload/system/storage/marketplace/*
+# !/upload/system/storage/marketplace/index.html
+
+# Session Files
+/system/storage/session/*
+!/system/storage/session/index.html
+
+# Upload Files
+/system/storage/upload/*
+!/system/storage/upload/index.html
+
+# CSS Files
+/catalog/view/stylesheet/stylesheet.css
+
+# IDE Project files
+/.idea/*
+/.idea/*
+/.DS_Store
+
+
+image/data/
+image/cache/
+image/uploads/
+system/cache/
+system/logs/
