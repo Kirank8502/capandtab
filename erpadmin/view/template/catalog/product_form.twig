@@ -27,6 +27,32 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Category</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <select name="category_id" class="form-select">
+                      <option value=""></option>
+                      {% for category in categories %}
+                        <option value="{{ category.category_id }}"{% if category.category_id == category_id %} selected{% endif %}>{{ category.name }}</option>
+                      {% endfor %}
+                    </select>
+                    {# <input type="text" name="category" value="{{ category }}" id="product_name" class="form-control"/> #}
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Image</label>
+              <div class="col-sm-11">
+                <div class="card image">
+                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/> <input type="hidden" name="image" value="{{ image }}" id="input-image"/>
+                  <div class="card-body">
+                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
+                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Status</label>
               <div class="col-sm-11">
                   <div class="form-check form-switch form-switch-lg">

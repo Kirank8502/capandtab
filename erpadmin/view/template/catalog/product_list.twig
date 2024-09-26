@@ -4,6 +4,7 @@
       <thead>
         <tr>
           <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
+          <td class="text-center">Image</td>
           <td class="text-center">Name</td>
           <td class="text-center">Status</td>
           <td class="text-end">Action</td>
@@ -14,6 +15,7 @@
           {% for product in products %}
             <tr>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ product.product_id }}" class="form-check-input"/></td>
+              <td class="text-center"><img src="{{product.image}}"/></td>
               <td class="text-center">{{ product.name }}</td>
               <td class="text-center">{% if product.status %}Enabled{% else %}Disabled{% endif %}</td>
               <td class="text-end">

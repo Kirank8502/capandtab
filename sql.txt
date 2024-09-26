@@ -57,3 +57,14 @@ CREATE TABLE `dd_orders` (
   `date_added` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`orders_id`)
 );
+
+ALTER TABLE `dd_product` ADD COLUMN `image` varchar(255) DEFAULT '' AFTER `name`;
+ALTER TABLE `dd_product` ADD COLUMN `category_id` int(11) NOT NULL AFTER `image`;
+
+
+CREATE TABLE `dd_product_category` ( 
+  `category_id` int(11) NOT NULL AUTO_INCREMENT, 
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`category_id`) 
+);

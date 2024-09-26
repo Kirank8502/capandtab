@@ -192,10 +192,19 @@ class Product extends \Opencart\System\Engine\Controller {
 		
 		$results = $this->model_catalog_product->getProducts($supplier_data);
 		
+		$this->load->model('tool/image');
 		foreach ($results as $result) {
+
+			if (is_file(DIR_IMAGE . htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+				$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'), 50, 50);
+			} else {
+				$data['thumb'] = '';
+			}
+
 			$data['products'][] = array(
 				'product_id'		=> $result['product_id'],
 				'name'				=> $result['name'],
+				'image'				=> $data['thumb'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['product_id'], $this->request->post['selected']),				
 				'edit'				=> $this->url->link('catalog/product|form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . $url, true)
@@ -341,6 +350,32 @@ class Product extends \Opencart\System\Engine\Controller {
 		} else {	
       		$data['name'] = '';
     	}
+
+		if (isset($this->request->post['image'])) {
+			$data['image'] = $this->request->post['image'];
+	  	} elseif (!empty($product_info)) {
+			$data['image'] = $product_info['image'];
+	  	} else {	
+			$data['image'] = '';
+	  	}
+
+		$data['categories'] = $this->model_catalog_product->getCategories();
+
+		if (isset($this->request->post['category_id'])) {
+			$data['category_id'] = $this->request->post['category_id'];
+	  	} elseif (!empty($product_info)) {
+			$data['category_id'] = $product_info['category_id'];
+	  	} else {	
+			$data['category_id'] = '';
+	  	}
+
+		$this->load->model('tool/image');
+
+		if (is_file(DIR_IMAGE . htmlspecialchars($data['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+			$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($data['image'] ?? '', ENT_QUOTES, 'UTF-8'), 100, 100);
+		} else {
+			$data['thumb'] = $data['image'];
+		}
 
 		if(isset($this->request->get['product_id'])){
 			$data['product_id'] = $this->request->get['product_id'];
