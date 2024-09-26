@@ -7,6 +7,8 @@
 /image/cache/*
 !/image/cache/index.html
 
+/crm_storage/*
+
 # Backup Files
 /system/storage/backup/*
 !/system/storage/backup/index.html
