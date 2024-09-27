@@ -61,6 +61,8 @@ CREATE TABLE `dd_orders` (
 ALTER TABLE `dd_product` ADD COLUMN `image` varchar(255) DEFAULT '' AFTER `name`;
 ALTER TABLE `dd_product` ADD COLUMN `category_id` int(11) NOT NULL AFTER `image`;
 
+ALTER TABLE `dd_powder` ADD COLUMN `weight` varchar(255) NOT NULL AFTER `name`;
+ALTER TABLE `dd_powder` ADD COLUMN `rate` varchar(255) NOT NULL AFTER `weight`;
 
 CREATE TABLE `dd_product_category` ( 
   `category_id` int(11) NOT NULL AUTO_INCREMENT, 

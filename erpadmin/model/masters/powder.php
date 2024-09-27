@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Powder extends \Opencart\System\Engine\Model {
 	public function addPowder($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "powder SET `name` = '" . $this->db->escape($data['powder_name']) . "', `qty` = '" . (int)$data['powder_qty'] . "',status = '" . (int)$data['powder_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "powder SET `name` = '" . $this->db->escape($data['powder_name']) . "', `qty` = '" . (int)$data['powder_qty'] . "', `weight` = '" . (int)$data['powder_weight'] . "', `rate` = '" . (int)$data['powder_rate'] . "', status = '" . (int)$data['powder_status']."'");
 		
 		$powder_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Powder extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editPowder($powder_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "powder SET `name` = '" . $this->db->escape($data['powder_name']) . "', `qty` = '" . (int)$data['powder_qty'] . "', status = '" . (int)$data['powder_status'] ."' WHERE powder_id= '" . (int)$powder_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "powder SET `name` = '" . $this->db->escape($data['powder_name']) . "', `qty` = '" . (int)$data['powder_qty'] . "', `weight` = '" . (int)$data['powder_weight'] . "', `rate` = '" . (int)$data['powder_rate'] . "', status = '" . (int)$data['powder_status'] ."' WHERE powder_id= '" . (int)$powder_id. "'");
 		
 		$this->cache->delete('powder');
 	}
