@@ -217,10 +217,18 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			if ($this->user->hasPermission('access', 'masters/shape')) {
+			if ($this->user->hasPermission('access', 'masters/master_batch')) {
 				$masters[] = [
-					'name'	   => 'Shape',
-					'href'     => $this->url->link('masters/shape', 'user_token=' . $this->session->data['user_token']),
+					'name'	   => 'Master Batch',
+					'href'     => $this->url->link('masters/master_batch', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'masters/accessories')) {
+				$masters[] = [
+					'name'	   => 'Accessories',
+					'href'     => $this->url->link('masters/accessories', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
 			}

@@ -30,7 +30,7 @@
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" name="powder_qty" value="{{ qty }}" placeholder="Quantity" id="powder_qty" class="form-control"/>
+                    <input type="number" name="powder_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="powder_qty" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -38,15 +38,15 @@
               <label class="col-sm-1 col-form-label">Rate</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" name="powder_rate" value="{{ rate }}" placeholder="Rate" id="powder_rate" class="form-control"/>
+                    <input type="number" name="powder_rate" value="{{ rate }}" min="0" placeholder="Rate" id="powder_rate" class="form-control"/>
                   </div>
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Weight</label>
+              <label class="col-sm-1 col-form-label">Weight (in kg)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" name="powder_weight" value="{{ weight }}" placeholder="weight" id="powder_weight" class="form-control"/>
+                    <input type="number" name="powder_weight" value="{{ weight }}" min="0" placeholder="weight" id="powder_weight" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -65,4 +65,9 @@
     </div>
   </div>
 </div>
+<script>
+$('#powder_qty').on('change', function() {
+  $('#powder_weight').val($(this).val()*25);
+});
+</script>
 {{ footer }}
