@@ -1,6 +1,6 @@
 <?php
 namespace Opencart\Admin\Controller\Masters;
-class Accessory extends \Opencart\System\Engine\Controller {
+class Accessories extends \Opencart\System\Engine\Controller {
 	private $error = array();
 	public function index():void {
 		$data = [];

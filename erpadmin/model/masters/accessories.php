@@ -1,7 +1,7 @@
 <?php
 namespace Opencart\Admin\Model\Masters;
 
-class Accessory extends \Opencart\System\Engine\Model {
+class Accessories extends \Opencart\System\Engine\Model {
 	public function addAccessory($data) {
       	$this->db->query("INSERT INTO " . DB_PREFIX . "accessories SET `name` = '" . $this->db->escape($data['accessories_name']) . "', qty = '" . (int)$data['accessories_qty']."', status = '" . (int)$data['accessories_status']."'");
 		
