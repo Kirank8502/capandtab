@@ -97,5 +97,5 @@ ADD COLUMN `thickness` decimal(10,4) NOT NULL DEFAULT 0.0 AFTER `outer_circle`;
 
 ALTER TABLE `dd_master_batch`
 ADD COLUMN `color` varchar(255) NOT NULL DEFAULT '' AFTER `name`,
-ADD COLUMN `weight` int(10) NOT NULL DEFAULT 0 AFTER `color`;
+ADD COLUMN `weight` int(10) NOT NULL DEFAULT 0 AFTER `color`,
 ADD COLUMN `image` varchar(255) NOT NULL DEFAULT '' AFTER `weight`;
