@@ -288,6 +288,22 @@ class MasterBatch extends \Opencart\System\Engine\Controller {
       		$data['name'] = '';
     	}
 
+		if (isset($this->request->post['color'])) {
+			$data['color'] = $this->request->post['color'];
+	  	} elseif (!empty($master_batch_info)) {
+			$data['color'] = $master_batch_info['color'];
+	  	} else {	
+			$data['color'] = '';
+	  	}
+
+		if (isset($this->request->post['image'])) {
+			$data['image'] = $this->request->post['image'];
+	  	} elseif (!empty($master_batch_info)) {
+			$data['image'] = $master_batch_info['image'];
+	  	} else {	
+			$data['image'] = '';
+	  	}
+
 		if (isset($this->request->post['qty'])) {
 			$data['qty'] = $this->request->post['qty'];
 	  	} elseif (!empty($master_batch_info)) {
@@ -299,6 +315,22 @@ class MasterBatch extends \Opencart\System\Engine\Controller {
 		if(isset($this->request->get['master_batch_id'])){
 			$data['master_batch_id'] = $this->request->get['master_batch_id'];
 		}
+
+		$this->load->model('tool/image');
+
+		if (is_file(DIR_IMAGE . htmlspecialchars($data['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+			$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($data['image'] ?? '', ENT_QUOTES, 'UTF-8'), 100, 100);
+		} else {
+			$data['thumb'] = $data['image'];
+		}
+
+		if (isset($this->request->post['weight'])) {
+			$data['weight'] = $this->request->post['weight'];
+	  	} elseif (!empty($master_batch_info)) {
+			$data['weight'] = $master_batch_info['weight'];
+	  	} else {	
+			$data['weight'] = 0;
+	  	}
 		
     	if (isset($this->request->post['status'])) {
       		$data['status'] = $this->request->post['status'];

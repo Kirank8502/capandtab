@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class MasterBatch extends \Opencart\System\Engine\Model {
 	public function addMasterBatch($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "master_batch SET `name` = '" . $this->db->escape($data['master_batch_name']) . "', qty = '" . (int)$data['master_batch_qty']."', status = '" . (int)$data['master_batch_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "master_batch SET `name` = '" . $this->db->escape($data['master_batch_name']) . "', `color` = '" . $this->db->escape($data['master_batch_color']) . "', `weight` = '" . (int)$data['master_batch_weight'] . "', `image` = '" . $this->db->escape($data['master_batch_image']) . "', qty = '" . (int)$data['master_batch_qty']."', status = '" . (int)$data['master_batch_status']."'");
 		
 		$master_batch_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class MasterBatch extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editMasterBatch($master_batch_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "master_batch SET `name` = '" . $this->db->escape($data['master_batch_name']) . "', qty = '" . (int)$data['master_batch_qty']."', status = '" . (int)$data['master_batch_status'] ."' WHERE master_batch_id= '" . (int)$master_batch_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "master_batch SET `name` = '" . $this->db->escape($data['master_batch_name']) . "', `color` = '" . $this->db->escape($data['master_batch_color']) . "', `weight` = '" . (int)$data['master_batch_weight'] . "', `image` = '" . $this->db->escape($data['master_batch_image']) . "', qty = '" . (int)$data['master_batch_qty']."', status = '" . (int)$data['master_batch_status'] ."' WHERE master_batch_id= '" . (int)$master_batch_id. "'");
 		
 		$this->cache->delete('master_batch');
 	}

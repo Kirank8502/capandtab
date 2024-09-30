@@ -288,6 +288,14 @@ class Accessories extends \Opencart\System\Engine\Controller {
       		$data['name'] = '';
     	}
 
+		if (isset($this->request->post['image'])) {
+			$data['image'] = $this->request->post['image'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['image'] = $accessories_info['image'];
+	  	} else {	
+			$data['image'] = '';
+	  	}
+
 		if (isset($this->request->post['qty'])) {
 			$data['qty'] = $this->request->post['qty'];
 	  	} elseif (!empty($accessories_info)) {
@@ -299,6 +307,54 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		if(isset($this->request->get['accessories_id'])){
 			$data['accessories_id'] = $this->request->get['accessories_id'];
 		}
+
+		$this->load->model('tool/image');
+
+		if (is_file(DIR_IMAGE . htmlspecialchars($data['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+			$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($data['image'] ?? '', ENT_QUOTES, 'UTF-8'), 100, 100);
+		} else {
+			$data['thumb'] = $data['image'];
+		}
+
+		if (isset($this->request->post['height'])) {
+			$data['height'] = $this->request->post['height'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['height'] = $accessories_info['height'];
+	  	} else {	
+			$data['height'] = 0.0;
+	  	}
+
+		if (isset($this->request->post['width'])) {
+			$data['width'] = $this->request->post['width'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['width'] = $accessories_info['width'];
+	  	} else {	
+			$data['width'] = 0.0;
+	  	}
+
+		if (isset($this->request->post['inner_circle'])) {
+			$data['inner_circle'] = $this->request->post['inner_circle'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['inner_circle'] = $accessories_info['inner_circle'];
+	  	} else {	
+			$data['inner_circle'] = 0.0;
+	  	}
+
+		if (isset($this->request->post['outer_circle'])) {
+			$data['outer_circle'] = $this->request->post['outer_circle'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['outer_circle'] = $accessories_info['outer_circle'];
+	  	} else {	
+			$data['outer_circle'] = 0.0;
+	  	}
+
+		if (isset($this->request->post['thickness'])) {
+			$data['thickness'] = $this->request->post['thickness'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['thickness'] = $accessories_info['thickness'];
+	  	} else {	
+			$data['thickness'] = 0.0;
+	  	}
 		
     	if (isset($this->request->post['status'])) {
       		$data['status'] = $this->request->post['status'];

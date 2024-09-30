@@ -27,10 +27,63 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Image</label>
+              <div class="col-sm-11">
+                <div class="card image">
+                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/>
+                  <input type="hidden" name="accessories_image" value="{{ image }}" id="input-image"/>
+                  <div class="card-body">
+                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
+                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Height</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" step="0.1" min="0" name="accessories_height" value="{{ height }}" placeholder="Height" id="accessories_height" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Width</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" step="0.1" min="0" name="accessories_width" value="{{ width }}" placeholder="Width" id="accessories_width" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Inner Circle</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" step="0.1" min="0" name="accessories_inner_circle" value="{{ inner_circle }}" placeholder="Inner Circle" id="accessories_inner_circle" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Outer Circle</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" step="0.1" min="0" name="accessories_outer_circle" value="{{ outer_circle }}" placeholder="Outer Circle" id="accessories_outer_circle" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Thickness</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" step="0.1" min="0" name="accessories_thickness" value="{{ thickness }}" placeholder="Thickness" id="accessories_thickness" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="text" name="accessories_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="accessories_qty" class="form-control"/>
+                    <input type="number" name="accessories_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="accessories_qty" class="form-control"/>
                   </div>
               </div>
             </div>

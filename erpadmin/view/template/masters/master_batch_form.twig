@@ -27,10 +27,39 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Image</label>
+              <div class="col-sm-11">
+                <div class="card image">
+                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/>
+                  <input type="hidden" name="master_batch_image" value="{{ image }}" id="input-image"/>
+                  <div class="card-body">
+                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
+                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Color</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="master_batch_color" value="{{ color }}" placeholder="Colors" id="master_batch_color" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="text" name="master_batch_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="master_batch_qty" class="form-control"/>
+                    <input type="number" name="master_batch_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="master_batch_qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Weight (In Grams)</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="master_batch_weight" value="{{ weight }}" min="0" placeholder="Weight" id="master_batch_weight" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -49,4 +78,9 @@
     </div>
   </div>
 </div>
+<script>
+$('#master_batch_qty').on('change', function() {
+  $('#master_batch_weight').val($(this).val()*500);
+});
+</script>
 {{ footer }}

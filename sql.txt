@@ -86,3 +86,16 @@ CREATE TABLE `dd_accessories` (
   `status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`accessories_id`)
 );
+
+ALTER TABLE `dd_accessories`
+ADD COLUMN `image` varchar(255) NOT NULL DEFAULT '' AFTER `name`,
+ADD COLUMN `height` decimal(10,4) NOT NULL DEFAULT 0.0 AFTER `image`,
+ADD COLUMN `width` decimal(10,4) NOT NULL DEFAULT 0.0 AFTER `height`,
+ADD COLUMN `inner_circle` decimal(10,4) NOT NULL DEFAULT 0.0 AFTER `width`,
+ADD COLUMN `outer_circle` decimal(10,4) NOT NULL DEFAULT 0.0 AFTER `inner_circle`,
+ADD COLUMN `thickness` decimal(10,4) NOT NULL DEFAULT 0.0 AFTER `outer_circle`;
+
+ALTER TABLE `dd_master_batch`
+ADD COLUMN `color` varchar(255) NOT NULL DEFAULT '' AFTER `name`,
+ADD COLUMN `weight` int(10) NOT NULL DEFAULT 0 AFTER `color`;
+ADD COLUMN `image` varchar(255) NOT NULL DEFAULT '' AFTER `weight`;
