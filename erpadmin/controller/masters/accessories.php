@@ -6,7 +6,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		$data = [];
 		$url = '';
 		$this->load->language('masters/accessories');
-		$this->document->setTitle('Master Batch');
+		$this->document->setTitle('Spare Parts');
 		
 		$this->load->model('masters/accessories');
 
@@ -26,7 +26,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 	public function save() {
 		$this->load->language('masters/accessories');
 		$json = [];
-		$this->document->setTitle('Master Batch');
+		$this->document->setTitle('Spare Parts');
 
 		$this->load->model('masters/accessories');
 
@@ -50,7 +50,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 	public function delete() {
 		$this->load->language('masters/accessories');
 
-		$this->document->setTitle('Delete Master Batch');
+		$this->document->setTitle('Delete Spare Parts');
 
 		$this->load->model('masters/accessories');
 
@@ -132,7 +132,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		);
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
+			'text' => 'Spare Parts',
 			'href' => $this->url->link('masters/accessories', 'user_token=' . $this->session->data['user_token'] . $url, true)
 		);
 
@@ -143,8 +143,8 @@ class Accessories extends \Opencart\System\Engine\Controller {
 			'filter_status'  => $filter_status,
 			'sort'  => $sort,
 			'order' => $order,
-			'start' => ($page - 1) * (int)$this->config->get('config_limit_admin'),
-			'limit' => $this->config->get('config_limit_admin')
+			'start' => ($page - 1) * 10,
+			'limit' => 10
 		);
 
 		$accessories_total = $this->model_masters_accessories->getTotalAccessories();
@@ -212,11 +212,11 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		$data['pagination'] = $this->load->controller('common/pagination', [
 			'total' => $accessories_total,
 			'page'  => $page,
-			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('masters/accessories|list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+			'limit' => 10,
+			'url'   => $this->url->link('masters/accessories', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
 		]);
 
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($accessories_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($accessories_total - $this->config->get('config_pagination_admin'))) ? $accessories_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $accessories_total, ceil($accessories_total / $this->config->get('config_pagination_admin')));
+		$data['results'] = sprintf($this->language->get('text_pagination'), ($accessories_total) ? (($page - 1) * 10) + 1 : 0, ((($page - 1) * 10) > ($accessories_total - 10)) ? $accessories_total : ((($page - 1) * 10) + 10), $accessories_total, ceil($accessories_total / 10));
 
 		$data['filter_name'] = $filter_name;
 		$data['filter_status'] = $filter_status;
@@ -231,7 +231,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 	public function form() {
 		$this->load->model('masters/accessories');
 		$data['text_form'] = !isset($this->request->get['accessories_id']) ? 'Add' : 'Edit';
-
+		$this->document->setTitle('Spare Parts');
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
@@ -266,7 +266,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		);
 
 		$data['breadcrumbs'][] = array(
-			'text' => 'accessories',
+			'text' => 'Spare Parts',
 			'href' => $this->url->link('masters/accessories', 'user_token=' . $this->session->data['user_token'] . $url, true)
 		);
 

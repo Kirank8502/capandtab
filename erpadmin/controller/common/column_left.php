@@ -227,7 +227,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 
 			if ($this->user->hasPermission('access', 'masters/accessories')) {
 				$masters[] = [
-					'name'	   => 'Accessories',
+					'name'	   => 'Spare Parts',
 					'href'     => $this->url->link('masters/accessories', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
