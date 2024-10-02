@@ -151,9 +151,18 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		
 		$results = $this->model_masters_accessories->getAccessories($accessories_data);
 		
+		$this->load->model('tool/image');
 		foreach ($results as $result) {
+
+			if (is_file(DIR_IMAGE . htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+				$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'), 50, 50);
+			} else {
+				$data['thumb'] = '';
+			}
+
 			$data['accessories'][] = array(
 				'accessories_id'		=> $result['accessories_id'],
+				'image'				=> $data['thumb'],
 				'name'				=> $result['name'],
 				'qty'				=> $result['qty'],
 				'status'			=> $result['status'],
@@ -322,6 +331,14 @@ class Accessories extends \Opencart\System\Engine\Controller {
 			$data['height'] = $accessories_info['height'];
 	  	} else {	
 			$data['height'] = 0.0;
+	  	}
+
+		if (isset($this->request->post['weight'])) {
+			$data['weight'] = $this->request->post['weight'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['weight'] = $accessories_info['weight'];
+	  	} else {	
+			$data['weight'] = 0.0;
 	  	}
 
 		if (isset($this->request->post['width'])) {
