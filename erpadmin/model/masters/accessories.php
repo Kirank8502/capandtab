@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Accessories extends \Opencart\System\Engine\Model {
 	public function addAccessory($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "accessories SET `name` = '" . $this->db->escape($data['accessories_name']) . "', `image` = '" . $data['accessories_image'] . "', `height` = '" . (float)$data['accessories_height'] . "', `weight` = '" . (float)$data['accessories_weight'] . "', `width` = '" . (float)$data['accessories_width'] . "', `inner_circle` = '" . (float)$data['accessories_inner_circle'] . "', `outer_circle` = '" . (float)$data['accessories_outer_circle'] . "', `thickness` = '" . (float)$data['accessories_thickness'] . "', qty = '" . (int)$data['accessories_qty']."', status = '" . (int)$data['accessories_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "accessories SET `name` = '" . $this->db->escape($data['accessories_name']) . "', `image` = '" . $data['accessories_image'] . "', `height` = '" . (float)$data['accessories_height'] . "', `weight` = '" . (float)$data['accessories_weight'] . "', `width` = '" . (float)$data['accessories_width'] . "', `inner_circle` = '" . (float)$data['accessories_inner_circle'] . "', `outer_circle` = '" . (float)$data['accessories_outer_circle'] . "', `thickness` = '" . (float)$data['accessories_thickness'] . "', qty = '" . (int)$data['accessories_qty']."', price = '" . (int)$data['accessories_price']."', status = '" . (int)$data['accessories_status']."'");
 		
 		$accessories_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Accessories extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editAccessory($accessories_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "accessories SET `name` = '" . $this->db->escape($data['accessories_name']) . "', `image` = '" . $data['accessories_image'] . "', `height` = '" . (float)$data['accessories_height'] . "', `weight` = '" . (float)$data['accessories_weight'] . "', `width` = '" . (float)$data['accessories_width'] . "', `inner_circle` = '" . (float)$data['accessories_inner_circle'] . "', `outer_circle` = '" . (float)$data['accessories_outer_circle'] . "', `thickness` = '" . (float)$data['accessories_thickness'] . "', qty = '" . (int)$data['accessories_qty']."', status = '" . (int)$data['accessories_status'] ."' WHERE accessories_id= '" . (int)$accessories_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "accessories SET `name` = '" . $this->db->escape($data['accessories_name']) . "', `image` = '" . $data['accessories_image'] . "', `height` = '" . (float)$data['accessories_height'] . "', `weight` = '" . (float)$data['accessories_weight'] . "', `width` = '" . (float)$data['accessories_width'] . "', `inner_circle` = '" . (float)$data['accessories_inner_circle'] . "', `outer_circle` = '" . (float)$data['accessories_outer_circle'] . "', `thickness` = '" . (float)$data['accessories_thickness'] . "', qty = '" . (int)$data['accessories_qty']."', price = '" . (int)$data['accessories_price']."', status = '" . (int)$data['accessories_status'] ."' WHERE accessories_id= '" . (int)$accessories_id. "'");
 		
 		$this->cache->delete('accessories');
 	}

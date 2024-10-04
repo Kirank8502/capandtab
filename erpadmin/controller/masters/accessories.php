@@ -164,6 +164,8 @@ class Accessories extends \Opencart\System\Engine\Controller {
 				'accessories_id'		=> $result['accessories_id'],
 				'image'				=> $data['thumb'],
 				'name'				=> $result['name'],
+				'weight'			=> $result['weight'],
+				'price'				=> $result['price'],
 				'qty'				=> $result['qty'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['accessories_id'], $this->request->post['selected']),				
@@ -311,6 +313,14 @@ class Accessories extends \Opencart\System\Engine\Controller {
 			$data['qty'] = $accessories_info['qty'];
 	  	} else {	
 			$data['qty'] = '';
+	  	}
+
+		if (isset($this->request->post['price'])) {
+			$data['price'] = $this->request->post['price'];
+	  	} elseif (!empty($accessories_info)) {
+			$data['price'] = $accessories_info['price'];
+	  	} else {	
+			$data['price'] = 0;
 	  	}
 
 		if(isset($this->request->get['accessories_id'])){
