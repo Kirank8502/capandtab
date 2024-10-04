@@ -3,9 +3,9 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="float-end">
-        <button type="submit" form="form-accessories" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <button type="submit" form="form-fittings" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
         <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
-      <h1>Spare Parts</h1>
+      <h1>Extra Fittings</h1>
       <ol class="breadcrumb">
         {% for breadcrumb in breadcrumbs %}
           <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
@@ -17,12 +17,12 @@
     <div class="card">
       <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
       <div class="card-body">
-        <form id="form-accessories" action="{{ action }}" method="post" data-oc-toggle="ajax">
+        <form id="form-fittings" action="{{ action }}" method="post" data-oc-toggle="ajax">
             <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Name</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="text" name="accessories_name" value="{{ name }}" placeholder="Name" id="accessories_name" class="form-control"/>
+                    <input type="text" name="fittings_name" value="{{ name }}" placeholder="Name" id="fittings_name" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -31,7 +31,7 @@
               <div class="col-sm-11">
                 <div class="card image">
                   <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/>
-                  <input type="hidden" name="accessories_image" value="{{ image }}" id="input-image"/>
+                  <input type="hidden" name="fittings_image" value="{{ image }}" id="input-image"/>
                   <div class="card-body">
                     <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
                     <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
@@ -43,7 +43,7 @@
               <label class="col-sm-1 col-form-label">Height (MM)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" step="0.1" min="0" name="accessories_height" value="{{ height }}" placeholder="Height" id="accessories_height" class="form-control"/>
+                    <input type="number" step="0.1" min="0" name="fittings_height" value="{{ height }}" placeholder="Height" id="fittings_height" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -51,7 +51,7 @@
               <label class="col-sm-1 col-form-label">Weight (Grams)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" step="0.1" min="0" name="accessories_weight" value="{{ weight }}" placeholder="Weight" id="accessories_weight" class="form-control"/>
+                    <input type="number" step="0.1" min="0" name="fittings_weight" value="{{ weight }}" placeholder="Weight" id="fittings_weight" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -59,7 +59,7 @@
               <label class="col-sm-1 col-form-label">Width (MM)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" step="0.1" min="0" name="accessories_width" value="{{ width }}" placeholder="Width" id="accessories_width" class="form-control"/>
+                    <input type="number" step="0.1" min="0" name="fittings_width" value="{{ width }}" placeholder="Width" id="fittings_width" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -67,7 +67,7 @@
               <label class="col-sm-1 col-form-label">Inner Circle (MM)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" step="0.1" min="0" name="accessories_inner_circle" value="{{ inner_circle }}" placeholder="Inner Circle" id="accessories_inner_circle" class="form-control"/>
+                    <input type="number" step="0.1" min="0" name="fittings_inner_circle" value="{{ inner_circle }}" placeholder="Inner Circle" id="fittings_inner_circle" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -75,7 +75,7 @@
               <label class="col-sm-1 col-form-label">Outer Circle (MM)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" step="0.1" min="0" name="accessories_outer_circle" value="{{ outer_circle }}" placeholder="Outer Circle" id="accessories_outer_circle" class="form-control"/>
+                    <input type="number" step="0.1" min="0" name="fittings_outer_circle" value="{{ outer_circle }}" placeholder="Outer Circle" id="fittings_outer_circle" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -83,7 +83,7 @@
               <label class="col-sm-1 col-form-label">Thickness (MM)</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" step="0.1" min="0" name="accessories_thickness" value="{{ thickness }}" placeholder="Thickness" id="accessories_thickness" class="form-control"/>
+                    <input type="number" step="0.1" min="0" name="fittings_thickness" value="{{ thickness }}" placeholder="Thickness" id="fittings_thickness" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -91,7 +91,7 @@
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" name="accessories_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="accessories_qty" class="form-control"/>
+                    <input type="number" name="fittings_qty" value="{{ qty }}" min="0" placeholder="Quantity" id="fittings_qty" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -99,7 +99,7 @@
               <label class="col-sm-1 col-form-label">Price</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" name="accessories_price" value="{{ price }}" min="0" placeholder="Price" id="accessories_price" class="form-control"/>
+                    <input type="number" name="fittings_price" value="{{ price }}" min="0" placeholder="Price" id="fittings_price" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -107,12 +107,12 @@
               <label class="col-sm-1 col-form-label">Status</label>
               <div class="col-sm-11">
                   <div class="form-check form-switch form-switch-lg">
-                    <input type="hidden" name="accessories_status" value="0"/>
-                    <input type="checkbox" name="accessories_status" value="1" id="accessories_status" class="form-check-input" {% if status %}checked{% endif %}/>
+                    <input type="hidden" name="fittings_status" value="0"/>
+                    <input type="checkbox" name="fittings_status" value="1" id="fittings_status" class="form-check-input" {% if status %}checked{% endif %}/>
                   </div>
               </div>
             </div>
-          <input type="hidden" name="accessories_id" value="{{ accessories_id }}" id="input-accessories-id"/>
+          <input type="hidden" name="fittings_id" value="{{ fittings_id }}" id="input-fittings-id"/>
         </form>
       </div>
     </div>

@@ -233,6 +233,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			if ($this->user->hasPermission('access', 'masters/fittings')) {
+				$masters[] = [
+					'name'	   => 'Extra Fittings',
+					'href'     => $this->url->link('masters/fittings', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			if ($this->user->hasPermission('access', 'masters/colour')) {
 				$masters[] = [
 					'name'	   => 'Colour',
