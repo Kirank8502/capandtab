@@ -282,6 +282,8 @@ class Assembler extends \Opencart\System\Engine\Controller {
 		$this->load->model('masters/assembler');
 		$data['text_form'] = !isset($this->request->get['assembler_id']) ? 'Add' : 'Edit';
 
+		$this->document->setTitle('Assembler');
+
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
@@ -338,9 +340,57 @@ class Assembler extends \Opencart\System\Engine\Controller {
       		$data['name'] = $this->request->post['name'];
     	} elseif (!empty($assembler_info)) {
 			$data['name'] = $assembler_info['name'];
-		} else {	
+		} else {
       		$data['name'] = '';
     	}
+
+		if (isset($this->request->post['email'])) {
+			$data['email'] = $this->request->post['email'];
+	  	} elseif (!empty($assembler_info)) {
+			$data['email'] = $assembler_info['email'];
+	  	} else {
+			$data['email'] = '';
+	  	}
+
+		if (isset($this->request->post['address'])) {
+			$data['address'] = $this->request->post['address'];
+	  	} elseif (!empty($assembler_info)) {
+			$data['address'] = $assembler_info['address'];
+	  	} else {
+			$data['address'] = '';
+	  	}
+
+		if (isset($this->request->post['number'])) {
+			$data['number'] = $this->request->post['number'];
+	  	} elseif (!empty($assembler_info)) {
+			$data['number'] = $assembler_info['number'];
+	  	} else {
+			$data['number'] = '';
+	  	}
+
+		if (isset($this->request->post['bank_name'])) {
+			$data['bank_name'] = $this->request->post['bank_name'];
+	  	} elseif (!empty($assembler_info)) {
+			$data['bank_name'] = $assembler_info['bank_name'];
+	  	} else {
+			$data['bank_name'] = '';
+	  	}
+
+		if (isset($this->request->post['account_no'])) {
+			$data['account_no'] = $this->request->post['account_no'];
+	  	} elseif (!empty($assembler_info)) {
+			$data['account_no'] = $assembler_info['account_no'];
+	  	} else {
+			$data['account_no'] = '';
+	  	}
+
+		if (isset($this->request->post['ifsc_code'])) {
+			$data['ifsc_code'] = $this->request->post['ifsc_code'];
+	  	} elseif (!empty($assembler_info)) {
+			$data['ifsc_code'] = $assembler_info['ifsc_code'];
+	  	} else {
+			$data['ifsc_code'] = '';
+	  	}
 
 		if(isset($this->request->get['assembler_id'])){
 			$data['assembler_id'] = $this->request->get['assembler_id'];

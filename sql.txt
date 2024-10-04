@@ -100,3 +100,19 @@ ALTER TABLE `dd_master_batch`
 ADD COLUMN `color` varchar(255) NOT NULL DEFAULT '' AFTER `name`,
 ADD COLUMN `weight` int(10) NOT NULL DEFAULT 0 AFTER `color`,
 ADD COLUMN `image` varchar(255) NOT NULL DEFAULT '' AFTER `weight`;
+
+ALTER TABLE `dd_assembler`
+ADD COLUMN `email` varchar(255) NOT NULL DEFAULT '' AFTER `name`,
+ADD COLUMN `address` varchar(255) NOT NULL DEFAULT '' AFTER `email`,
+ADD COLUMN `number` varchar(255) NOT NULL DEFAULT '' AFTER `address`,
+ADD COLUMN `bank_name` varchar(255) NOT NULL DEFAULT '' AFTER `number`,
+ADD COLUMN `account_no` varchar(50) NOT NULL DEFAULT '' AFTER `bank_name`,
+ADD COLUMN `ifsc_code` varchar(50) NOT NULL DEFAULT '' AFTER `account_no`;
+
+ALTER TABLE `dd_accessories`
+MODIFY COLUMN `height` decimal(10,2),
+MODIFY COLUMN `weight` decimal(10,2),
+MODIFY COLUMN `width` decimal(10,2),
+MODIFY COLUMN `inner_circle` decimal(10,2),
+MODIFY COLUMN `outer_circle` decimal(10,2),
+MODIFY COLUMN `thickness` decimal(10,2);

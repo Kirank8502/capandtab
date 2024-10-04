@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Assembler extends \Opencart\System\Engine\Model {
 	public function addAssembler($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "assembler SET `name` = '" . $this->db->escape($data['assembler_name']) . "',status = '" . (int)$data['assembler_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "assembler SET `name` = '" . $this->db->escape($data['assembler_name']) . "', `email` = '" . $this->db->escape($data['assembler_email']) . "', `address` = '" . $this->db->escape($data['assembler_address']) . "', `number` = '" . $this->db->escape($data['assembler_number']) . "', `bank_name` = '" . $this->db->escape($data['assembler_bank_name']) . "', `account_no` = '" . $this->db->escape($data['assembler_account_no']) . "', `ifsc_code` = '" . $this->db->escape($data['assembler_ifsc_code']) . "', status = '" . (int)$data['assembler_status']."'");
 		
 		$assembler_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Assembler extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editAssembler($assembler_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "assembler SET `name` = '" . $this->db->escape($data['assembler_name']) . "', status = '" . (int)$data['assembler_status'] ."' WHERE assembler_id= '" . (int)$assembler_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "assembler SET `name` = '" . $this->db->escape($data['assembler_name']) . "', `email` = '" . $this->db->escape($data['assembler_email']) . "', `address` = '" . $this->db->escape($data['assembler_address']) . "', `number` = '" . $this->db->escape($data['assembler_number']) . "', `bank_name` = '" . $this->db->escape($data['assembler_bank_name']) . "', `account_no` = '" . $this->db->escape($data['assembler_account_no']) . "', `ifsc_code` = '" . $this->db->escape($data['assembler_ifsc_code']) . "', status = '" . (int)$data['assembler_status'] ."' WHERE assembler_id= '" . (int)$assembler_id. "'");
 		
 		$this->cache->delete('assembler');
 	}
