@@ -60,13 +60,13 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			// 	];
 			// }
 
-			if ($this->user->hasPermission('access', 'catalog/filter')) {
-				$catalog[] = [
-					'name'	   => $this->language->get('text_filter'),
-					'href'     => $this->url->link('catalog/filter', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'catalog/filter')) {
+			// 	$catalog[] = [
+			// 		'name'	   => $this->language->get('text_filter'),
+			// 		'href'     => $this->url->link('catalog/filter', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
 			// Attributes
 			// $attribute = [];
@@ -197,6 +197,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				$masters[] = [
 					'name'	   => 'Assembler',
 					'href'     => $this->url->link('masters/assembler', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'masters/moulder')) {
+				$masters[] = [
+					'name'	   => 'Moulder',
+					'href'     => $this->url->link('masters/moulder', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
 			}
@@ -569,13 +577,13 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			if ($this->user->hasPermission('access', 'user/api')) {
-				$user[] = [
-					'name'	   => $this->language->get('text_api'),
-					'href'     => $this->url->link('user/api', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'user/api')) {
+			// 	$user[] = [
+			// 		'name'	   => $this->language->get('text_api'),
+			// 		'href'     => $this->url->link('user/api', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
 			if ($user) {
 				$system[] = [
@@ -596,155 +604,155 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			if ($this->user->hasPermission('access', 'localisation/language')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_language'),
-					'href'     => $this->url->link('localisation/language', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/language')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_language'),
+			// 		'href'     => $this->url->link('localisation/language', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/currency')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_currency'),
-					'href'     => $this->url->link('localisation/currency', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/currency')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_currency'),
+			// 		'href'     => $this->url->link('localisation/currency', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/stock_status')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_stock_status'),
-					'href'     => $this->url->link('localisation/stock_status', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/stock_status')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_stock_status'),
+			// 		'href'     => $this->url->link('localisation/stock_status', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/order_status')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_order_status'),
-					'href'     => $this->url->link('localisation/order_status', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/order_status')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_order_status'),
+			// 		'href'     => $this->url->link('localisation/order_status', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/subscription_status')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_subscription_status'),
-					'href'     => $this->url->link('localisation/subscription_status', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/subscription_status')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_subscription_status'),
+			// 		'href'     => $this->url->link('localisation/subscription_status', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
 			// Returns
 			$returns = [];
 
-			if ($this->user->hasPermission('access', 'localisation/return_status')) {
-				$returns[] = [
-					'name'	   => $this->language->get('text_return_status'),
-					'href'     => $this->url->link('localisation/return_status', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/return_status')) {
+			// 	$returns[] = [
+			// 		'name'	   => $this->language->get('text_return_status'),
+			// 		'href'     => $this->url->link('localisation/return_status', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/return_action')) {
-				$returns[] = [
-					'name'	   => $this->language->get('text_return_action'),
-					'href'     => $this->url->link('localisation/return_action', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/return_action')) {
+			// 	$returns[] = [
+			// 		'name'	   => $this->language->get('text_return_action'),
+			// 		'href'     => $this->url->link('localisation/return_action', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/return_reason')) {
-				$returns[] = [
-					'name'	   => $this->language->get('text_return_reason'),
-					'href'     => $this->url->link('localisation/return_reason', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/return_reason')) {
+			// 	$returns[] = [
+			// 		'name'	   => $this->language->get('text_return_reason'),
+			// 		'href'     => $this->url->link('localisation/return_reason', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($returns) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_return'),
-					'href'     => '',
-					'children' => $returns
-				];
-			}
+			// if ($returns) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_return'),
+			// 		'href'     => '',
+			// 		'children' => $returns
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/country')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_country'),
-					'href'     => $this->url->link('localisation/country', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/country')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_country'),
+			// 		'href'     => $this->url->link('localisation/country', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/zone')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_zone'),
-					'href'     => $this->url->link('localisation/zone', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/zone')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_zone'),
+			// 		'href'     => $this->url->link('localisation/zone', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/geo_zone')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_geo_zone'),
-					'href'     => $this->url->link('localisation/geo_zone', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/geo_zone')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_geo_zone'),
+			// 		'href'     => $this->url->link('localisation/geo_zone', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
 			// Tax
 			$tax = [];
 
-			if ($this->user->hasPermission('access', 'localisation/tax_class')) {
-				$tax[] = [
-					'name'	   => $this->language->get('text_tax_class'),
-					'href'     => $this->url->link('localisation/tax_class', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/tax_class')) {
+			// 	$tax[] = [
+			// 		'name'	   => $this->language->get('text_tax_class'),
+			// 		'href'     => $this->url->link('localisation/tax_class', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/tax_rate')) {
-				$tax[] = [
-					'name'	   => $this->language->get('text_tax_rate'),
-					'href'     => $this->url->link('localisation/tax_rate', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/tax_rate')) {
+			// 	$tax[] = [
+			// 		'name'	   => $this->language->get('text_tax_rate'),
+			// 		'href'     => $this->url->link('localisation/tax_rate', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($tax) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_tax'),
-					'href'     => '',
-					'children' => $tax
-				];
-			}
+			// if ($tax) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_tax'),
+			// 		'href'     => '',
+			// 		'children' => $tax
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/length_class')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_length_class'),
-					'href'     => $this->url->link('localisation/length_class', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/length_class')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_length_class'),
+			// 		'href'     => $this->url->link('localisation/length_class', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/weight_class')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_weight_class'),
-					'href'     => $this->url->link('localisation/weight_class', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/weight_class')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_weight_class'),
+			// 		'href'     => $this->url->link('localisation/weight_class', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'localisation/address_format')) {
-				$localisation[] = [
-					'name'	   => $this->language->get('text_address_format'),
-					'href'     => $this->url->link('localisation/address_format', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'localisation/address_format')) {
+			// 	$localisation[] = [
+			// 		'name'	   => $this->language->get('text_address_format'),
+			// 		'href'     => $this->url->link('localisation/address_format', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
 			if ($localisation) {
 				$system[] = [
@@ -757,45 +765,45 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			// Tools
 			$maintenance = [];
 
-			if ($this->user->hasPermission('access', 'tool/upgrade')) {
-				$maintenance[] = [
-					'name'	   => $this->language->get('text_upgrade'),
-					'href'     => $this->url->link('tool/upgrade', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'tool/upgrade')) {
+			// 	$maintenance[] = [
+			// 		'name'	   => $this->language->get('text_upgrade'),
+			// 		'href'     => $this->url->link('tool/upgrade', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'tool/backup')) {
-				$maintenance[] = [
-					'name'	   => $this->language->get('text_backup'),
-					'href'     => $this->url->link('tool/backup', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'tool/backup')) {
+			// 	$maintenance[] = [
+			// 		'name'	   => $this->language->get('text_backup'),
+			// 		'href'     => $this->url->link('tool/backup', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'tool/upload')) {
-				$maintenance[] = [
-					'name'	   => $this->language->get('text_upload'),
-					'href'     => $this->url->link('tool/upload', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'tool/upload')) {
+			// 	$maintenance[] = [
+			// 		'name'	   => $this->language->get('text_upload'),
+			// 		'href'     => $this->url->link('tool/upload', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($this->user->hasPermission('access', 'tool/log')) {
-				$maintenance[] = [
-					'name'	   => $this->language->get('text_log'),
-					'href'     => $this->url->link('tool/log', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
+			// if ($this->user->hasPermission('access', 'tool/log')) {
+			// 	$maintenance[] = [
+			// 		'name'	   => $this->language->get('text_log'),
+			// 		'href'     => $this->url->link('tool/log', 'user_token=' . $this->session->data['user_token']),
+			// 		'children' => []
+			// 	];
+			// }
 
-			if ($maintenance) {
-				$system[] = [
-					'name'	   => $this->language->get('text_maintenance'),
-					'href'     => '',
-					'children' => $maintenance
-				];
-			}
+			// if ($maintenance) {
+			// 	$system[] = [
+			// 		'name'	   => $this->language->get('text_maintenance'),
+			// 		'href'     => '',
+			// 		'children' => $maintenance
+			// 	];
+			// }
 
 			if ($system) {
 				$data['menus'][] = [

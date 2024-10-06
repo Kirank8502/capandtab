@@ -32,10 +32,10 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
 
-			if(!$this->request->post['order_id']){
+			if(!$this->request->post['orders_id']){
 				$this->model_catalog_order->addOrder($this->request->post);
 			}else{
-				$this->model_catalog_order->editOrder($this->request->post['order_id'], $this->request->post);
+				$this->model_catalog_order->editOrder($this->request->post['orders_id'], $this->request->post);
 			}
 
 			$this->session->data['success'] = 'Successfully Saved';
@@ -55,8 +55,8 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->load->model('catalog/order');
 
 		if (isset($this->request->post['selected'])) {
-			foreach ($this->request->post['selected'] as $order_id) {
-				$this->model_catalog_order->deleteOrder($order_id);
+			foreach ($this->request->post['selected'] as $orders_id) {
+				$this->model_catalog_order->deleteOrder($orders_id);
 			}
 
 			$this->session->data['success'] = 'Successfully Deleted';
@@ -191,14 +191,21 @@ class Order extends \Opencart\System\Engine\Controller {
 		$order_total = $this->model_catalog_order->getTotalOrders();
 		
 		$results = $this->model_catalog_order->getOrders($supplier_data);
+		$products = $this->model_catalog_order->getProducts();
+
+		foreach($products as $key => $value) {
+			$product[$value['product_id']] = $value['name'];
+		}
 		
 		foreach ($results as $result) {
 			$data['orders'][] = array(
-				'order_id'		=> $result['order_id'],
-				'name'				=> $result['name'],
+				'orders_id'			=> $result['orders_id'],
+				'product_name'      => $product[$result['product_id']],
+				'qty'				=> $result['qty'],
+				'order_type'		=> $result['order_type'],
 				'status'			=> $result['status'],
-				'selected'			=> isset($this->request->post['selected']) && in_array($result['order_id'], $this->request->post['selected']),				
-				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url, true)
+				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
+				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
 		}
 		
@@ -280,7 +287,7 @@ class Order extends \Opencart\System\Engine\Controller {
 
 	public function form() {
 		$this->load->model('catalog/order');
-		$data['text_form'] = !isset($this->request->get['order_id']) ? 'Add' : 'Edit';
+		$data['text_form'] = !isset($this->request->get['orders_id']) ? 'Add' : 'Edit';
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -321,9 +328,9 @@ class Order extends \Opencart\System\Engine\Controller {
 		);
 
 		$data['action'] = $this->url->link('catalog/order|save', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		// if (!isset($this->request->get['order_id'])) {
+		// if (!isset($this->request->get['orders_id'])) {
 		// } else {
-		// 	$data['action'] = $this->url->link('catalog/order|edit', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $this->request->get['order_id'] . $url, true);
+		// 	$data['action'] = $this->url->link('catalog/order|edit', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $this->request->get['orders_id'] . $url, true);
 		// }
 
 		$data['back'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url, true);
@@ -333,22 +340,22 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['powders'] = $this->model_catalog_order->getPowders();
 		$data['colours'] = $this->model_catalog_order->getColours();
 
-		if (isset($this->request->get['order_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$order_info = $this->model_catalog_order->getOrder($this->request->get['order_id']);
+		if (isset($this->request->get['orders_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$order_info = $this->model_catalog_order->getOrder($this->request->get['orders_id']);
 		}
 
 		$data['user_token'] = $this->session->data['user_token'];
 
-		if (isset($this->request->post['name'])) {
-      		$data['name'] = $this->request->post['name'];
-    	} elseif (!empty($order_info)) {
-			$data['name'] = $order_info['name'];
-		} else {	
-      		$data['name'] = '';
-    	}
+		// if (isset($this->request->post['name'])) {
+      	// 	$data['name'] = $this->request->post['name'];
+    	// } elseif (!empty($order_info)) {
+		// 	$data['name'] = $order_info['name'];
+		// } else {	
+      	// 	$data['name'] = '';
+    	// }
 
-		if(isset($this->request->get['order_id'])){
-			$data['order_id'] = $this->request->get['order_id'];
+		if(isset($this->request->get['orders_id'])){
+			$data['orders_id'] = $this->request->get['orders_id'];
 		}
 		
     	if (isset($this->request->post['status'])) {
@@ -358,6 +365,70 @@ class Order extends \Opencart\System\Engine\Controller {
 		} else {	
       		$data['status'] = '';
     	}
+
+		if (isset($this->request->post['qty'])) {
+			$data['qty'] = $this->request->post['qty'];
+	  	} elseif (!empty($order_info)) {
+			$data['qty'] = $order_info['qty'];
+	  	} else {	
+			$data['qty'] = 0;
+	  	}
+
+		if (isset($this->request->post['colour_id'])) {
+			$data['colour_id'] = $this->request->post['colour_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['colour_id'] = $order_info['colour_id'];
+	  	} else {	
+			$data['colour_id'] = 0;
+	  	}
+
+		if (isset($this->request->post['address'])) {
+			$data['address'] = $this->request->post['address'];
+	  	} elseif (!empty($order_info)) {
+			$data['address'] = $order_info['address'];
+	  	} else {	
+			$data['address'] = '';
+	  	}
+
+		if (isset($this->request->post['powder_id'])) {
+			$data['powder_id'] = $this->request->post['powder_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['powder_id'] = $order_info['powder_id'];
+	  	} else {	
+			$data['powder_id'] = 0;
+	  	}
+
+		if (isset($this->request->post['client_id'])) {
+			$data['client_id'] = $this->request->post['client_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['client_id'] = $order_info['client_id'];
+	  	} else {	
+			$data['client_id'] = 0;
+	  	}
+
+		if (isset($this->request->post['product_id'])) {
+			$data['product_id'] = $this->request->post['product_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['product_id'] = $order_info['product_id'];
+	  	} else {	
+			$data['product_id'] = 0;
+	  	}
+
+		if (isset($this->request->post['remark'])) {
+			$data['remark'] = $this->request->post['remark'];
+	  	} elseif (!empty($order_info)) {
+			$data['remark'] = $order_info['remark'];
+	  	} else {	
+			$data['remark'] = '';
+	  	}
+
+		if (isset($this->request->post['order_type'])) {
+			$data['order_type'] = $this->request->post['order_type'];
+	  	} elseif (!empty($order_info)) {
+			$data['order_type'] = $order_info['order_type'];
+	  	} else {	
+			$data['order_type'] = 0;
+	  	}
 		
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

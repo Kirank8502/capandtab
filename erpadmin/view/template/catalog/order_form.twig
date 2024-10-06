@@ -18,11 +18,22 @@
       <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
       <div class="card-body">
         <form id="form-order" action="{{ action }}" method="post" data-oc-toggle="ajax">
-            <div class="row mb-3">
+            {# <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Name</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="text" name="order_name" value="{{ name }}" placeholder="Name" id="order_name" class="form-control"/>
+                  </div>
+              </div>
+            </div> #}
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Order Type</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="order_type" id="input-product-class" class="form-select">
+                        <option value="0" {% if order_type == 0 %} selected{% endif %}>Puchase order raising</option>
+                        <option value="1" {% if order_type == 1 %} selected{% endif %}>Puchase order receiving</option>
+                      </select>
                   </div>
               </div>
             </div>
@@ -88,10 +99,18 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Quantity</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="qty" value="{{ qty }}" placeholder="Quantity" id="qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Remark</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                      <input type="text" name="Remark" value="{{ remark }}" placeholder="Remark" id="input-remark" class="form-control"/>
+                      <input type="text" name="remark" value="{{ remark }}" placeholder="Remark" id="input-remark" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -104,7 +123,7 @@
                   </div>
               </div>
             </div>
-          <input type="hidden" name="order_id" value="{{ order_id }}" id="input-order-id"/>
+          <input type="hidden" name="orders_id" value="{{ orders_id }}" id="input-order-id"/>
         </form>
       </div>
     </div>

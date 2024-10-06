@@ -1,72 +1,41 @@
 <?php
-namespace Opencart\Admin\Model\Catalog;
-class Order extends \Opencart\System\Engine\Model {
-	public function addOrder($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "orders SET `product_id` = '" . (int)$data['product_id'] . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (int)$data['client_id'] . "', powder_id = '" . (int)$data['powder_id'] . "', colour_id = '" . (int)$data['colour_id'] . "', address = '" . $this->db->escape($data['address']) . "', remark = '" . $this->db->escape($data['remark']) . "', qty = '" . (int)$data['qty'] . "', status = '" . $data['order_status'] . "', date_added = 'NOW()'");
+namespace Opencart\Admin\Model\Masters;
+
+class Moulder extends \Opencart\System\Engine\Model {
+	public function addMoulder($data) {
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "moulder SET `name` = '" . $this->db->escape($data['moulder_name']) . "', `email` = '" . $this->db->escape($data['moulder_email']) . "', `address` = '" . $this->db->escape($data['moulder_address']) . "', `number` = '" . $this->db->escape($data['moulder_number']) . "', `bank_name` = '" . $this->db->escape($data['moulder_bank_name']) . "', `account_no` = '" . $this->db->escape($data['moulder_account_no']) . "', `ifsc_code` = '" . $this->db->escape($data['moulder_ifsc_code']) . "', status = '" . (int)$data['moulder_status']."'");
 		
-		$order_id= $this->db->getLastId();
+		$moulder_id= $this->db->getLastId();
 		
-		$this->cache->delete('order');
+		$this->cache->delete('moulder');
 	}
 	
-	public function editOrder($order_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "orders SET `product_id` = '" . (int)$data['product_id'] . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (int)$data['client_id'] . "', powder_id = '" . (int)$data['powder_id'] . "', colour_id = '" . (int)$data['colour_id'] . "', address = '" . $this->db->escape($data['address']) . "', remark = '" . $this->db->escape($data['remark']) . "', qty = '" . (int)$data['qty'] . "', status = '" . $data['order_status'] . "', date_added = 'NOW()'");
+	public function editMoulder($moulder_id, $data) {
+      	$this->db->query("UPDATE " . DB_PREFIX . "moulder SET `name` = '" . $this->db->escape($data['moulder_name']) . "', `email` = '" . $this->db->escape($data['moulder_email']) . "', `address` = '" . $this->db->escape($data['moulder_address']) . "', `number` = '" . $this->db->escape($data['moulder_number']) . "', `bank_name` = '" . $this->db->escape($data['moulder_bank_name']) . "', `account_no` = '" . $this->db->escape($data['moulder_account_no']) . "', `ifsc_code` = '" . $this->db->escape($data['moulder_ifsc_code']) . "', status = '" . (int)$data['moulder_status'] ."' WHERE moulder_id= '" . (int)$moulder_id. "'");
 		
-		$this->cache->delete('order');
+		$this->cache->delete('moulder');
 	}
 	
-	public function deleteOrder($order_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "orders WHERE orders_id= '" . (int)$order_id. "'");			
-		$this->cache->delete('order');
+	public function deleteMoulder($moulder_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "moulder WHERE moulder_id= '" . (int)$moulder_id. "'");			
+		$this->cache->delete('moulder');
 	}	
 	
-	public function getOrder($order_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "orders WHERE orders_id= '" . (int)$order_id. "'");
+	public function getMoulder($moulder_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "moulder WHERE moulder_id= '" . (int)$moulder_id. "'");
 		
 		return $query->row;
 	}
-
-	public function getProducts() {
-		$sql = "SELECT product_id,name FROM " . DB_PREFIX . "product WHERE status = '1'";
-
-		$query = $this->db->query($sql);
 	
-		return $query->rows;
-	}
-
-	public function getClients($data = array()) {
-		$sql = "SELECT client_id,name FROM " . DB_PREFIX . "client WHERE status = '1'";
-
-		$query = $this->db->query($sql);
-	
-		return $query->rows;
-	}
-
-	public function getPowders($data = array()) {
-		$sql = "SELECT powder_id,name FROM " . DB_PREFIX . "powder WHERE status = '1'";
-
-		$query = $this->db->query($sql);
-	
-		return $query->rows;
-	}
-
-	public function getColours($data = array()) {
-		$sql = "SELECT colour_id,name FROM " . DB_PREFIX . "colour WHERE status = '1'";
-
-		$query = $this->db->query($sql);
-	
-		return $query->rows;
-	}
-	
-	public function getOrders($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "orders WHERE 1";
+	public function getMoulders($data = array()) {
+		$sql = "SELECT * FROM " . DB_PREFIX . "moulder";
 
 		if (!empty($data['filter_name'])) {
-			$sql .= " AND `name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
+			$sql .= " WHERE `name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
 		}
 
 		if (!empty($data['filter_code'])) {
-			$sql .= " AND `code` LIKE '" . $this->db->escape($data['filter_code']) . "%'";
+			$sql .= " WHERE `code` LIKE '" . $this->db->escape($data['filter_code']) . "%'";
 		}
 		
 		$sort_data = array(
@@ -78,7 +47,7 @@ class Order extends \Opencart\System\Engine\Model {
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];	
 		} else {
-			$sql .= " ORDER BY `orders_id`";	
+			$sql .= " ORDER BY `moulder_id`";	
 		}
 		
 		$sql .= " DESC";
@@ -100,15 +69,15 @@ class Order extends \Opencart\System\Engine\Model {
 		return $query->rows;
 	}
 	
-	public function getTotalOrders() {
-      	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "orders");
+	public function getTotalMoulders() {
+      	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "moulder");
 		
 		return $query->row['total'];
 	}
 	
 	public function importSupplier($import_file){
 
-		$this->db->query("TRUNCATE TABLE " . DB_PREFIX . "orders");
+		$this->db->query("TRUNCATE TABLE " . DB_PREFIX . "moulder");
 		
 		$row = 0;
 		if (($handle = fopen($import_file['import_file']['tmp_name'], "r")) !== FALSE) {
@@ -124,7 +93,7 @@ class Order extends \Opencart\System\Engine\Model {
 				foreach ($data as $values) { $values = $this->db->escape($values); }
 				$values = implode("','", $data);
 
-				$insert_sql = "INSERT INTO " . DB_PREFIX . "order (type,purity,weight,price) VALUES ('{$values}');";
+				$insert_sql = "INSERT INTO " . DB_PREFIX . "moulder (type,purity,weight,price) VALUES ('{$values}');";
 				$this->db->query($insert_sql);
 				
 			}
@@ -133,12 +102,12 @@ class Order extends \Opencart\System\Engine\Model {
 
 
 
-		//$this->db->query("load DATA LOCAL infile \"".str_replace("\\", "/", $import_file['import_file']['tmp_name'])."\" INTO TABLE " . DB_PREFIX . "order FIELDS TERMINATED BY '".','."' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES");
+		//$this->db->query("load DATA LOCAL infile \"".str_replace("\\", "/", $import_file['import_file']['tmp_name'])."\" INTO TABLE " . DB_PREFIX . "moulder FIELDS TERMINATED BY '".','."' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES");
 	}
 
 	public function getSupplierDetails($data=array()) {
 
-		$sql = "SELECT SUM(o.sale_price) as sale_price, s.name as supplier_name FROM " . DB_PREFIX . "order s LEFT JOIN " . DB_PREFIX . "orders o ON s.supplier_id = o.supplier_id WHERE 1 ";
+		$sql = "SELECT SUM(o.sale_price) as sale_price, s.name as supplier_name FROM " . DB_PREFIX . "moulder s LEFT JOIN " . DB_PREFIX . "orders o ON s.supplier_id = o.supplier_id WHERE 1 ";
 
 		if (!empty($data['filter_date_from'])) {
 			$sql .= " AND DATE_FORMAT(o.order_date,'%Y-%m-%d') >= '" . $this->db->escape($data['filter_date_from']) . "'";
@@ -159,25 +128,25 @@ class Order extends \Opencart\System\Engine\Model {
 		}
 	}
 
-	// public function getTotalOrders($data=array()) {
+	public function getTotalOrders($data=array()) {
 
-	// 	$sql = "SELECT COUNT(orders_id) as total FROM ".DB_PREFIX."orders WHERE 1 ";
+		$sql = "SELECT COUNT(orders_id) as total FROM ".DB_PREFIX."orders WHERE 1 ";
 
-	// 	if (!empty($data['filter_date_from'])) {
-	// 		$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') >= '" . $this->db->escape($data['filter_date_from']) . "'";
-	// 	}
+		if (!empty($data['filter_date_from'])) {
+			$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') >= '" . $this->db->escape($data['filter_date_from']) . "'";
+		}
 
-	// 	if (!empty($data['filter_date_to'])) {
-	// 		$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') <= '" . $this->db->escape($data['filter_date_to']) . "'";
-	// 	}
+		if (!empty($data['filter_date_to'])) {
+			$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') <= '" . $this->db->escape($data['filter_date_to']) . "'";
+		}
 
-	// 	$query = $this->db->query($sql);
-	// 	if($query->num_rows) {
-	// 		return $query->row['total'];
-	// 	} else {
-	// 		return 0;
-	// 	}
-	// }
+		$query = $this->db->query($sql);
+		if($query->num_rows) {
+			return $query->row['total'];
+		} else {
+			return 0;
+		}
+	}
 
 	public function getPendingOrders($data=array()) {
 

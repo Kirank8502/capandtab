@@ -309,6 +309,7 @@ class Location extends \Opencart\System\Engine\Controller {
 			}
 
 			$json['success'] = $this->language->get('text_success');
+			$json['redirect'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'], true);
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

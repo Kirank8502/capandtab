@@ -128,8 +128,29 @@ CREATE TABLE `dd_fittings` (
   `inner_circle` decimal(10,2) NOT NULL DEFAULT 0.0,
   `outer_circle` decimal(10,2) NOT NULL DEFAULT 0.0,
   `thickness` decimal(10,2) NOT NULL DEFAULT 0.0,
-  `price` int(10) NOT NULL DEFAULT 0,
+  `price` decimal(10,2) NOT NULL DEFAULT 0.0,
   `qty` int(10) NOT NULL DEFAULT 0,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`fittings_id`)
 );
+
+ALTER TABLE dd_accessories MODIFY COLUMN `price` decimal(10,2) NOT NULL DEFAULT 0;
+
+CREATE TABLE `dd_moulder` (
+  `moulder_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL DEFAULT '',
+  `address` varchar(255) NOT NULL DEFAULT '',
+  `number` varchar(255) NOT NULL DEFAULT '',
+  `bank_name` varchar(255) NOT NULL DEFAULT '',
+  `account_no` varchar(50) NOT NULL DEFAULT '',
+  `ifsc_code` varchar(50) NOT NULL DEFAULT '',
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`moulder_id`)
+);
+    
+ALTER TABLE `dd_orders`
+ADD COLUMN `order_type` tinyint(1) NOT NULL DEFAULT 0 AFTER `orders_id`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `qty` int(10) NOT NULL DEFAULT 0 AFTER `remark`;

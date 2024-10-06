@@ -1,0 +1,92 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" form="form-moulder" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>Moulder</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
+      <div class="card-body">
+        <form id="form-moulder" action="{{ action }}" method="post" data-oc-toggle="ajax">
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="moulder_name" value="{{ name }}" placeholder="Name" id="moulder_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Email ID</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="email" name="moulder_email" value="{{ email }}" placeholder="Email ID" id="moulder_email" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Address</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="moulder_address" value="{{ address }}" placeholder="Address" id="moulder_address" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Phone Number</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="moulder_number" maxlength="10" value="{{ number }}" placeholder="Phone Number" id="moulder_number" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Bank Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="moulder_bank_name" value="{{ bank_name }}" placeholder="Bank Name" id="moulder_bank_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Account No.</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" maxlength="15" name="moulder_account_no" value="{{ account_no }}" placeholder="Account No." id="moulder_account_no" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">IFSC Code</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="moulder_ifsc_code" value="{{ ifsc_code }}" placeholder="IFSC Code" id="moulder_ifsc_code" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Status</label>
+              <div class="col-sm-11">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="moulder_status" value="0"/>
+                    <input type="checkbox" name="moulder_status" value="1" id="moulder_status" class="form-check-input" {% if status %}checked{% endif %}/>
+                  </div>
+              </div>
+            </div>
+          <input type="hidden" name="moulder_id" value="{{ moulder_id }}" id="input-moulder-id"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
