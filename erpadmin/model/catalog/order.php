@@ -2,15 +2,17 @@
 namespace Opencart\Admin\Model\Catalog;
 class Order extends \Opencart\System\Engine\Model {
 	public function addOrder($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "orders SET `product_id` = '" . (int)$data['product_id'] . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (int)$data['client_id'] . "', powder_id = '" . (int)$data['powder_id'] . "', colour_id = '" . (int)$data['colour_id'] . "', address = '" . $this->db->escape($data['address']) . "', remark = '" . $this->db->escape($data['remark']) . "', qty = '" . (int)$data['qty'] . "', status = '" . $data['order_status'] . "', date_added = 'NOW()'");
-		
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "orders SET `po_no` = '" . (!empty($data['po_no']) ? $data['po_no'] : 0) . "', `product_id` = '" . (!empty($data['product_id']) ? (int)$data['product_id'] : 0) . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (!empty($data['client_id']) ? (int)$data['client_id'] : 0) . "', powder_id = '" . (!empty($data['powder_id']) ? (int)$data['powder_id'] : 0) . "', colour_id = '" . (int)$data['colour_id'] . "', master_batch_id = '" . (!empty($data['master_batch_id']) ? (int)$data['master_batch_id'] : 0) . "', moulder_id = '" . (!empty($data['moulder_id']) ? (int)$data['moulder_id'] : 0) . "', accessories_id = '" . (!empty($data['accessories_id']) ? (int)$data['accessories_id'] : 0) . "', fittings_id = '" . (!empty($data['fittings_id']) ? (int)$data['fittings_id'] : 0) . "', address = '" . $this->db->escape($data['address']) . "', remark = '', qty = '" . (int)$data['qty'] . "', status = '1', date_added = 'NOW()'");
+      	// $sql = " " . DB_PREFIX . "orders SET `po_no` = '" . (!empty($data['po_no']) ? $data['po_no'] : 0) . "', `product_id` = '" . (!empty($data['product_id']) ? (int)$data['product_id'] : 0) . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (!empty($data['client_id']) ? (int)$data['client_id'] : 0) . "', powder_id = '" . (!empty($data['powder_id']) ? (int)$data['powder_id'] : 0) . "', colour_id = '" . (int)$data['colour_id'] . "', master_batch_id = '" . (!empty($data['master_batch_id']) ? (int)$data['master_batch_id'] : 0) . "', moulder_id = '" . (!empty($data['moulder_id']) ? (int)$data['moulder_id'] : 0) . "', accessories_id = '" . (!empty($data['accessories_id']) ? (int)$data['accessories_id'] : 0) . "', fittings_id = '" . (!empty($data['fittings_id']) ? (int)$data['fittings_id'] : 0) . "', address = '" . $this->db->escape($data['address']) . "', remark = '', qty = '" . (int)$data['qty'] . "', status = '1', date_added = 'NOW()'";
+		// print_r($sql);
+		// die;
 		$order_id= $this->db->getLastId();
 		
 		$this->cache->delete('order');
 	}
 	
 	public function editOrder($order_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "orders SET `product_id` = '" . (int)$data['product_id'] . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (int)$data['client_id'] . "', powder_id = '" . (int)$data['powder_id'] . "', colour_id = '" . (int)$data['colour_id'] . "', address = '" . $this->db->escape($data['address']) . "', remark = '" . $this->db->escape($data['remark']) . "', qty = '" . (int)$data['qty'] . "', status = '" . $data['order_status'] . "', date_added = 'NOW()'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "orders SET `po_no` = '" . (!empty($data['po_no']) ? $data['po_no'] : 0) . "', `product_id` = '" . (!empty($data['product_id']) ? (int)$data['product_id'] : 0) . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (!empty($data['client_id']) ? (int)$data['client_id'] : 0) . "', powder_id = '" . (!empty($data['powder_id']) ? (int)$data['powder_id'] : 0) . "', colour_id = '" . (int)$data['colour_id'] . "', master_batch_id = '" . (!empty($data['master_batch_id']) ? (int)$data['master_batch_id'] : 0) . "', moulder_id = '" . (!empty($data['moulder_id']) ? (int)$data['moulder_id'] : 0) . "', accessories_id = '" . (!empty($data['accessories_id']) ? (int)$data['accessories_id'] : 0) . "', fittings_id = '" . (!empty($data['fittings_id']) ? (int)$data['fittings_id'] : 0) . "', address = '" . $this->db->escape($data['address']) . "', remark = '', qty = '" . (int)$data['qty'] . "', status = '1', date_added = 'NOW()' WHERE `orders_id` = ".$order_id);
 		
 		$this->cache->delete('order');
 	}
@@ -52,6 +54,38 @@ class Order extends \Opencart\System\Engine\Model {
 
 	public function getColours($data = array()) {
 		$sql = "SELECT colour_id,name FROM " . DB_PREFIX . "colour WHERE status = '1'";
+
+		$query = $this->db->query($sql);
+	
+		return $query->rows;
+	}
+
+	public function getMoulders($data = array()) {
+		$sql = "SELECT moulder_id,name FROM " . DB_PREFIX . "moulder WHERE status = '1'";
+
+		$query = $this->db->query($sql);
+	
+		return $query->rows;
+	}
+
+	public function getAccessories($data = array()) {
+		$sql = "SELECT accessories_id,name,qty FROM " . DB_PREFIX . "accessories WHERE status = '1'";
+
+		$query = $this->db->query($sql);
+	
+		return $query->rows;
+	}
+
+	public function getMasterBatchs($data = array()) {
+		$sql = "SELECT master_batch_id,name FROM " . DB_PREFIX . "master_batch WHERE status = '1'";
+
+		$query = $this->db->query($sql);
+	
+		return $query->rows;
+	}
+
+	public function getFittings($data = array()) {
+		$sql = "SELECT fittings_id,name FROM " . DB_PREFIX . "fittings WHERE status = '1'";
 
 		$query = $this->db->query($sql);
 	

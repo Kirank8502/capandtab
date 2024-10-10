@@ -154,3 +154,13 @@ ADD COLUMN `order_type` tinyint(1) NOT NULL DEFAULT 0 AFTER `orders_id`;
 
 ALTER TABLE `dd_orders`
 ADD COLUMN `qty` int(10) NOT NULL DEFAULT 0 AFTER `remark`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `targeted_date` date NOT NULL DEFAULT '2020-01-01' AFTER `remark`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `po_no` varchar(50) NOT NULL DEFAULT '' AFTER `orders_id`,
+ADD COLUMN `moulder_id` int(11) NOT NULL DEFAULT 0 AFTER `colour_id`,
+ADD COLUMN `accessories_id` int(11) NOT NULL DEFAULT 0 AFTER `moulder_id`,
+ADD COLUMN `master_batch_id` int(11) NOT NULL DEFAULT 0 AFTER `accessories_id`,
+ADD COLUMN `fittings_id` int(11) NOT NULL DEFAULT 0 AFTER `master_batch_id`;

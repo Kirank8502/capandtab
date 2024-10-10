@@ -192,18 +192,23 @@ class Order extends \Opencart\System\Engine\Controller {
 		
 		$results = $this->model_catalog_order->getOrders($supplier_data);
 		$products = $this->model_catalog_order->getProducts();
+		$accessories = $this->model_catalog_order->getAccessories();
 
 		foreach($products as $key => $value) {
 			$product[$value['product_id']] = $value['name'];
+		}
+
+		foreach($accessories as $key_1 => $value_1) {
+			$accessory[$value_1['accessories_id']] = $value_1['name'];
 		}
 		
 		foreach ($results as $result) {
 			$data['orders'][] = array(
 				'orders_id'			=> $result['orders_id'],
-				'product_name'      => $product[$result['product_id']],
+				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['accessories_id']) && $result['accessories_id'] > 0) ? $accessory[$result['accessories_id']] : 0)),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
-				'status'			=> $result['status'],
+				// 'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
 				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
@@ -288,6 +293,7 @@ class Order extends \Opencart\System\Engine\Controller {
 	public function form() {
 		$this->load->model('catalog/order');
 		$data['text_form'] = !isset($this->request->get['orders_id']) ? 'Add' : 'Edit';
+		$data['edit_data'] = !isset($this->request->get['orders_id']) ? False : True;
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -339,6 +345,10 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['clients'] = $this->model_catalog_order->getClients();
 		$data['powders'] = $this->model_catalog_order->getPowders();
 		$data['colours'] = $this->model_catalog_order->getColours();
+		$data['moulders'] = $this->model_catalog_order->getMoulders();
+		$data['master_batchs'] = $this->model_catalog_order->getMasterBatchs();
+		$data['accessories'] = $this->model_catalog_order->getAccessories();
+		$data['fittings'] = $this->model_catalog_order->getFittings();
 
 		if (isset($this->request->get['orders_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$order_info = $this->model_catalog_order->getOrder($this->request->get['orders_id']);
@@ -358,13 +368,13 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['orders_id'] = $this->request->get['orders_id'];
 		}
 		
-    	if (isset($this->request->post['status'])) {
-      		$data['status'] = $this->request->post['status'];
-    	} elseif (!empty($order_info)) {
-			$data['status'] = $order_info['status'];
-		} else {	
-      		$data['status'] = '';
-    	}
+    	// if (isset($this->request->post['status'])) {
+      	// 	$data['status'] = $this->request->post['status'];
+    	// } elseif (!empty($order_info)) {
+		// 	$data['status'] = $order_info['status'];
+		// } else {	
+      	// 	$data['status'] = '';
+    	// }
 
 		if (isset($this->request->post['qty'])) {
 			$data['qty'] = $this->request->post['qty'];
@@ -380,6 +390,14 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['colour_id'] = $order_info['colour_id'];
 	  	} else {	
 			$data['colour_id'] = 0;
+	  	}
+
+		if (isset($this->request->post['moulder_id'])) {
+			$data['moulder_id'] = $this->request->post['moulder_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['moulder_id'] = $order_info['moulder_id'];
+	  	} else {	
+			$data['moulder_id'] = 0;
 	  	}
 
 		if (isset($this->request->post['address'])) {
@@ -412,6 +430,46 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['product_id'] = $order_info['product_id'];
 	  	} else {	
 			$data['product_id'] = 0;
+	  	}
+
+		if (isset($this->request->post['targeted_date'])) {
+			$data['targeted_date'] = $this->request->post['targeted_date'];
+	  	} elseif (!empty($order_info)) {
+			$data['targeted_date'] = $order_info['targeted_date'];
+	  	} else {	
+			$data['targeted_date'] = '';
+	  	}
+
+		if (isset($this->request->post['po_no'])) {
+			$data['po_no'] = $this->request->post['po_no'];
+	  	} elseif (!empty($order_info)) {
+			$data['po_no'] = $order_info['po_no'];
+	  	} else {	
+			$data['po_no'] = '';
+	  	}
+
+		if (isset($this->request->post['accessories_id'])) {
+			$data['accessories_id'] = $this->request->post['accessories_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['accessories_id'] = $order_info['accessories_id'];
+	  	} else {	
+			$data['accessories_id'] = '';
+	  	}
+
+		if (isset($this->request->post['master_batch_id'])) {
+			$data['master_batch_id'] = $this->request->post['master_batch_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['master_batch_id'] = $order_info['master_batch_id'];
+	  	} else {	
+			$data['master_batch_id'] = '';
+	  	}
+
+		if (isset($this->request->post['fittings_id'])) {
+			$data['fittings_id'] = $this->request->post['fittings_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['fittings_id'] = $order_info['fittings_id'];
+	  	} else {	
+			$data['fittings_id'] = '';
 	  	}
 
 		if (isset($this->request->post['remark'])) {
