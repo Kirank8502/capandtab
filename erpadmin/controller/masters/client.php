@@ -286,6 +286,14 @@ class Client extends \Opencart\System\Engine\Controller {
       		$data['name'] = '';
     	}
 
+		if (isset($this->request->post['address'])) {
+      		$data['address'] = $this->request->post['address'];
+    	} elseif (!empty($client_info)) {
+			$data['address'] = $client_info['address'];
+		} else {	
+      		$data['address'] = '';
+    	}
+
 		if(isset($this->request->get['client_id'])){
 			$data['client_id'] = $this->request->get['client_id'];
 		}

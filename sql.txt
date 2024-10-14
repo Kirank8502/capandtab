@@ -164,3 +164,17 @@ ADD COLUMN `moulder_id` int(11) NOT NULL DEFAULT 0 AFTER `colour_id`,
 ADD COLUMN `accessories_id` int(11) NOT NULL DEFAULT 0 AFTER `moulder_id`,
 ADD COLUMN `master_batch_id` int(11) NOT NULL DEFAULT 0 AFTER `accessories_id`,
 ADD COLUMN `fittings_id` int(11) NOT NULL DEFAULT 0 AFTER `master_batch_id`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `req_qty` int(11) NOT NULL DEFAULT 0 AFTER `qty`;
+
+CREATE TABLE `dd_pigment` (
+  `pigment_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `qty` int(10) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`pigment_id`)
+);
+
+ALTER TABLE `dd_client`
+ADD COLUMN `address` varchar(255) NOT NULL DEFAULT '' AFTER `name`;

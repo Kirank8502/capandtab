@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Client extends \Opencart\System\Engine\Model {
 	public function addClient($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "client SET `name` = '" . $this->db->escape($data['client_name']) . "',status = '" . (int)$data['client_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "client SET `name` = '" . $this->db->escape($data['client_name']) . "', `address` = '" . $this->db->escape($data['client_address']) . "', status = '" . (int)$data['client_status']."'");
 		
 		$client_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Client extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editClient($client_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "client SET `name` = '" . $this->db->escape($data['client_name']) . "', status = '" . (int)$data['client_status'] ."' WHERE client_id= '" . (int)$client_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "client SET `name` = '" . $this->db->escape($data['client_name']) . "', `address` = '" . $this->db->escape($data['client_address']) . "', status = '" . (int)$data['client_status'] ."' WHERE client_id= '" . (int)$client_id. "'");
 		
 		$this->cache->delete('client');
 	}

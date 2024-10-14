@@ -487,6 +487,14 @@ class Order extends \Opencart\System\Engine\Controller {
 	  	} else {	
 			$data['order_type'] = 0;
 	  	}
+
+		if (isset($this->request->post['req_qty'])) {
+			$data['req_qty'] = $this->request->post['req_qty'];
+	  	} elseif (!empty($order_info)) {
+			$data['req_qty'] = $order_info['req_qty'];
+	  	} else {	
+			$data['req_qty'] = 0;
+	  	}
 		
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
@@ -554,5 +562,31 @@ class Order extends \Opencart\System\Engine\Controller {
 		echo $order_range;
 		exit;
 
+	}
+
+	function calculateQty(){
+		$this->load->model('catalog/order');
+
+		$accessories = [];
+
+		$accessories = $this->model_catalog_order->getAccessoriesDetails($this->request->get);
+
+		$calculate = (($this->request->get['qty'] * $accessories['weight']) / 1000)/25;
+
+		$ceil_val = ceil($calculate);
+
+		$final_val = ($ceil_val * 25 * 1000) / $accessories['weight'];
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($final_val));
+	}
+
+	public function clientAddress(){
+		$this->load->model('catalog/order');
+
+		$clientdata = $this->model_catalog_order->getClients($this->request->get);
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($clientdata[0]['address']));
 	}
 }

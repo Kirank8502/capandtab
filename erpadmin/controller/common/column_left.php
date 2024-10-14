@@ -257,6 +257,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			if ($this->user->hasPermission('access', 'masters/pigment')) {
+				$masters[] = [
+					'name'	   => 'Pigment',
+					'href'     => $this->url->link('masters/pigment', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			if ($masters) {
 				$data['menus'][] = [
 					'id'       => 'menu-extension',

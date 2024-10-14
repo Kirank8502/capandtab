@@ -15,7 +15,7 @@
           {% for product in products %}
             <tr>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ product.product_id }}" class="form-check-input"/></td>
-              <td class="text-center"><img src="{{product.image}}"/></td>
+              <td class="text-center" style="width:10%"><img src="{{product.image}}" id="product_image" data-val="{{ product.product_id }}" data-toggle="modal" data-target="#exampleModal"/></td>
               <td class="text-center">{{ product.name }}</td>
               <td class="text-center">{% if product.status %}Enabled{% else %}Disabled{% endif %}</td>
               <td class="text-end">
@@ -36,3 +36,34 @@
     <div class="col-sm-6 text-end">{{ results }}</div>
   </div>
 </form>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        {# <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> #}
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <!-- Content to be dynamically added via AJAX -->
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$('#product_image').on('click',function(e) {
+  var productId = $(this).data('val');
+  $('#exampleModal').modal('show');
+  $.ajax({
+      url: 'index.php?route=catalog/product|showImg&user_token={{ user_token }}&product_id='+productId,
+      type: 'GET',
+      success: function(response) {
+          var imgTag = '<img src="' + response + '" alt="Image" class="img-fluid">';
+          $('.modal-body').html(imgTag);
+      },
+      error: function() {
+          $('.modal-body').html('<p>Image could not be loaded.</p>');
+      }
+  });
+});
+</script>

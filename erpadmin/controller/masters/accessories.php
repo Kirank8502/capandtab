@@ -155,7 +155,7 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		foreach ($results as $result) {
 
 			if (is_file(DIR_IMAGE . htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
-				$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'), 50, 50);
+				$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'), 100, 100);
 			} else {
 				$data['thumb'] = '';
 			}
@@ -396,5 +396,21 @@ class Accessories extends \Opencart\System\Engine\Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('masters/accessories_form', $data));
+	}
+
+	public function showImg(){
+		$this->load->model('masters/accessories');
+		$this->load->model('tool/image');
+		
+		$accessories_info = $this->model_masters_accessories->getAccessory($this->request->get['accessories_id']);
+
+		if (is_file(DIR_IMAGE . htmlspecialchars($accessories_info['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+			$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($accessories_info['image'] ?? '', ENT_QUOTES, 'UTF-8'), 400, 400);
+		} else {
+			$data['thumb'] = '';
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($data['thumb']));
 	}
 }

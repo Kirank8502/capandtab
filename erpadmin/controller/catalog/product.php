@@ -196,7 +196,7 @@ class Product extends \Opencart\System\Engine\Controller {
 		foreach ($results as $result) {
 
 			if (is_file(DIR_IMAGE . htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
-				$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'), 50, 50);
+				$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($result['image'] ?? '', ENT_QUOTES, 'UTF-8'), 100, 100);
 			} else {
 				$data['thumb'] = '';
 			}
@@ -455,5 +455,21 @@ class Product extends \Opencart\System\Engine\Controller {
 		echo $product_range;
 		exit;
 
+	}
+
+	public function showImg(){
+		$this->load->model('catalog/product');
+		$this->load->model('tool/image');
+
+		$product_info = $this->model_catalog_product->getProduct($this->request->get['product_id']);
+
+		if (is_file(DIR_IMAGE . htmlspecialchars($product_info['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+			$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($product_info['image'] ?? '', ENT_QUOTES, 'UTF-8'), 400, 400);
+		} else {
+			$data['thumb'] = '';
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($data['thumb']));
 	}
 }
