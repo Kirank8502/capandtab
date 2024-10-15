@@ -178,3 +178,9 @@ CREATE TABLE `dd_pigment` (
 
 ALTER TABLE `dd_client`
 ADD COLUMN `address` varchar(255) NOT NULL DEFAULT '' AFTER `name`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `check_color` tinyint(1) NOT NULL DEFAULT 0 AFTER `req_qty`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `pigment_id` int(11) NOT NULL DEFAULT 0 AFTER `master_batch_id`;

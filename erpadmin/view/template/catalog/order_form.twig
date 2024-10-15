@@ -18,14 +18,6 @@
       <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
       <div class="card-body">
         <form id="form-order" action="{{ action }}" method="post" data-oc-toggle="ajax">
-            <div class="row mb-3" id="input-po_no-class-main">
-              <label class="col-sm-1 col-form-label">PO No.</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="text" name="po_no" value="{{ po_no }}" placeholder="PO No." id="po_no" class="form-control"/>
-                  </div>
-              </div>
-            </div>
             <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Order Type</label>
               <div class="col-sm-11">
@@ -33,6 +25,19 @@
                    <select name="order_type" id="input-order-type" class="form-select">
                         <option value="0" {% if order_type == 0 %} selected{% endif %}>Puchase order raising</option>
                         <option value="1" {% if order_type == 1 %} selected{% endif %}>Puchase order receiving</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-client-class-main">
+              <label class="col-sm-1 col-form-label">Client</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="client_id" id="input-client-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for client in clients %}
+                          <option value="{{ client.client_id }}"{% if client.client_id == client_id %} selected{% endif %}>{{ client.name }}</option>
+                        {% endfor %}
                       </select>
                   </div>
               </div>
@@ -47,6 +52,22 @@
                           <option value="{{ moulder.moulder_id }}"{% if moulder.moulder_id == moulder_id %} selected{% endif %}>{{ moulder.name }}</option>
                         {% endfor %}
                       </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-address-class-main">
+              <label class="col-sm-1 col-form-label">Address</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                      <input type="text" name="address" value="{{ address }}" placeholder="Address" id="input-address" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-po_no-class-main">
+              <label class="col-sm-1 col-form-label">PO No.</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="po_no" value="{{ po_no }}" placeholder="PO No." id="po_no" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -76,29 +97,11 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-client-class-main">
-              <label class="col-sm-1 col-form-label">Client</label>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                   <select name="client_id" id="input-client-class" class="form-select">
-                        <option value="0">None</option>
-                        {% for client in clients %}
-                          <option value="{{ client.client_id }}"{% if client.client_id == client_id %} selected{% endif %}>{{ client.name }}</option>
-                        {% endfor %}
-                      </select>
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3" id="input-fittings-class-main">
-              <label class="col-sm-1 col-form-label">Fittings</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                   <select name="fittings_id" id="input-fittings-class" class="form-select">
-                        <option value="0">None</option>
-                        {% for fitting in fittings %}
-                          <option value="{{ fitting.fittings_id }}"{% if fitting.fittings_id == fittings_id %} selected{% endif %}>{{ fitting.name }}</option>
-                        {% endfor %}
-                      </select>
+                    <input type="number" name="qty" value="{{ qty }}" placeholder="Quantity" id="qty" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -128,8 +131,32 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-master_batch-class-main">
+            {# <div class="row mb-3" id="input-check_color-class-main">
+              <label class="col-sm-1 col-form-label">Colour Select</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <select name="check_color" id="input-check-color" class="form-select" onchange="toggleDivs()">
+                      <option value="0" {% if check_color == 0 %} selected{% endif %}>Master Batch</option>
+                      <option value="1" {% if check_color == 1 %} selected{% endif %}>Pigment</option>
+                    </select>
+                  </div>
+              </div>
+            </div> #}
+            <div class="row mb-3" id="input-pigment-class-main">
               <label class="col-sm-1 col-form-label">Pigment</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="pigment_id" id="input-pigment-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for pigment in pigments %}
+                          <option value="{{ pigment.pigment_id }}"{% if pigment.pigment_id == pigment_id %} selected{% endif %}>{{ pigment.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-master_batch-class-main">
+              <label class="col-sm-1 col-form-label">Master Batch</label>
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="master_batch_id" id="input-master_batch-class" class="form-select">
@@ -141,20 +168,16 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Address</label>
+            <div class="row mb-3" id="input-fittings-class-main">
+              <label class="col-sm-1 col-form-label">Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                      <input type="text" name="address" value="{{ address }}" placeholder="Address" id="input-address" class="form-control"/>
-                    {# <input type="number" name="order_qty" value="{{ qty }}" placeholder="Quantity" id="order_qty" class="form-control"/> #}
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Quantity</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="number" name="qty" value="{{ qty }}" placeholder="Quantity" id="qty" class="form-control"/>
+                   <select name="fittings_id" id="input-fittings-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for fitting in fittings %}
+                          <option value="{{ fitting.fittings_id }}"{% if fitting.fittings_id == fittings_id %} selected{% endif %}>{{ fitting.name }}</option>
+                        {% endfor %}
+                      </select>
                   </div>
               </div>
             </div>
@@ -171,6 +194,14 @@
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="req_qty" value="{{ req_qty }}" placeholder="Required Quantity" id="req_qty" disabled class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-weight-class-main">
+              <label class="col-sm-1 col-form-label">Weight</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="weight" value="{{ weight }}" placeholder="Weight" id="weight" disabled class="form-control"/>
                   </div>
               </div>
             </div>
@@ -192,6 +223,7 @@
               </div>
             </div> #}
           <input type="hidden" name="orders_id" value="{{ orders_id }}" id="input-order-id"/>
+          <input type="hidden" name="latest_id" value="{{ latest_id }}" id="input-latest-id"/>
         </form>
       </div>
     </div>
@@ -260,31 +292,37 @@ $('#input-order-type').on('change', function() {
     var productField = $('#input-product-class-main');
     var fittingsField = $('#input-fittings-class-main');
     var vendorField = $('#input-vendor-class-main');
+    var weightField = $('#input-weight-class-main');
     var accessoryField = $('#input-accessories-class-main');
     var masterbatchField = $('#input-master_batch-class-main');
-    var po_no = $('#input-po_no-class-main');
+    var pigmentField = $('#input-pigment-class-main');
+    // var po_no = $('#input-po_no-class-main');
     var req_qty = $('#input-required_qty-class-main');
 
     if ($(this).val() == '1') {
         powderField.hide();
-        po_no.show();
+        // po_no.show();
         clientField.show();
+        weightField.show();
         productField.show();
         fittingsField.show();
         masterbatchField.hide();
+        pigmentField.hide();
         vendorField.hide();
         accessoryField.hide();
         req_qty.hide();
     } else {
         powderField.show();
-        po_no.hide();
+        // po_no.hide();
         clientField.hide();
         productField.hide();
         fittingsField.hide();
         masterbatchField.show();
+        pigmentField.show();
         vendorField.show();
         accessoryField.show();
         req_qty.show();
+        weightField.show();
     }
 });
 
@@ -294,26 +332,34 @@ $(document).ready(function() {
   var orderType = $('#input-order-type').val();
   if (orderType == '1') {
     $('#input-fittings-class-main').show();
-    $('#input-vendor-class-main').show();
+    $('#input-weight-class-main').show();
     $('#input-product-class-main').show();
     $('#input-accessories-class-main').hide();
     $('#input-vendor-class-main').hide();
     $('#input-powder-class-main').hide();
     $('#input-master_batch-class-main').hide();
-    $('#input-po_no-class-main').show();
+    $('#input-pigment-class-main').hide();
+    // $('#input-po_no-class-main').show();
     $('#input-required_qty-class-main').hide();
     $('#input-client-class-main').show();
   } else {
+    $('#input-weight-class-main').hide();
     $('#input-accessories-class-main').show();
     $('#input-vendor-class-main').show();
     $('#input-powder-class-main').show();
     $('#input-master_batch-class-main').show();
-    $('#input-po_no-class-main').hide();
+    $('#input-pigment-class-main').show();
+    // $('#input-po_no-class-main').hide();
     $('#input-required_qty-class-main').show();
     $('#input-product-class-main').hide();
     $('#input-fittings-class-main').hide();
-    $('#input-vendor-class-main').hide();
     $('#input-client-class-main').hide();
+
+    $('#input-latest-id').val();
+    if($('#input-latest-id').val() > 0){
+      $('#po_no').val($('#input-latest-id').val());
+    }
+    // document.addEventListener('DOMContentLoaded', toggleDivs);
   }
     
 });
@@ -342,4 +388,40 @@ $('#input-client-class').change(function() {
     }
    });
 });
+
+$('#input-moulder-class').change(function() {
+  $.ajax({
+    url: 'index.php?route=catalog/order|moulderAddress&user_token={{user_token}}&moulder_id='+$(this).val(),
+    type: 'GET',
+    success: function(response) {
+      $('#input-address').val(response);
+    }
+   });
+});
+
+$('#input-product-class').change(function() {
+  $.ajax({
+    url: 'index.php?route=catalog/order|productWeight&user_token={{user_token}}&product_id='+$(this).val(),
+    type: 'GET',
+    success: function(response) {
+      $('#weight').val(response);
+    }
+   });
+});
+
+// function toggleDivs() {
+//     const masterBatchDiv = document.getElementById('input-master_batch-class-main');
+//     const pigmentDiv = document.getElementById('input-pigment-class-main');
+//     const selectElement = document.getElementById('input-check-color');
+//     if (selectElement.value == "0") {
+//       masterBatchDiv.style.display = 'flex';
+//         pigmentDiv.style.display = 'none';
+//     } else {
+//         masterBatchDiv.style.display = 'none';
+//         pigmentDiv.style.display = 'flex';
+//     }
+// }
+
+// Call toggleDivs on page load to set the initial state
+// document.addEventListener('DOMContentLoaded', toggleDivs);
 </script>

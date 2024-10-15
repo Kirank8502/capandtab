@@ -340,13 +340,16 @@ class Order extends \Opencart\System\Engine\Controller {
 		// }
 
 		$data['back'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url, true);
-
+		$latest = $this->model_catalog_order->getOrderId();
+		
+		$data['latest_id'] = !isset($this->request->get['orders_id']) ? $latest['latest_order_id'] + 1 : 0;
 		$data['products'] = $this->model_catalog_order->getProducts();
 		$data['clients'] = $this->model_catalog_order->getClients();
 		$data['powders'] = $this->model_catalog_order->getPowders();
 		$data['colours'] = $this->model_catalog_order->getColours();
 		$data['moulders'] = $this->model_catalog_order->getMoulders();
 		$data['master_batchs'] = $this->model_catalog_order->getMasterBatchs();
+		$data['pigments'] = $this->model_catalog_order->getPigments();
 		$data['accessories'] = $this->model_catalog_order->getAccessories();
 		$data['fittings'] = $this->model_catalog_order->getFittings();
 
@@ -464,6 +467,14 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['master_batch_id'] = '';
 	  	}
 
+		if (isset($this->request->post['pigment_id'])) {
+			$data['pigment_id'] = $this->request->post['pigment_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['pigment_id'] = $order_info['pigment_id'];
+	  	} else {	
+			$data['pigment_id'] = '';
+	  	}
+
 		if (isset($this->request->post['fittings_id'])) {
 			$data['fittings_id'] = $this->request->post['fittings_id'];
 	  	} elseif (!empty($order_info)) {
@@ -564,14 +575,14 @@ class Order extends \Opencart\System\Engine\Controller {
 
 	}
 
-	function calculateQty(){
+	public function calculateQty(){
 		$this->load->model('catalog/order');
 
 		$accessories = [];
 
 		$accessories = $this->model_catalog_order->getAccessoriesDetails($this->request->get);
 
-		$calculate = (($this->request->get['qty'] * $accessories['weight']) / 1000)/25;
+		$calculate = !empty($accessories['weight']) && $accessories['weight'] > 0 ? (($this->request->get['qty'] * $accessories['weight']) / 1000)/25 : 0;
 
 		$ceil_val = ceil($calculate);
 
@@ -588,5 +599,31 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($clientdata[0]['address']));
+	}
+
+	public function moulderAddress(){
+		$this->load->model('catalog/order');
+
+		$clientdata = $this->model_catalog_order->getMoulders($this->request->get);
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($clientdata[0]['address']));
+	}
+
+	public function productWeight(){
+		$this->load->model('catalog/order');
+
+		$fittings = [];
+
+		$fittings = $this->model_catalog_order->getFittingsDetails($this->request->get);
+
+		// $calculate = ;
+
+		// $ceil_val = ceil($calculate);
+
+		$final_val = $fittings['total_weight'];
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($final_val));
 	}
 }
