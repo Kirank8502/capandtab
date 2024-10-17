@@ -1,0 +1,79 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" form="form-die" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>Die</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
+      <div class="card-body">
+        <form id="form-die" action="{{ action }}" method="post" data-oc-toggle="ajax">
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="name" value="{{ name }}" placeholder="Name" id="name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Die Type</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="type" id="input-die-type" class="form-select">
+                        <option value="0" {% if type == 0 %} selected{% endif %}>Vertical</option>
+                        <option value="1" {% if type == 1 %} selected{% endif %}>Injection</option>
+                        <option value="2" {% if type == 2 %} selected{% endif %}>Hand Mould</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Dimension</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="dimension" min="0" value="{{ dimension }}" placeholder="Dimension" id="dimension" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Weight</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="weight" value="{{ weight }}" min="0" step="0.01" placeholder="Weight" id="weight" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Cavity</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="cavity" value="{{ cavity }}" min="0" placeholder="Cavity" id="cavity" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Date</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="date" name="date" value="{{ date }}" placeholder="Date" id="date" class="form-control date"/>
+                  </div>
+              </div>
+            </div>
+          <input type="hidden" name="die_id" value="{{ die_id }}" id="input-die-id"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

@@ -27,6 +27,32 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Image</label>
+              <div class="col-sm-11">
+                <div class="card image">
+                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/>
+                  <input type="hidden" name="image" value="{{ image }}" id="input-image"/>
+                  <div class="card-body">
+                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> Edit</button>
+                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> Clear</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Colour</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="colour_id" id="input-colour-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for colour in colours %}
+                          <option value="{{ colour.colour_id }}"{% if colour.colour_id == colour_id %} selected{% endif %}>{{ colour.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">

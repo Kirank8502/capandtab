@@ -184,3 +184,20 @@ ADD COLUMN `check_color` tinyint(1) NOT NULL DEFAULT 0 AFTER `req_qty`;
 
 ALTER TABLE `dd_orders`
 ADD COLUMN `pigment_id` int(11) NOT NULL DEFAULT 0 AFTER `master_batch_id`;
+
+ALTER TABLE `dd_pigment`
+ADD COLUMN `colour_id` int(11) NOT NULL DEFAULT 0 AFTER `name`;
+
+CREATE TABLE `dd_die` (
+  `die_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` tinyint(1) NOT NULL DEFAULT 0,
+  `weight` decimal(10,2) NOT NULL DEFAULT 0.0,
+  `dimension` int(11) NOT NULL DEFAULT 0,
+  `cavity` int(11) NOT NULL DEFAULT 0,
+  `date` date NOT NULL DEFAULT '2020-01-01',
+  PRIMARY KEY (`die_id`)
+);
+
+ALTER TABLE `dd_pigment`
+ADD COLUMN `image` varchar(255) NOT NULL DEFAULT '' AFTER `colour_id`;

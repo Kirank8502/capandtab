@@ -265,6 +265,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			if ($this->user->hasPermission('access', 'masters/dies')) {
+				$masters[] = [
+					'name'	   => 'Die',
+					'href'     => $this->url->link('masters/dies', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			if ($masters) {
 				$data['menus'][] = [
 					'id'       => 'menu-extension',

@@ -1,24 +1,25 @@
-<form id="form-master_batch" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#master_batch">
+<form id="form-die" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#die">
   <div class="table-responsive">
     <table class="table table-bordered table-hover">
       <thead>
         <tr>
           <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
           <td class="text-center">Name</td>
-          <td class="text-center">Status</td>
+          <td class="text-center">Type</td>
+          <td class="text-center">Weight</td>
           <td class="text-end">Action</td>
         </tr>
       </thead>
       <tbody>
-        {% if master_batchs %}
-          {% for master_batch in master_batchs %}
+        {% if dies %}
+          {% for die in dies %}
             <tr>
-              <td class="text-center"><input type="checkbox" name="selected[]" value="{{ master_batch.master_batch_id }}" class="form-check-input"/></td>
-              <td class="text-center">{{ master_batch.name }}</td>
-              {# <td class="text-center">{{ master_batch.qty }}</td> #}
-              <td class="text-center">{% if master_batch.status %}Enabled{% else %}Disabled{% endif %}</td>
+              <td class="text-center"><input type="checkbox" name="selected[]" value="{{ die.die_id }}" class="form-check-input"/></td>
+              <td class="text-center">{{ die.name }}</td>
+              <td class="text-center">{% if die.type == 1 %} Injection {% elseif die.type == 2 %} Hand Mould {% else %} Vertical {% endif %}</td>
+              <td class="text-center">{{ die.weight }}</td>
               <td class="text-end">
-                <a href="{{ master_batch.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
+                <a href="{{ die.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
               </td>
             </tr>
           {% endfor %}

@@ -1,34 +1,40 @@
 <?php
 namespace Opencart\Admin\Model\Masters;
 
-class MasterBatch extends \Opencart\System\Engine\Model {
-	public function addMasterBatch($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "master_batch SET `name` = '" . $this->db->escape($data['master_batch_name']) . "', `color` = '" . $this->db->escape($data['master_batch_color']) . "', `weight` = '" . (int)$data['master_batch_weight'] . "', `image` = '" . $this->db->escape($data['master_batch_image']) . "', qty = '0', status = '" . (int)$data['master_batch_status']."'");
+class Dies extends \Opencart\System\Engine\Model {
+	public function addDie($data) {
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "die SET `name` = '" . $this->db->escape($data['name']) . "', `type` = '" . (int)$data['type'] . "', `weight` = '" . (float)$data['weight'] . "', `dimension` = '" . (int)$data['dimension'] . "', `cavity` = '" . (int)$data['cavity'] . "', `date` = date('".$data['date']."')");
 		
-		$master_batch_id= $this->db->getLastId();
+		$die_id= $this->db->getLastId();
 		
-		$this->cache->delete('master_batch');
+		$this->cache->delete('die');
 	}
 	
-	public function editMasterBatch($master_batch_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "master_batch SET `name` = '" . $this->db->escape($data['master_batch_name']) . "', `color` = '" . $this->db->escape($data['master_batch_color']) . "', `weight` = '" . (int)$data['master_batch_weight'] . "', `image` = '" . $this->db->escape($data['master_batch_image']) . "', qty = '0', status = '" . (int)$data['master_batch_status'] ."' WHERE master_batch_id= '" . (int)$master_batch_id. "'");
+	public function editDie($die_id, $data) {
+      	$this->db->query("UPDATE " . DB_PREFIX . "die SET `name` = '" . $this->db->escape($data['name']) . "', `type` = '" . (int)$data['type'] . "', `weight` = '" . (float)$data['weight'] . "', `dimension` = '" . (int)$data['dimension'] . "', `cavity` = '" . (int)$data['cavity'] . "', `date` = date('".$data['date']."') WHERE die_id= '" . (int)$die_id. "'");
 		
-		$this->cache->delete('master_batch');
+		$this->cache->delete('die');
 	}
 	
-	public function deleteMasterBatch($master_batch_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "master_batch WHERE master_batch_id= '" . (int)$master_batch_id. "'");			
-		$this->cache->delete('master_batch');
+	public function deleteDie($die_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "die WHERE die_id= '" . (int)$die_id. "'");			
+		$this->cache->delete('die');
 	}	
 	
-	public function getMasterBatch($master_batch_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "master_batch WHERE master_batch_id= '" . (int)$master_batch_id. "'");
+	public function getDie($die_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "die WHERE die_id= '" . (int)$die_id. "'");
 		
 		return $query->row;
 	}
+
+	public function getColors() {
+		$query = $this->db->query("SELECT colour_id,name FROM " . DB_PREFIX . "colour");
+		
+		return $query->rows;
+	}
 	
-	public function getMasterBatchs($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "master_batch";
+	public function getDies($data = array()) {
+		$sql = "SELECT * FROM " . DB_PREFIX . "die";
 
 		if (!empty($data['filter_name'])) {
 			$sql .= " WHERE `name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
@@ -47,7 +53,7 @@ class MasterBatch extends \Opencart\System\Engine\Model {
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];	
 		} else {
-			$sql .= " ORDER BY `master_batch_id`";	
+			$sql .= " ORDER BY `die_id`";	
 		}
 		
 		$sql .= " DESC";
@@ -69,15 +75,15 @@ class MasterBatch extends \Opencart\System\Engine\Model {
 		return $query->rows;
 	}
 	
-	public function getTotalMasterBatchs() {
-      	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "master_batch");
+	public function getTotalDies() {
+      	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "die");
 		
 		return $query->row['total'];
 	}
 	
-	public function importMasterBatch($import_file){
+	public function importDie($import_file){
 
-		$this->db->query("TRUNCATE TABLE " . DB_PREFIX . "master_batch");
+		$this->db->query("TRUNCATE TABLE " . DB_PREFIX . "die");
 		
 		$row = 0;
 		if (($handle = fopen($import_file['import_file']['tmp_name'], "r")) !== FALSE) {
@@ -93,7 +99,7 @@ class MasterBatch extends \Opencart\System\Engine\Model {
 				foreach ($data as $values) { $values = $this->db->escape($values); }
 				$values = implode("','", $data);
 
-				$insert_sql = "INSERT INTO " . DB_PREFIX . "master_batch (type,purity,weight,price) VALUES ('{$values}');";
+				$insert_sql = "INSERT INTO " . DB_PREFIX . "die (type,purity,weight,price) VALUES ('{$values}');";
 				$this->db->query($insert_sql);
 				
 			}
@@ -105,7 +111,7 @@ class MasterBatch extends \Opencart\System\Engine\Model {
 		//$this->db->query("load DATA LOCAL infile \"".str_replace("\\", "/", $import_file['import_file']['tmp_name'])."\" INTO TABLE " . DB_PREFIX . "assembler FIELDS TERMINATED BY '".','."' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES");
 	}
 
-	public function getMasterBatchDetails($data=array()) {
+	public function getClientDetails($data=array()) {
 
 		$sql = "SELECT SUM(o.sale_price) as sale_price, s.name as supplier_name FROM " . DB_PREFIX . "assembler s LEFT JOIN " . DB_PREFIX . "orders o ON s.supplier_id = o.supplier_id WHERE 1 ";
 
