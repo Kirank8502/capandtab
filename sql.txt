@@ -201,3 +201,15 @@ CREATE TABLE `dd_die` (
 
 ALTER TABLE `dd_pigment`
 ADD COLUMN `image` varchar(255) NOT NULL DEFAULT '' AFTER `colour_id`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `die_id` int(11) NOT NULL DEFAULT 0 AFTER `pigment_id`;
+
+ALTER TABLE `dd_die`
+ADD COLUMN `width` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `dimension`;
+
+ALTER TABLE dd_die MODIFY COLUMN `dimension` decimal(10,2) NOT NULL DEFAULT 0.00;
+
+ALTER TABLE dd_die RENAME Column dimension TO height;
+
+ALTER TABLE `dd_die` CHANGE `dimension` `height` DECIMAL(10,2) NOT NULL DEFAULT '0.00';

@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="float-end">
-        <button type="submit" form="form-order" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <button type="submit" id="order_save_btn" form="form-order" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
         <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
       <h1>Order</h1>
       <ol class="breadcrumb">
@@ -50,6 +50,19 @@
                         <option value="0">None</option>
                         {% for moulder in moulders %}
                           <option value="{{ moulder.moulder_id }}"{% if moulder.moulder_id == moulder_id %} selected{% endif %}>{{ moulder.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-die-class-main">
+              <label class="col-sm-1 col-form-label">Die</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="die_id" id="input-die-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for die in dies %}
+                          <option value="{{ die.die_id }}"{% if die.die_id == die_id %} selected{% endif %}>{{ die.name }}</option>
                         {% endfor %}
                       </select>
                   </div>
@@ -103,6 +116,7 @@
                   <div class="input-group">
                     <input type="number" name="qty" value="{{ qty }}" placeholder="Quantity" id="qty" class="form-control"/>
                   </div>
+                  <span id="quantity-error" style="color:red;"></span>
               </div>
             </div>
             <div class="row mb-3" id="input-powder-class-main">
@@ -292,6 +306,7 @@ $('#input-order-type').on('change', function() {
     var productField = $('#input-product-class-main');
     var fittingsField = $('#input-fittings-class-main');
     var vendorField = $('#input-vendor-class-main');
+    var dieField = $('#input-die-class-main');
     var weightField = $('#input-weight-class-main');
     var accessoryField = $('#input-accessories-class-main');
     var masterbatchField = $('#input-master_batch-class-main');
@@ -309,6 +324,7 @@ $('#input-order-type').on('change', function() {
         masterbatchField.hide();
         pigmentField.hide();
         vendorField.hide();
+        dieField.hide();
         accessoryField.hide();
         req_qty.hide();
     } else {
@@ -320,6 +336,7 @@ $('#input-order-type').on('change', function() {
         masterbatchField.show();
         pigmentField.show();
         vendorField.show();
+        dieField.show();
         accessoryField.show();
         req_qty.show();
         weightField.show();
@@ -336,6 +353,7 @@ $(document).ready(function() {
     $('#input-product-class-main').show();
     $('#input-accessories-class-main').hide();
     $('#input-vendor-class-main').hide();
+    $('#input-die-class-main').hide();
     $('#input-powder-class-main').hide();
     $('#input-master_batch-class-main').hide();
     $('#input-pigment-class-main').hide();
@@ -346,6 +364,7 @@ $(document).ready(function() {
     $('#input-weight-class-main').hide();
     $('#input-accessories-class-main').show();
     $('#input-vendor-class-main').show();
+    $('#input-die-class-main').show();
     $('#input-powder-class-main').show();
     $('#input-master_batch-class-main').show();
     $('#input-pigment-class-main').show();
@@ -408,6 +427,22 @@ $('#input-product-class').change(function() {
     }
    });
 });
+
+$('#qty').change(function() {
+  $.ajax({
+    url: 'index.php?route=catalog/order|checkAvaiability&user_token={{user_token}}&qty='+$(this).val(),
+    type: 'GET',
+    success: function(response) {
+      if(response.message != 'Success') {
+        $('#quantity-error').html(response.message);
+        $('#order_save_btn').prop('disabled',$('#order_save_btn').val() === '');
+      }else{
+        $('#quantity-error').html('');
+      }
+    }
+   });
+});
+
 
 // function toggleDivs() {
 //     const masterBatchDiv = document.getElementById('input-master_batch-class-main');

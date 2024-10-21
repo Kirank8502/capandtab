@@ -313,12 +313,20 @@ class Dies extends \Opencart\System\Engine\Controller {
       		$data['date'] = '';
     	}
 
-		if (isset($this->request->post['dimension'])) {
-			$data['dimension'] = $this->request->post['dimension'];
+		if (isset($this->request->post['height'])) {
+			$data['height'] = $this->request->post['height'];
 		} elseif (!empty($die_info)) {
-			$data['dimension'] = $die_info['dimension'];
+			$data['height'] = $die_info['height'];
 	  	} else {	
-			$data['dimension'] = 0;
+			$data['height'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['width'])) {
+			$data['width'] = $this->request->post['width'];
+		} elseif (!empty($die_info)) {
+			$data['width'] = $die_info['width'];
+	  	} else {	
+			$data['width'] = 0.00;
 	  	}
 
 		if (isset($this->request->post['weight'])) {

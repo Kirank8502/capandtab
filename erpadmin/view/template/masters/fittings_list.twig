@@ -16,7 +16,7 @@
       <tbody>
         {% if fittings %}
           {% for fitting in fittings %}
-            <tr>
+            <tr {% if fitting.qty <= 10000 %} style="background-color:#ed4343e8;" {% endif %}>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ fitting.fittings_id }}" class="form-check-input"/></td>
               <td class="text-center"><img src="{{fitting.image}}"/></td>
               <td class="text-center">{{ fitting.name }}</td>

@@ -350,6 +350,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['moulders'] = $this->model_catalog_order->getMoulders();
 		$data['master_batchs'] = $this->model_catalog_order->getMasterBatchs();
 		$data['pigments'] = $this->model_catalog_order->getPigments();
+		$data['dies'] = $this->model_catalog_order->getDies();
 		$data['accessories'] = $this->model_catalog_order->getAccessories();
 		$data['fittings'] = $this->model_catalog_order->getFittings();
 
@@ -473,6 +474,14 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['pigment_id'] = $order_info['pigment_id'];
 	  	} else {	
 			$data['pigment_id'] = '';
+	  	}
+
+		if (isset($this->request->post['die_id'])) {
+			$data['die_id'] = $this->request->post['die_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['die_id'] = $order_info['die_id'];
+	  	} else {	
+			$data['die_id'] = 0;
 	  	}
 
 		if (isset($this->request->post['fittings_id'])) {
@@ -625,5 +634,27 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($final_val));
+	}
+
+	public function checkAvaiability(){
+		$this->load->model('catalog/order');
+
+		$qty = [];
+		$json = [];
+
+		$qty = $this->model_catalog_order->getFittings();
+
+		foreach($qty as $value){
+			if($value['qty'] <= 10000){
+				$json['message'] = 'Fittings Quantity are less than 10,000';
+			}elseif($value['qty'] >= 10000 && $this->request->get['qty'] <= $value['qty']){
+				$json['message'] = 'Fittings Quantity are less than '.$this->request->get['qty'];
+			}else{
+				$json['message'] = 'Success';
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 }
