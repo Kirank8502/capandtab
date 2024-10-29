@@ -26,6 +26,7 @@ class Order extends \Opencart\System\Engine\Controller {
 	public function save() {
 		$this->load->language('catalog/order');
 		$json = [];
+		$val = 0;
 		$this->document->setTitle('Order');
 
 		$this->load->model('catalog/order');
@@ -33,14 +34,19 @@ class Order extends \Opencart\System\Engine\Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
 
 			if(!$this->request->post['orders_id']){
-				$this->model_catalog_order->addOrder($this->request->post);
+				$val = $this->model_catalog_order->addOrder($this->request->post);
 			}else{
-				$this->model_catalog_order->editOrder($this->request->post['orders_id'], $this->request->post);
+				$val = $this->model_catalog_order->editOrder($this->request->post['orders_id'], $this->request->post);
 			}
 
-			$this->session->data['success'] = 'Successfully Saved';
-			$json['success'] = 'Successfully Saved';
-			$json['redirect'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'], true);
+			if($val){
+				$this->session->data['success'] = 'Successfully Saved';
+				$json['success'] = 'Successfully Saved';
+				$json['redirect'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'], true);
+			}else{
+				$this->session->data['error'] = 'Quantity Issue';
+				$json['error'] = 'Quantity Issue';
+			}
 			
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));
@@ -294,7 +300,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->load->model('catalog/order');
 		$data['text_form'] = !isset($this->request->get['orders_id']) ? 'Add' : 'Edit';
 		$data['edit_data'] = !isset($this->request->get['orders_id']) ? False : True;
-
+		$this->document->setTitle('Order');
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
@@ -595,7 +601,7 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$ceil_val = ceil($calculate);
 
-		$final_val = ($ceil_val * 25 * 1000) / $accessories['weight'];
+		$final_val = (int)($ceil_val * 25 * 1000) / $accessories['weight'];
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($final_val));

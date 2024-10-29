@@ -6,6 +6,7 @@
           <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
           <td class="text-center">Name</td>
           <td class="text-center">Type</td>
+          <td class="text-center">Location</td>
           <td class="text-center">Weight</td>
           <td class="text-end">Action</td>
         </tr>
@@ -17,6 +18,7 @@
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ die.die_id }}" class="form-check-input"/></td>
               <td class="text-center">{{ die.name }}</td>
               <td class="text-center">{% if die.type == 1 %} Injection {% elseif die.type == 2 %} Hand Mould {% else %} Vertical {% endif %}</td>
+              <td class="text-center">{{ die.location }}</td>
               <td class="text-center">{{ die.weight }}</td>
               <td class="text-end">
                 <a href="{{ die.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>

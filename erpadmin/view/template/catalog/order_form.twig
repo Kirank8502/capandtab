@@ -43,7 +43,7 @@
               </div>
             </div>
             <div class="row mb-3" id="input-vendor-class-main">
-              <label class="col-sm-1 col-form-label">Vendor Name</label>
+              <label class="col-sm-1 col-form-label">Moulder Name</label>
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="moulder_id" id="input-moulder-class" class="form-select">
@@ -120,7 +120,7 @@
               </div>
             </div>
             <div class="row mb-3" id="input-powder-class-main">
-              <label class="col-sm-1 col-form-label">Powder</label>
+              <label class="col-sm-1 col-form-label">Powder Type</label>
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="powder_id" id="input-powder-class" class="form-select">
@@ -183,7 +183,7 @@
               </div>
             </div>
             <div class="row mb-3" id="input-fittings-class-main">
-              <label class="col-sm-1 col-form-label">Fittings</label>
+              <label class="col-sm-1 col-form-label">Extra Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="fittings_id" id="input-fittings-class" class="form-select">
@@ -204,15 +204,15 @@
               </div>
             </div>
             <div class="row mb-3" id="input-required_qty-class-main">
-              <label class="col-sm-1 col-form-label">Required Quantity</label>
+              <label class="col-sm-1 col-form-label">Targeted Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="number" name="req_qty" value="{{ req_qty }}" placeholder="Required Quantity" id="req_qty" disabled class="form-control"/>
+                    <input type="number" name="req_qty" value="{{ req_qty }}" min="0" placeholder="Required Quantity" id="req_qty" disabled class="form-control"/>
                   </div>
               </div>
             </div>
             <div class="row mb-3" id="input-weight-class-main">
-              <label class="col-sm-1 col-form-label">Weight</label>
+              <label class="col-sm-1 col-form-label">Number Of Bags</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="weight" value="{{ weight }}" placeholder="Weight" id="weight" disabled class="form-control"/>
@@ -429,6 +429,7 @@ $('#input-product-class').change(function() {
 });
 
 $('#qty').change(function() {
+if($('#input-order-type').val() == 1){
   $.ajax({
     url: 'index.php?route=catalog/order|checkAvaiability&user_token={{user_token}}&qty='+$(this).val(),
     type: 'GET',
@@ -441,6 +442,7 @@ $('#qty').change(function() {
       }
     }
    });
+}
 });
 
 

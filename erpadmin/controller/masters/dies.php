@@ -166,6 +166,7 @@ class Dies extends \Opencart\System\Engine\Controller {
 				'die_id'		=> $result['die_id'],
 				'name'				=> $result['name'],
 				'type'				=> $result['type'],
+				'location'				=> $result['location'],
 				'weight'				=> $result['weight'],		
 				'edit'				=> $this->url->link('masters/dies|form', 'user_token=' . $this->session->data['user_token'] . '&die_id=' . $result['die_id'] . $url, true)
 			);
@@ -290,6 +291,7 @@ class Dies extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['colours'] = $this->model_masters_dies->getColors();
+		$data['moulders'] = $this->model_masters_dies->getMoulders();
 
 		$data['user_token'] = $this->session->data['user_token'];
 
@@ -300,6 +302,14 @@ class Dies extends \Opencart\System\Engine\Controller {
 		} else {	
       		$data['name'] = '';
     	}
+
+		if (isset($this->request->post['moulder_id'])) {
+			$data['moulder_id'] = $this->request->post['moulder_id'];
+	  	} elseif (!empty($die_info)) {
+			$data['moulder_id'] = $die_info['moulder_id'];
+	  	} else {	
+			$data['moulder_id'] = 0;
+	  	}
 
 		if(isset($this->request->get['die_id'])){
 			$data['die_id'] = $this->request->get['die_id'];
@@ -312,6 +322,14 @@ class Dies extends \Opencart\System\Engine\Controller {
 		} else {	
       		$data['date'] = '';
     	}
+
+		if (isset($this->request->post['location'])) {
+			$data['location'] = $this->request->post['location'];
+	  	} elseif (!empty($die_info)) {
+			$data['location'] = $die_info['location'];
+	  	} else {	
+			$data['location'] = '';
+	  	}
 
 		if (isset($this->request->post['height'])) {
 			$data['height'] = $this->request->post['height'];

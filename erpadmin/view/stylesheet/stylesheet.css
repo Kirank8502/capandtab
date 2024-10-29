@@ -164,7 +164,7 @@ a {
     width: 235px;
     height: 100%;
     overflow: auto;
-    background-color: #242d37;
+    background-color: #1872a2;
     position: absolute;
     top: 0px;
     left: -235px;
@@ -224,7 +224,7 @@ a {
     text-transform: uppercase;
     padding: 15px 15px 15px 15px;
     color: #FFFFFF;
-    background: #19222E;
+    background: #1872a2;
     display: block;
 }
 
@@ -265,14 +265,14 @@ a {
 /* 1st lvl */
 #menu > li {
     position: relative;
-    border-bottom: 1px solid #2b3642;
+    border-bottom: 1px solid #1B2127;
 }
 
 #menu > li > a {
     font-size: 14px;
-    color: #b3cbdd;
+    color: #fff;
     padding-left: 20px;
-    border-bottom: 0px solid #585858;
+    border-bottom: 0px solid #1B2127;
 }
 
 #menu > li > a:hover {
@@ -287,18 +287,18 @@ a {
 }
 
 #menu > li.active > a {
-    color: #0b91d2;
+    color: #000;
 
-    background-color: #171b21;
+    background-color: #1872a2;
 }
 
 #menu > li > ul {
-    background-color: #293141;
+    background-color: #1872a2;
 }
 
 /* 2nd lvl */
 #menu li li a {
-    color: #7f8a9b;
+    color: #fff;
 }
 
 #menu li li a:before {

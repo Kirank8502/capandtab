@@ -16,12 +16,12 @@
       <tbody>
         {% if accessories %}
           {% for accessory in accessories %}
-            <tr {% if accessory.qty <= 10000 %} style="background-color:#ed4343e8;" {% endif %}>
+            <tr>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ accessory.accessories_id }}" class="form-check-input"/></td>
               <td class="text-center" style="width:10%"><img src="{{accessory.image}}" id="accessories_image" data-val="{{ accessory.accessories_id }}" data-toggle="modal" data-target="#exampleModalTemp"/></td>
               <td class="text-center">{{ accessory.name }}</td>
               <td class="text-center">{{ accessory.weight }}</td>
-              <td class="text-center">{{ accessory.qty }}</td>
+              <td class="text-center" {% if accessory.qty <= 10000 %} style="color:#ed4343e8;font-weight:bold;" {% endif %}>{{ accessory.qty }}</td>
               <td class="text-center">{{ accessory.price }}</td>
               <td class="text-center">{% if accessory.status %}Enabled{% else %}Disabled{% endif %}</td>
               <td class="text-end">

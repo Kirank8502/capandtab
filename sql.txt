@@ -213,3 +213,14 @@ ALTER TABLE dd_die MODIFY COLUMN `dimension` decimal(10,2) NOT NULL DEFAULT 0.00
 ALTER TABLE dd_die RENAME Column dimension TO height;
 
 ALTER TABLE `dd_die` CHANGE `dimension` `height` DECIMAL(10,2) NOT NULL DEFAULT '0.00';
+
+ALTER TABLE `dd_die`
+ADD COLUMN `location` varchar(255) NOT NULL DEFAULT '' AFTER `name`;
+
+ALTER TABLE `dd_die`
+ADD COLUMN `moulder_id` int(11) NOT NULL DEFAULT 0 AFTER `location`;
+
+ALTER TABLE dd_die MODIFY COLUMN `location` tinyint(1) NOT NULL DEFAULT 0;
+
+ALTER TABLE `dd_powder`
+DROP COLUMN rate;

@@ -310,13 +310,13 @@ class Powder extends \Opencart\System\Engine\Controller {
       		$data['status'] = '';
     	}
 
-		if (isset($this->request->post['rate'])) {
-			$data['rate'] = $this->request->post['rate'];
-	  	} elseif (!empty($powder_info)) {
-			$data['rate'] = $powder_info['rate'];
-	  	} else {	
-			$data['rate'] = '';
-	  	}
+		// if (isset($this->request->post['rate'])) {
+		// 	$data['rate'] = $this->request->post['rate'];
+	  	// } elseif (!empty($powder_info)) {
+		// 	$data['rate'] = $powder_info['rate'];
+	  	// } else {	
+		// 	$data['rate'] = '';
+	  	// }
 
 		if (isset($this->request->post['weight'])) {
 			$data['weight'] = $this->request->post['weight'];
