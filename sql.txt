@@ -224,3 +224,6 @@ ALTER TABLE dd_die MODIFY COLUMN `location` tinyint(1) NOT NULL DEFAULT 0;
 
 ALTER TABLE `dd_powder`
 DROP COLUMN rate;
+
+ALTER TABLE `dd_product`
+ADD COLUMN `fittings_id` varchar(255) NOT NULL DEFAULT '' AFTER `image`;

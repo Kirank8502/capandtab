@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Catalog;
 
 class Product extends \Opencart\System\Engine\Model {
 	public function addProduct($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".implode(',', $data['fittings_ids'])."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status']."'");
 		
 		$product_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Product extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editProduct($product_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status'] ."' WHERE product_id= '" . (int)$product_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".implode(',', $data['fittings_ids'])."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status'] ."' WHERE product_id= '" . (int)$product_id. "'");
 		
 		$this->cache->delete('product');
 	}
@@ -274,6 +274,14 @@ class Product extends \Opencart\System\Engine\Model {
 
 	public function getCategories(){
 		$sql = "SELECT c.category_id,cd.name FROM " . DB_PREFIX . "category c LEFT JOIN ". DB_PREFIX ."category_description cd ON c.category_id = cd.category_id";
+
+		$query = $this->db->query($sql);
+
+		return $query->rows;		
+	}
+
+	public function getFittings(){
+		$sql = "SELECT fittings_id,name FROM " . DB_PREFIX . "fittings";
 
 		$query = $this->db->query($sql);
 

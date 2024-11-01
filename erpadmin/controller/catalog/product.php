@@ -360,6 +360,7 @@ class Product extends \Opencart\System\Engine\Controller {
 	  	}
 
 		$data['categories'] = $this->model_catalog_product->getCategories();
+		$data['fittings'] = $this->model_catalog_product->getFittings();
 
 		if (isset($this->request->post['category_id'])) {
 			$data['category_id'] = $this->request->post['category_id'];
@@ -367,6 +368,14 @@ class Product extends \Opencart\System\Engine\Controller {
 			$data['category_id'] = $product_info['category_id'];
 	  	} else {	
 			$data['category_id'] = '';
+	  	}
+
+		if (isset($this->request->post['fittings_id'])) {
+			$data['fittings_id'] = $this->request->post['fittings_id'];
+	  	} elseif (!empty($product_info)) {
+			$data['fittings_id'] = $product_info['fittings_id'];
+	  	} else {	
+			$data['fittings_id'] = '';
 	  	}
 
 		$this->load->model('tool/image');
