@@ -186,10 +186,10 @@
               <label class="col-sm-1 col-form-label">Extra Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                   <select name="fittings_id" id="input-fittings-class" class="form-select">
+                   <select name="fittings_ids[]" multiple id="input-fittings-class" class="form-select">
                         <option value="0">None</option>
                         {% for fitting in fittings %}
-                          <option value="{{ fitting.fittings_id }}"{% if fitting.fittings_id == fittings_id %} selected{% endif %}>{{ fitting.name }}</option>
+                          <option value="{{ fitting.fittings_id }}"{% if fitting.fittings_id in fittings_id %} selected{% endif %}>{{ fitting.name }}</option>
                         {% endfor %}
                       </select>
                   </div>
