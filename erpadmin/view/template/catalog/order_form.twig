@@ -55,19 +55,6 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-die-class-main">
-              <label class="col-sm-1 col-form-label">Die</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                   <select name="die_id" id="input-die-class" class="form-select">
-                        <option value="0">None</option>
-                        {% for die in dies %}
-                          <option value="{{ die.die_id }}"{% if die.die_id == die_id %} selected{% endif %}>{{ die.name }}</option>
-                        {% endfor %}
-                      </select>
-                  </div>
-              </div>
-            </div>
             <div class="row mb-3" id="input-address-class-main">
               <label class="col-sm-1 col-form-label">Address</label>
               <div class="col-sm-11">
@@ -110,6 +97,19 @@
                   </div>
               </div>
             </div>
+            <div class="row mb-3" id="input-die-class-main">
+              <label class="col-sm-1 col-form-label">Die</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="die_id" id="input-die-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for die in dies %}
+                          <option value="{{ die.die_id }}"{% if die.die_id == die_id %} selected{% endif %}>{{ die.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
             <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
@@ -145,17 +145,15 @@
                   </div>
               </div>
             </div>
-            {# <div class="row mb-3" id="input-check_color-class-main">
-              <label class="col-sm-1 col-form-label">Colour Select</label>
+            <div class="row mb-3" id="input-check_color-class-main">
+              <label class="col-sm-1 col-form-label">Enable Pigment</label>
               <div class="col-sm-11">
-                  <div class="input-group">
-                    <select name="check_color" id="input-check-color" class="form-select" onchange="toggleDivs()">
-                      <option value="0" {% if check_color == 0 %} selected{% endif %}>Master Batch</option>
-                      <option value="1" {% if check_color == 1 %} selected{% endif %}>Pigment</option>
-                    </select>
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="input-check-color" value="0"/>
+                    <input type="checkbox" name="input-check-color" value="1" id="input-check-color" class="form-check-input" {% if status %}checked{% endif %}/>
                   </div>
               </div>
-            </div> #}
+            </div>
             <div class="row mb-3" id="input-pigment-class-main">
               <label class="col-sm-1 col-form-label">Pigment</label>
               <div class="col-sm-11">
@@ -219,23 +217,6 @@
                   </div>
               </div>
             </div>
-            {# <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Remark</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                      <input type="text" name="remark" value="{{ remark }}" placeholder="Remark" id="input-remark" class="form-control"/>
-                  </div>
-              </div>
-            </div> #}
-            {# <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Status</label>
-              <div class="col-sm-11">
-                  <div class="form-check form-switch form-switch-lg">
-                    <input type="hidden" name="order_status" value="0"/>
-                    <input type="checkbox" name="order_status" value="1" id="order_status" class="form-check-input" {% if status %}checked{% endif %}/>
-                  </div>
-              </div>
-            </div> #}
           <input type="hidden" name="orders_id" value="{{ orders_id }}" id="input-order-id"/>
           <input type="hidden" name="latest_id" value="{{ latest_id }}" id="input-latest-id"/>
         </form>
@@ -246,60 +227,6 @@
 {{ footer }}
 
 <script>
-// document.getElementById('input-order-type').addEventListener('change', function() {
-//   var powderField = document.getElementById('input-powder-class-main');
-//   var clientField = document.getElementById('input-client-class-main');
-//   var productField = document.getElementById('input-product-class-main');
-//   var fittingsField = document.getElementById('input-fittings-class-main');
-//   var vendorField = document.getElementById('input-vendor-class-main');
-//   var accessoryField = document.getElementById('input-accessories-class-main');
-//   var masterbatchField = document.getElementById('input-master_batch-class-main');
-//   var po_no = document.getElementsByClassName('po_no');
-  
-//   if (this.value == '1') {
-//     powderField.style.display = 'none';
-//     for (var i = 0; i < po_no.length; i++) {
-//       if(po_no[i].classList.contains('d-none')){
-//         po_no[i].classList.remove('d-none');
-//         po_no[i].classList.add('d-flex');
-//       }
-//     }
-//     clientField.classList.add('d-flex');
-//     clientField.classList.remove('d-none');
-//     productField.classList.add('d-flex');
-//     productField.classList.remove('d-none');
-//     fittingsField.classList.add('d-flex');
-//     fittingsField.classList.remove('d-none');
-//     masterbatchField.classList.add('d-none');
-//     masterbatchField.classList.remove('d-flex');
-//     vendorField.classList.add('d-none');
-//     vendorField.classList.remove('d-flex');
-//     accessoryField.classList.add('d-none');
-//     accessoryField.classList.remove('d-flex');
-//   } else {
-//     powderField.style.display = 'flex';
-//     clientField.classList.add('d-none');
-//     clientField.classList.remove('d-flex');
-//     productField.classList.add('d-none');
-//     productField.classList.remove('d-flex');
-//     fittingsField.classList.add('d-none');
-//     fittingsField.classList.remove('d-flex');
-//     masterbatchField.classList.add('d-none');
-//     masterbatchField.classList.remove('d-flex');
-//     vendorField.classList.add('d-flex');
-//     vendorField.classList.remove('d-none');
-//     accessoryField.classList.add('d-flex');
-//     accessoryField.classList.remove('d-none');
-//     for (var i = 0; i < po_no.length; i++) {
-//       if(!po_no[i].classList.contains('d-none') && po_no[i].classList.contains('d-flex')){
-//         po_no[i].classList.add('d-none');
-//         po_no[i].classList.remove('d-flex');
-//       }
-//     }
-//   }
-// });
-
-
 $('#input-order-type').on('change', function() {
     var powderField = $('#input-powder-class-main');
     var clientField = $('#input-client-class-main');
@@ -312,6 +239,7 @@ $('#input-order-type').on('change', function() {
     var masterbatchField = $('#input-master_batch-class-main');
     var pigmentField = $('#input-pigment-class-main');
     // var po_no = $('#input-po_no-class-main');
+    var colorcheckField = $('#input-check_color-class-main');
     var req_qty = $('#input-required_qty-class-main');
 
     if ($(this).val() == '1') {
@@ -321,6 +249,7 @@ $('#input-order-type').on('change', function() {
         weightField.show();
         productField.show();
         fittingsField.show();
+        colorcheckField.hide();
         masterbatchField.hide();
         pigmentField.hide();
         vendorField.hide();
@@ -333,6 +262,7 @@ $('#input-order-type').on('change', function() {
         clientField.hide();
         productField.hide();
         fittingsField.hide();
+        colorcheckField.show();
         masterbatchField.show();
         pigmentField.show();
         vendorField.show();
@@ -340,6 +270,13 @@ $('#input-order-type').on('change', function() {
         accessoryField.show();
         req_qty.show();
         weightField.show();
+        if($('#input-check-color').is(":checked")){
+          $('#input-master_batch-class-main').hide();
+          $('#input-pigment-class-main').show();
+        } else {
+          $('#input-master_batch-class-main').show();
+          $('#input-pigment-class-main').hide();
+        }
     }
 });
 
@@ -360,15 +297,17 @@ $(document).ready(function() {
     // $('#input-po_no-class-main').show();
     $('#input-required_qty-class-main').hide();
     $('#input-client-class-main').show();
+    $('#input-check_color-class-main').hide();
   } else {
     $('#input-weight-class-main').hide();
     $('#input-accessories-class-main').show();
     $('#input-vendor-class-main').show();
     $('#input-die-class-main').show();
     $('#input-powder-class-main').show();
-    $('#input-master_batch-class-main').show();
-    $('#input-pigment-class-main').show();
+    //$('#input-master_batch-class-main').show();
+    //$('#input-pigment-class-main').show();
     // $('#input-po_no-class-main').hide();
+    $('#input-check_color-class-main').show();
     $('#input-required_qty-class-main').show();
     $('#input-product-class-main').hide();
     $('#input-fittings-class-main').hide();
@@ -383,7 +322,14 @@ $(document).ready(function() {
       var latestId = $('#input-latest-id').val();
       $('#po_no').val(month + '-' + year + '-' + latestId);
     }
-    // document.addEventListener('DOMContentLoaded', toggleDivs);
+
+    if($('#input-check-color').is(":checked")){
+      $('#input-master_batch-class-main').hide();
+      $('#input-pigment-class-main').show();
+    } else {
+      $('#input-master_batch-class-main').show();
+      $('#input-pigment-class-main').hide();
+    }
   }
     
 });
@@ -451,20 +397,13 @@ if($('#input-order-type').val() == 1){
 }
 });
 
-
-// function toggleDivs() {
-//     const masterBatchDiv = document.getElementById('input-master_batch-class-main');
-//     const pigmentDiv = document.getElementById('input-pigment-class-main');
-//     const selectElement = document.getElementById('input-check-color');
-//     if (selectElement.value == "0") {
-//       masterBatchDiv.style.display = 'flex';
-//         pigmentDiv.style.display = 'none';
-//     } else {
-//         masterBatchDiv.style.display = 'none';
-//         pigmentDiv.style.display = 'flex';
-//     }
-// }
-
-// Call toggleDivs on page load to set the initial state
-// document.addEventListener('DOMContentLoaded', toggleDivs);
+$('#input-check-color').change(function() {
+  if($(this).is(":checked")){
+    $('#input-master_batch-class-main').hide();
+    $('#input-pigment-class-main').show();
+  } else {
+    $('#input-master_batch-class-main').show();
+    $('#input-pigment-class-main').hide();
+  }
+});
 </script>

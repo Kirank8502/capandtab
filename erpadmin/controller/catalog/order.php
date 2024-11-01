@@ -122,12 +122,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			$filter_name = '';
 		}
 
-		if (isset($this->request->get['filter_status'])) {
-			$filter_status = $this->request->get['filter_status'];
-		} else {
-			$filter_status = '';
-		}
-
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
@@ -150,10 +144,6 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		if (isset($this->request->get['filter_name'])) {
 			$url .= '&filter_name=' . $this->request->get['filter_name'];
-		}
-
-		if (isset($this->request->get['filter_status'])) {
-			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
 		if (isset($this->request->get['sort'])) {
@@ -180,7 +170,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			'href' => $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url, true)
 		);
 
-		// $data['add'] = $this->url->link('catalog/order|add', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['import'] = $this->url->link('catalog/order|import', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['export'] = $this->url->link('catalog/order|export', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
@@ -188,7 +177,6 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$supplier_data = array(
 			'filter_name'  => $filter_name,
-			'filter_status'  => $filter_status,
 			'sort'  => $sort,
 			'order' => $order,
 			'start' => ($page - 1) * (int)$this->config->get('config_limit_admin'),
@@ -214,7 +202,6 @@ class Order extends \Opencart\System\Engine\Controller {
 				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['accessories_id']) && $result['accessories_id'] > 0) ? $accessory[$result['accessories_id']] : 0)),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
-				// 'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
 				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
@@ -255,7 +242,6 @@ class Order extends \Opencart\System\Engine\Controller {
 		
 		$data['sort_name'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . '&sort=name' . $url, true);
 		$data['sort_code'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . '&sort=code' . $url, true);
-		$data['sort_status'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . '&sort=status' . $url, true);
 		
 		$url = '';
 
@@ -266,14 +252,6 @@ class Order extends \Opencart\System\Engine\Controller {
 		if (isset($this->request->get['order'])) {
 			$url .= '&order=' . $this->request->get['order'];
 		}
-
-		// $pagination = new Pagination();
-		// $pagination->total = $stone_pnc_range_total;
-		// $pagination->page = $page;
-		// $pagination->limit = $this->config->get('config_limit_admin');
-		// $pagination->url = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}', true);
-
-		// $data['pagination'] = $pagination->render();
 
 		$data['pagination'] = $this->load->controller('common/pagination', [
 			'total' => $order_total,
@@ -287,7 +265,6 @@ class Order extends \Opencart\System\Engine\Controller {
 		// $data['results'] = sprintf($this->language->get('text_pagination'), ($stone_pnc_range_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($stone_pnc_range_total - $this->config->get('config_limit_admin'))) ? $stone_pnc_range_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $stone_pnc_range_total, ceil($stone_pnc_range_total / $this->config->get('config_limit_admin')));
 
 		$data['filter_name'] = $filter_name;
-		$data['filter_status'] = $filter_status;
 		$data['sort'] = $sort;
 		$data['order'] = $order;
 
@@ -340,10 +317,6 @@ class Order extends \Opencart\System\Engine\Controller {
 		);
 
 		$data['action'] = $this->url->link('catalog/order|save', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		// if (!isset($this->request->get['orders_id'])) {
-		// } else {
-		// 	$data['action'] = $this->url->link('catalog/order|edit', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $this->request->get['orders_id'] . $url, true);
-		// }
 
 		$data['back'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$latest = $this->model_catalog_order->getOrderId();
@@ -366,25 +339,9 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$data['user_token'] = $this->session->data['user_token'];
 
-		// if (isset($this->request->post['name'])) {
-      	// 	$data['name'] = $this->request->post['name'];
-    	// } elseif (!empty($order_info)) {
-		// 	$data['name'] = $order_info['name'];
-		// } else {	
-      	// 	$data['name'] = '';
-    	// }
-
 		if(isset($this->request->get['orders_id'])){
 			$data['orders_id'] = $this->request->get['orders_id'];
 		}
-		
-    	// if (isset($this->request->post['status'])) {
-      	// 	$data['status'] = $this->request->post['status'];
-    	// } elseif (!empty($order_info)) {
-		// 	$data['status'] = $order_info['status'];
-		// } else {	
-      	// 	$data['status'] = '';
-    	// }
 
 		if (isset($this->request->post['qty'])) {
 			$data['qty'] = $this->request->post['qty'];
@@ -496,14 +453,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['fittings_id'] = $order_info['fittings_id'];
 	  	} else {	
 			$data['fittings_id'] = '';
-	  	}
-
-		if (isset($this->request->post['remark'])) {
-			$data['remark'] = $this->request->post['remark'];
-	  	} elseif (!empty($order_info)) {
-			$data['remark'] = $order_info['remark'];
-	  	} else {	
-			$data['remark'] = '';
 	  	}
 
 		if (isset($this->request->post['order_type'])) {

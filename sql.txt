@@ -229,3 +229,9 @@ ALTER TABLE `dd_product`
 ADD COLUMN `fittings_id` varchar(255) NOT NULL DEFAULT '' AFTER `image`;
 
 ALTER TABLE `dd_orders` MODIFY COLUMN `fittings_id` varchar(255) NOT NULL DEFAULT '';
+
+ALTER TABLE `dd_orders`
+DROP COLUMN remark;
+
+ALTER TABLE `dd_orders`
+DROP COLUMN status;
