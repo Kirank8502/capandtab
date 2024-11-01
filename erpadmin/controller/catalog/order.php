@@ -348,7 +348,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['back'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$latest = $this->model_catalog_order->getOrderId();
 		
-		$data['latest_id'] = !isset($this->request->get['orders_id']) ? $latest['latest_order_id'] + 1 : 0;
+		$data['latest_id'] = !isset($this->request->get['orders_id']) ? str_pad($latest['latest_order_id'] + 1, 3, '0', STR_PAD_LEFT) : 000;
 		$data['products'] = $this->model_catalog_order->getProducts();
 		$data['clients'] = $this->model_catalog_order->getClients();
 		$data['powders'] = $this->model_catalog_order->getPowders();

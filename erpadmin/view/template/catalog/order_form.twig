@@ -373,10 +373,15 @@ $(document).ready(function() {
     $('#input-product-class-main').hide();
     $('#input-fittings-class-main').hide();
     $('#input-client-class-main').hide();
-
+    $('#quantity-error').html('');
     $('#input-latest-id').val();
     if($('#input-latest-id').val() > 0){
-      $('#po_no').val($('#input-latest-id').val());
+      // Create a po number with month and year
+      var date = new Date();
+      var month = String(date.getMonth() + 1).padStart(2, '0');
+      var year = date.getFullYear();
+      var latestId = $('#input-latest-id').val();
+      $('#po_no').val(month + '-' + year + '-' + latestId);
     }
     // document.addEventListener('DOMContentLoaded', toggleDivs);
   }
@@ -384,6 +389,7 @@ $(document).ready(function() {
 });
 
  $('#qty').on('input', function() {
+  // Add Required Quantity by getting entered qty
    $.ajax({
     url: 'index.php?route=catalog/order|calculateQty&user_token={{user_token}}&qty='+$(this).val()+'&accessories_id='+$('#input-accessories-class').val(),
     type: 'GET',
@@ -393,8 +399,8 @@ $(document).ready(function() {
    });
  });
 
- document.getElementById('form-order').addEventListener('submit', function() {
-        document.getElementById('req_qty').disabled = false;
+  document.getElementById('form-order').addEventListener('submit', function() {
+    document.getElementById('req_qty').disabled = false;
   });
 
 
