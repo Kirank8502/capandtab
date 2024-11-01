@@ -38,19 +38,6 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-moulder-class-main">
-              <label class="col-sm-1 col-form-label">Moulder</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                   <select name="moulder_id" id="input-moulder-class" class="form-select">
-                        <option value="0">None</option>
-                        {% for moulder in moulders %}
-                          <option value="{{ moulder.moulder_id }}"{% if moulder.moulder_id == moulder_id %} selected{% endif %}>{{ moulder.name }}</option>
-                        {% endfor %}
-                      </select>
-                  </div>
-              </div>
-            </div>
             <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Height</label>
               <div class="col-sm-11">
@@ -71,12 +58,25 @@
               <label class="col-sm-1 col-form-label">Current Location/Placement</label>
               <div class="col-sm-11 d-flex align-items-center">
                   <div class="input-group">
-                    <select name="type" id="input-location" class="form-select">
+                    <select name="location" id="input-location" class="form-select">
                       <option value="0" {% if location == 0 %} selected{% endif %}>Registered Moulder</option>
-                      <option value="1" {% if location == 1 %} selected{% endif %}>Die Repair</option>
-                      <option value="2" {% if location == 2 %} selected{% endif %}>Our Store</option>
+                      {# <option value="1" {% if location == 1 %} selected{% endif %}>Die Repair</option> #}
+                      <option value="1" {% if location == 1 %} selected{% endif %}>Our Store</option>
                     </select>
                     {# <input type="text" name="location" value="{{ location }}" placeholder="Location" id="location" class="form-control"/> #}
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-moulder-class-main">
+              <label class="col-sm-1 col-form-label">Moulder</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="moulder_id" id="input-moulder-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for moulder in moulders %}
+                          <option value="{{ moulder.moulder_id }}"{% if moulder.moulder_id == moulder_id %} selected{% endif %}>{{ moulder.name }}</option>
+                        {% endfor %}
+                      </select>
                   </div>
               </div>
             </div>
@@ -111,3 +111,22 @@
   </div>
 </div>
 {{ footer }}
+<script>
+$('#input-location').on('change', function() {
+    var moulderField = $('#input-moulder-class-main');
+    if ($(this).val() == '0') {
+      moulderField.show();
+    } else {
+      moulderField.hide();
+    }
+});
+
+$(document).ready(function() {
+  var locationType = $('#input-location').val();
+  if (locationType == '0') {
+    $('#input-moulder-class-main').show();
+  } else {
+    $('#input-moulder-class-main').hide();
+  }
+});
+</script>

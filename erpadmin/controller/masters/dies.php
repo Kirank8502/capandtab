@@ -157,17 +157,19 @@ class Dies extends \Opencart\System\Engine\Controller {
 			'limit' => $this->config->get('config_limit_admin')
 		);
 		
-		$die_total = $this->model_masters_dies->getTotalDies();
+		$die_total = $this->model_masters_dies->getTotalDies($die_data);
 		
 		$results = $this->model_masters_dies->getDies($die_data);
 		
 		foreach ($results as $result) {
+			$moulder_id = $this->model_masters_dies->getMoulders($result['moulder_id']);
 			$data['dies'][] = array(
 				'die_id'		=> $result['die_id'],
 				'name'				=> $result['name'],
 				'type'				=> $result['type'],
-				'location'				=> $result['location'],
-				'weight'				=> $result['weight'],		
+				'location'			=> $result['location'],
+				'moulder_id'		=> $moulder_id['name'],
+				'weight'			=> $result['weight'],		
 				'edit'				=> $this->url->link('masters/dies|form', 'user_token=' . $this->session->data['user_token'] . '&die_id=' . $result['die_id'] . $url, true)
 			);
 		}
@@ -291,7 +293,7 @@ class Dies extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['colours'] = $this->model_masters_dies->getColors();
-		$data['moulders'] = $this->model_masters_dies->getMoulders();
+		$data['moulders'] = $this->model_masters_dies->getAllMoulders();
 
 		$data['user_token'] = $this->session->data['user_token'];
 

@@ -33,10 +33,22 @@ class Dies extends \Opencart\System\Engine\Model {
 		return $query->rows;
 	}
 
-	public function getMoulders() {
+	public function getAllMoulders() {
 		$query = $this->db->query("SELECT moulder_id,name FROM " . DB_PREFIX . "moulder");
-		
+
 		return $query->rows;
+	}
+
+	public function getMoulders($data = 0) {
+		$sql = "SELECT name FROM " . DB_PREFIX . "moulder WHERE 1 ";
+
+		if(!empty($data) && $data > 0){
+			$sql .= " AND moulder_id LIKE '%".$data."%'";
+		}
+
+		$query = $this->db->query($sql);
+
+		return $query->row;
 	}
 	
 	public function getDies($data = array()) {
@@ -81,7 +93,7 @@ class Dies extends \Opencart\System\Engine\Model {
 		return $query->rows;
 	}
 	
-	public function getTotalDies() {
+	public function getTotalDies($data = array()) {
       	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "die");
 		
 		return $query->row['total'];
