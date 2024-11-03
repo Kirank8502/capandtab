@@ -406,5 +406,12 @@ class Order extends \Opencart\System\Engine\Model {
 		return $query->row;
 	}
 
+	public function checkDie($die_id=0){
+		$sql = "SELECT location,moulder_id FROM " . DB_PREFIX . "die WHERE die_id LIKE '%".$die_id."%'";
+
+		$query = $this->db->query($sql);
+		return $query->row;
+	}
+
 }
 ?>

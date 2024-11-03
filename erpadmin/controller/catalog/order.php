@@ -574,6 +574,24 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->response->setOutput(json_encode($clientdata[0]['address']));
 	}
 
+	public function checkDie(){
+		$this->load->model('catalog/order');
+
+		$json = [];
+
+		$dieData = $this->model_catalog_order->checkDie($this->request->get['die_id']);
+		$moulderData = $this->model_catalog_order->getMoulders($this->request->get);
+
+		if ($dieData['location'] == 1){
+			$json['message'] = "Store";
+		}else{
+			$json['message'] = "Die is at ".$moulderData[0]['name']. " Moulder";
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
 	public function productWeight(){
 		$this->load->model('catalog/order');
 

@@ -108,6 +108,7 @@
                         {% endfor %}
                       </select>
                   </div>
+                  <span id="die-error" style="color:red;"></span>
               </div>
             </div>
             <div class="row mb-3">
@@ -366,6 +367,21 @@ $('#input-moulder-class').change(function() {
     type: 'GET',
     success: function(response) {
       $('#input-address').val(response);
+    }
+   });
+});
+
+$('#input-die-class').change(function() {
+  $.ajax({
+    url: 'index.php?route=catalog/order|checkDie&user_token={{user_token}}&die_id='+$(this).val()+'&moulder_id='+$('#input-moulder-class').val(),
+    type: 'GET',
+    success: function(response) {
+      if(response.message != 'Store') {
+        $('#die-error').html(response.message);
+        $('#order_save_btn').prop('disabled',$('#order_save_btn').val() === '');
+      }else{
+        $('#die-error').html('');
+      }
     }
    });
 });
