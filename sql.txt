@@ -235,3 +235,12 @@ DROP COLUMN remark;
 
 ALTER TABLE `dd_orders`
 DROP COLUMN status;
+
+CREATE TABLE `dd_order_details` (
+  `store_order_id` int NOT NULL AUTO_INCREMENT,
+  `orders_id` int NOT NULL,
+  `po_no` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `qty_rev` int(11) NOT NULL,
+  PRIMARY KEY (`store_order_id`)
+);
