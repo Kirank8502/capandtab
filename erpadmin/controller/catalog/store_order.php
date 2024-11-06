@@ -29,12 +29,23 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 
         $order_info = $this->model_catalog_store_order->getOrder($this->request->get['po_no']);
 
-		$moulder = $this->model_catalog_store_order->getMoulders($order_info);
+		$moulder = $this->model_catalog_store_order->getMoulder($order_info['moulder_id']);
+		$client = $this->model_catalog_store_order->getClient($order_info['client_id']);
+
+		$this->load->model('tool/image');
+
+		if (is_file(DIR_IMAGE . htmlspecialchars($order_info['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+			$data['thumb'] = $this->model_tool_image->resize(htmlspecialchars($order_info['image'] ?? '', ENT_QUOTES, 'UTF-8'), 100, 100);
+		} else {
+			$data['thumb'] = $order_info['image'];
+		}
 
 		$data = array(
-			'name' => isset($moulder['name']) ? $moulder['name'] : '',
-			'order_id' => isset($order_info['order_id']) ? $order_info['order_id'] : 0,
+			'name' => (isset($moulder['name']) ? $moulder['name'] : ''),
+			'client_name' => (isset($client['name']) ? $client['name'] : ''),
+			'orders_id' => isset($order_info['o_orders_id']) ? $order_info['o_orders_id'] : 0,
 			'store_order_id' => isset($order_info['store_order_id']) ? $order_info['store_order_id'] : 0,
+			'thumb' => isset($data['thumb']) ? $data['thumb'] : '',
 			'image' => isset($order_info['image']) ? $order_info['image'] : '',
 			'qty' => isset($order_info['qty_rev']) ? $order_info['qty_rev'] : 0,
 		);
@@ -54,19 +65,19 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
 
 			if(!$this->request->post['store_order_id']){
-				$this->model_catalog_store_order->addOrderDetails($this->request->post);
+				$val = $this->model_catalog_store_order->addOrderDetails($this->request->post);
 			}else{
-				$this->model_catalog_store_order->editOrderDetails($this->request->post['store_order_id'], $this->request->post);
+				$val = $this->model_catalog_store_order->editOrderDetails($this->request->post['store_order_id'], $this->request->post);
 			}
-
-			// if($val){
-			// 	$this->session->data['success'] = 'Successfully Saved';
-			// 	$json['success'] = 'Successfully Saved';
-			// 	$json['redirect'] = $this->url->link('catalog/store_order', 'user_token=' . $this->session->data['user_token'], true);
-			// }else{
-			// 	$this->session->data['error'] = 'Quantity Issue';
-			// 	$json['error'] = 'Quantity Issue';
-			// }
+			
+			if($val){
+				$this->session->data['success'] = 'Successfully Saved';
+				$json['success'] = 'Successfully Saved';
+				$json['redirect'] = $this->url->link('catalog/store_order', 'user_token=' . $this->session->data['user_token'], true);
+			}else{
+				$this->session->data['error'] = 'Something went wrong';
+				$json['error'] = 'Something went wrong';
+			}
 			
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));

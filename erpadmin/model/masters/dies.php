@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Dies extends \Opencart\System\Engine\Model {
 	public function addDie($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "die SET `name` = '" . $this->db->escape($data['name']) . "', `location` = '" . (int)$data['location'] . "', `type` = '" . (int)$data['type'] . "', `moulder_id` = '" . (int)$data['moulder_id'] . "', `weight` = '" . (float)$data['weight'] . "', `height` = '" . (float)$data['height'] . "', `width` = '" . (float)$data['width'] . "', `cavity` = '" . (int)$data['cavity'] . "', `date` = date('".$data['date']."')");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "die SET `sr_no` = '" . $this->db->escape($data['sr_no']) . "', `name` = '" . $this->db->escape($data['name']) . "', `location` = '" . (int)$data['location'] . "', `type` = '" . (int)$data['type'] . "', `moulder_id` = '" . (int)$data['moulder_id'] . "', `weight` = '" . (float)$data['weight'] . "', `height` = '" . (float)$data['height'] . "', `width` = '" . (float)$data['width'] . "', `cavity` = '" . (int)$data['cavity'] . "', `date` = date('".$data['date']."')");
 		
 		$die_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Dies extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editDie($die_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "die SET `name` = '" . $this->db->escape($data['name']) . "', `location` = '" . $this->db->escape($data['location']) . "', `type` = '" . (int)$data['type'] . "', `moulder_id` = '" . (int)$data['moulder_id'] . "', `weight` = '" . (float)$data['weight'] . "', `height` = '" . (float)$data['height'] . "', `width` = '" . (float)$data['width'] . "', `cavity` = '" . (int)$data['cavity'] . "', `date` = date('".$data['date']."') WHERE die_id= '" . (int)$die_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "die SET `sr_no` = '" . $this->db->escape($data['sr_no']) . "', `name` = '" . $this->db->escape($data['name']) . "', `location` = '" . $this->db->escape($data['location']) . "', `type` = '" . (int)$data['type'] . "', `moulder_id` = '" . (int)$data['moulder_id'] . "', `weight` = '" . (float)$data['weight'] . "', `height` = '" . (float)$data['height'] . "', `width` = '" . (float)$data['width'] . "', `cavity` = '" . (int)$data['cavity'] . "', `date` = date('".$data['date']."') WHERE die_id= '" . (int)$die_id. "'");
 		
 		$this->cache->delete('die');
 	}

@@ -225,7 +225,7 @@ class Dies extends \Opencart\System\Engine\Controller {
 			'total' => $die_total,
 			'page'  => $page,
 			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('masters/dies|list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+			'url'   => $this->url->link('masters/dies', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
 		]);
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($die_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($die_total - $this->config->get('config_pagination_admin'))) ? $die_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $die_total, ceil($die_total / $this->config->get('config_pagination_admin')));
@@ -371,6 +371,14 @@ class Dies extends \Opencart\System\Engine\Controller {
 			$data['type'] = $die_info['type'];
 	  	} else {	
 			$data['type'] = 0;
+	  	}
+
+		if (isset($this->request->post['sr_no'])) {
+			$data['sr_no'] = $this->request->post['sr_no'];
+		} elseif (!empty($die_info)) {
+			$data['sr_no'] = $die_info['sr_no'];
+	  	} else {	
+			$data['sr_no'] = '';
 	  	}
 		
 		$data['header'] = $this->load->controller('common/header');

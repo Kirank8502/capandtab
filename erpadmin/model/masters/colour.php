@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Colour extends \Opencart\System\Engine\Model {
 	public function addColour($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "colour SET `name` = '" . $this->db->escape($data['colour_name']) . "', `qty` = '" . (int)$data['colour_qty'] . "',status = '" . (int)$data['colour_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "colour SET `name` = '" . $this->db->escape($data['colour_name']) . "', `qty` = '0',status = '" . (int)$data['colour_status']."'");
 		
 		$colour_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Colour extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editColour($colour_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "colour SET `name` = '" . $this->db->escape($data['colour_name']) . "', `qty` = '" . (int)$data['colour_qty'] . "', status = '" . (int)$data['colour_status'] ."' WHERE colour_id= '" . (int)$colour_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "colour SET `name` = '" . $this->db->escape($data['colour_name']) . "', `qty` = '0', status = '" . (int)$data['colour_status'] ."' WHERE colour_id= '" . (int)$colour_id. "'");
 		
 		$this->cache->delete('colour');
 	}
@@ -103,69 +103,6 @@ class Colour extends \Opencart\System\Engine\Model {
 
 
 		//$this->db->query("load DATA LOCAL infile \"".str_replace("\\", "/", $import_file['import_file']['tmp_name'])."\" INTO TABLE " . DB_PREFIX . "assembler FIELDS TERMINATED BY '".','."' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES");
-	}
-
-	public function getClientDetails($data=array()) {
-
-		$sql = "SELECT SUM(o.sale_price) as sale_price, s.name as supplier_name FROM " . DB_PREFIX . "assembler s LEFT JOIN " . DB_PREFIX . "orders o ON s.supplier_id = o.supplier_id WHERE 1 ";
-
-		if (!empty($data['filter_date_from'])) {
-			$sql .= " AND DATE_FORMAT(o.order_date,'%Y-%m-%d') >= '" . $this->db->escape($data['filter_date_from']) . "'";
-		}
-
-		if (!empty($data['filter_date_to'])) {
-			$sql .= " AND DATE_FORMAT(o.order_date,'%Y-%m-%d') <= '" . $this->db->escape($data['filter_date_to']) . "'";
-		}
-
-		$sql .= " GROUP BY s.supplier_id ";
-
-		$query = $this->db->query($sql);
-
-		if($query->num_rows) {
-			return $query->rows;
-		} else {
-			return array();
-		}
-	}
-
-	public function getTotalOrders($data=array()) {
-
-		$sql = "SELECT COUNT(orders_id) as total FROM ".DB_PREFIX."orders WHERE 1 ";
-
-		if (!empty($data['filter_date_from'])) {
-			$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') >= '" . $this->db->escape($data['filter_date_from']) . "'";
-		}
-
-		if (!empty($data['filter_date_to'])) {
-			$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') <= '" . $this->db->escape($data['filter_date_to']) . "'";
-		}
-
-		$query = $this->db->query($sql);
-		if($query->num_rows) {
-			return $query->row['total'];
-		} else {
-			return 0;
-		}
-	}
-
-	public function getTotalStocks($data=array()) {
-
-		$sql = "SELECT COUNT(orders_id) as total FROM ".DB_PREFIX."orders WHERE status = 'Stock' ";
-
-		if (!empty($data['filter_date_from'])) {
-			$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') >= '" . $this->db->escape($data['filter_date_from']) . "'";
-		}
-
-		if (!empty($data['filter_date_to'])) {
-			$sql .= " AND DATE_FORMAT(order_date,'%Y-%m-%d') <= '" . $this->db->escape($data['filter_date_to']) . "'";
-		}
-
-		$query = $this->db->query($sql);
-		if($query->num_rows) {
-			return $query->row['total'];
-		} else {
-			return 0;
-		}
 	}
 }
 ?>

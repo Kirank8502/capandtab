@@ -19,6 +19,14 @@
       <div class="card-body">
         <form id="form-die" action="{{ action }}" method="post" data-oc-toggle="ajax">
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Serial Number</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="sr_no" value="{{ sr_no }}" placeholder="Serial Number" id="sr_no" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Name</label>
               <div class="col-sm-11">
                   <div class="input-group">

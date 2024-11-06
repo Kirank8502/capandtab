@@ -40,11 +40,9 @@ class Order extends \Opencart\System\Engine\Controller {
 			}
 
 			if($val){
-				$this->session->data['success'] = 'Successfully Saved';
 				$json['success'] = 'Successfully Saved';
 				$json['redirect'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'], true);
 			}else{
-				$this->session->data['error'] = 'Quantity Issue';
 				$json['error'] = 'Quantity Issue';
 			}
 			
@@ -320,8 +318,9 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$data['back'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$latest = $this->model_catalog_order->getOrderId();
+		$latest_id = explode('-',$latest['latest_order_id']);
 		
-		$data['latest_id'] = !isset($this->request->get['orders_id']) ? str_pad($latest['latest_order_id'] + 1, 3, '0', STR_PAD_LEFT) : 000;
+		$data['latest_id'] = !isset($this->request->get['orders_id']) ? str_pad($latest_id[2] + 1, 3, '0', STR_PAD_LEFT) : 000;
 		$data['products'] = $this->model_catalog_order->getProducts();
 		$data['clients'] = $this->model_catalog_order->getClients();
 		$data['powders'] = $this->model_catalog_order->getPowders();
@@ -349,6 +348,22 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['qty'] = $order_info['qty'];
 	  	} else {	
 			$data['qty'] = 0;
+	  	}
+
+		if (isset($this->request->post['bags'])) {
+			$data['bags'] = $this->request->post['bags'];
+	  	} elseif (!empty($order_info)) {
+			$data['bags'] = $order_info['bags'];
+	  	} else {
+			$data['bags'] = 0;
+	  	}
+
+		if (isset($this->request->post['check_color'])) {
+			$data['check_color'] = $this->request->post['check_color'];
+	  	} elseif (!empty($order_info)) {
+			$data['check_color'] = $order_info['check_color'];
+	  	} else {
+			$data['check_color'] = 0;
 	  	}
 
 		if (isset($this->request->post['colour_id'])) {
@@ -552,8 +567,13 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$final_val = (int)($ceil_val * 25 * 1000) / $accessories['weight'];
 
+		$data = [
+			'req_qty' => (int)$final_val,
+			'bags' => (int)$ceil_val
+		];
+
 		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($final_val));
+		$this->response->setOutput(json_encode($data));
 	}
 
 	public function clientAddress(){
@@ -578,14 +598,19 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->load->model('catalog/order');
 
 		$json = [];
+		$json['success'] = "0";
 
 		$dieData = $this->model_catalog_order->checkDie($this->request->get['die_id']);
-		$moulderData = $this->model_catalog_order->getMoulders($this->request->get);
+		$moulderData = $this->model_catalog_order->getMoulders($dieData);
 
 		if ($dieData['location'] == 1){
 			$json['message'] = "Store";
+			$json['success'] = "1";
 		}else{
 			$json['message'] = "Die is at ".$moulderData[0]['name']. " Moulder";
+			if($this->request->get['moulder_id'] == $dieData['moulder_id']){
+				$json['success'] = "1";
+			}
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

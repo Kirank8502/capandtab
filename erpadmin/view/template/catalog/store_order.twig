@@ -30,11 +30,19 @@
               </div>
             </div>
             <div id="hidden_div" class="row my-3">
-            <div class="row my-3">
+            <div class="row my-3" id="moulder_div">
               <label class="col-sm-1 col-form-label">Moulder Name</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="text" name="moulder_name" value="{{ moulder_name }}" placeholder="Moulder Name" id="input-moulder_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row my-3" id="client_div">
+              <label class="col-sm-1 col-form-label">Client Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="client_name" value="{{ client_name }}" placeholder="Client Name" id="input-client_name" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -52,15 +60,15 @@
               </div>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-1 col-form-label">Quantity Received</label>
+                <label class="col-sm-1 col-form-label">Goods Receive (weight)</label>
                 <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="qty" value="{{ qty }}" placeholder="Quantity" id="qty" class="form-control"/>
                   </div>
                 </div>
             </div>
-            <input type="number" name="store_order_id" value="{{ store_order_id }}" id="input-store_order_id" class="form-control"/>
-            <input type="hidden" name="order_id" value="{{ order_id }}" id="input-order_id"/>
+            <input type="hidden" name="store_order_id" value="{{ store_order_id }}" id="input-store_order_id" class="form-control"/>
+            <input type="hidden" name="orders_id" value="{{ orders_id }}" id="input-orders_id"/>
             <div class="row mb-3">
               <label class="col-sm-10 col-form-label"></label>
               <div class="col-sm-2 d-flex">
@@ -111,10 +119,19 @@ $('#input-po_no').on('paste change',function () {
     type: 'GET',
     success: function(response) {
       $('#qty').val(response.qty);
-      $('#input-moulder_name').val(response.name);
-      $('#input-order_id').val(response.order_id);
+      if(response.name != ''){
+        $('#moulder_div').show();
+        $('#client_div').hide();
+        $('#input-moulder_name').val(response.name);
+      }else if (response.client_name != ''){
+        $('#moulder_div').hide();
+        $('#client_div').show();
+        $('#input-client_name').val(response.client_name);
+      }
+      $('#input-orders_id').val(response.orders_id);
       $('#input-store_order_id').val(response.store_order_id);
-      $('#thumb-image').attr('src',response.image);
+      $('#thumb-image').attr('src',response.thumb);
+      $('#input-image').val(response.image);
     }
    });
 

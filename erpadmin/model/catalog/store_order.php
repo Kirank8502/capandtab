@@ -22,19 +22,32 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 		// 	}
 		// }
 
-		// $sql_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "orders WHERE po_no='" . $data['po_no']. "'");
+		$accessories = $this->db->query("SELECT accessories_id FROM " . DB_PREFIX . "orders WHERE po_no='" . $data['po_no']. "'");
+		$sql_query = $this->db->query("SELECT qty FROM " . DB_PREFIX . "accessories WHERE accessories_id='" . $accessories->row['accessories_id']. "'");
+		$main_val = $sql_query->row['qty'] + $data['qty'];
+		$this->db->query("UPDATE " . DB_PREFIX . "accessories SET `qty` = '" . (!empty($main_val) ? (int)$main_val : 0) . "' WHERE accessories_id='" . $accessories->row['accessories_id']. "'");
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "order_details SET `orders_id` = '" . (!empty($data['orders_id']) ? (int)$data['orders_id'] : 0) . "', po_no = '" . $data['po_no'] . "', qty_rev = '" . (!empty($data['qty_rev']) ? (int)$data['qty_rev'] : 0) . "', image = '" . (!empty($data['image']) ? (int)$data['image'] : '') . "'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "order_details SET `orders_id` = '" . (!empty($data['orders_id']) ? (int)$data['orders_id'] : 0) . "', po_no = '" . $data['po_no'] . "', qty_rev = '" . (!empty($data['qty']) ? (int)$data['qty'] : 0) . "', image = '" . (!empty($data['image']) ? (int)$data['image'] : '') . "'");
 
 		$order_id = $this->db->getLastId();
 		
 		$this->cache->delete('order');
+		return true;
 	}
 	
 	public function editOrderDetails($store_order_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "order_details SET `orders_id` = '" . (!empty($data['orders_id']) ? (int)$data['orders_id'] : 0) . "', po_no = '" . $data['po_no'] . "', qty_rev = '" . (!empty($data['qty_rev']) ? (int)$data['qty_rev'] : 0) . "', image = '" . (!empty($data['image']) ? (int)$data['image'] : '') . "' WHERE `store_order_id` = ".$store_order_id);
+		$accessories = $this->db->query("SELECT accessories_id FROM " . DB_PREFIX . "orders WHERE po_no='" . $data['po_no']. "'");
+		$sql_query = $this->db->query("SELECT qty FROM " . DB_PREFIX . "accessories WHERE accessories_id='" . $accessories->row['accessories_id']. "'");
+		$order_query = $this->db->query("SELECT qty_rev FROM " . DB_PREFIX . "order_details WHERE store_order_id='" . $store_order_id. "'");
+		$temp = abs($order_query->row['qty_rev'] - $data['qty']);
+		$main_val = $sql_query->row['qty'] + $temp;
+		$this->db->query("UPDATE " . DB_PREFIX . "accessories SET `qty` = '" . (!empty($main_val) ? (int)$main_val : 0) . "' WHERE accessories_id='" . $accessories->row['accessories_id']. "'");
+
+      	$this->db->query("UPDATE " . DB_PREFIX . "order_details SET `orders_id` = '" . (!empty($data['orders_id']) ? (int)$data['orders_id'] : 0) . "', po_no = '" . $data['po_no'] . "', qty_rev = '" . (!empty($data['qty']) ? (int)$data['qty'] : 0) . "', image = '" . (!empty($data['image']) ? $data['image'] : '') . "' WHERE `store_order_id` = ".$store_order_id."");
 		
 		$this->cache->delete('order');
+
+		return true;
 	}
 	
 	public function deleteOrder($order_id) {
@@ -43,7 +56,7 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 	}	
 	
 	public function getOrder($order_id) {
-		$query = $this->db->query("SELECT o.qty,o.order_id,moulder_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON o.po_no = od.po_no WHERE o.po_no='" . $order_id. "'");
+		$query = $this->db->query("SELECT o.qty,o.orders_id as o_orders_id,o.moulder_id,o.client_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON (o.po_no = od.po_no) WHERE o.po_no='" . $order_id. "'");
 		
 		return $query->row;
 	}
@@ -90,6 +103,22 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 		if(!empty($data['moulder_id'])){
 			$sql .= " AND moulder_id = ".$data['moulder_id']." ";
 		}
+
+		$query = $this->db->query($sql);
+	
+		return $query->row;
+	}
+
+	public function getMoulder($moulder_id) {
+		$sql = "SELECT moulder_id,name,address FROM " . DB_PREFIX . "moulder WHERE status = '1' AND moulder_id = ".$moulder_id." ";
+
+		$query = $this->db->query($sql);
+	
+		return $query->row;
+	}
+
+	public function getClient($client_id) {
+		$sql = "SELECT client_id,name,address FROM " . DB_PREFIX . "client WHERE status = '1' AND client_id = ".$client_id." ";
 
 		$query = $this->db->query($sql);
 	

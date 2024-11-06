@@ -244,3 +244,9 @@ CREATE TABLE `dd_order_details` (
   `qty_rev` int(11) NOT NULL,
   PRIMARY KEY (`store_order_id`)
 );
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `bags` int(11) NOT NULL DEFAULT 0 AFTER `req_qty`;
+
+ALTER TABLE `dd_die`
+ADD COLUMN `sr_no` varchar(50) NOT NULL DEFAULT '' AFTER `name`;

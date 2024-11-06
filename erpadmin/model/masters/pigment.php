@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Pigment extends \Opencart\System\Engine\Model {
 	public function addPigment($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "pigment SET `name` = '" . $this->db->escape($data['pigment_name']) . "', `qty` = '" . (int)$data['pigment_qty'] . "', `colour_id` = '" . (int)$data['colour_id'] . "', `image` = '" . $this->db->escape($data['image']) . "', status = '" . (int)$data['pigment_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "pigment SET `qty` = '" . (int)$data['pigment_qty'] . "', `colour_id` = '" . (int)$data['colour_id'] . "', `image` = '" . $this->db->escape($data['image']) . "', status = '" . (int)$data['pigment_status']."'");
 		
 		$pigment_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Pigment extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editPigment($pigment_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "pigment SET `name` = '" . $this->db->escape($data['pigment_name']) . "', `qty` = '" . (int)$data['pigment_qty'] . "', `colour_id` = '" . (int)$data['colour_id'] . "', `image` = '" . $this->db->escape($data['image']) . "', status = '" . (int)$data['pigment_status'] ."' WHERE pigment_id= '" . (int)$pigment_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "pigment SET `qty` = '" . (int)$data['pigment_qty'] . "', `colour_id` = '" . (int)$data['colour_id'] . "', `image` = '" . $this->db->escape($data['image']) . "', status = '" . (int)$data['pigment_status'] ."' WHERE pigment_id= '" . (int)$pigment_id. "'");
 		
 		$this->cache->delete('pigment');
 	}
@@ -31,6 +31,12 @@ class Pigment extends \Opencart\System\Engine\Model {
 		$query = $this->db->query("SELECT colour_id,name FROM " . DB_PREFIX . "colour");
 		
 		return $query->rows;
+	}
+
+	public function getColour($colour_id) {
+		$query = $this->db->query("SELECT name FROM " . DB_PREFIX . "colour WHERE colour_id = ".$colour_id."");
+		
+		return $query->row;
 	}
 	
 	public function getPigments($data = array()) {

@@ -160,11 +160,11 @@ class Pigment extends \Opencart\System\Engine\Controller {
 		$pigment_total = $this->model_masters_pigment->getTotalPigments();
 		
 		$results = $this->model_masters_pigment->getPigments($pigment_data);
-		
 		foreach ($results as $result) {
+			$colour_name = $this->model_masters_pigment->getColour($result['colour_id']);
 			$data['pigments'][] = array(
 				'pigment_id'		=> $result['pigment_id'],
-				'name'				=> $result['name'],
+				'name'				=> $colour_name['name'],
 				'qty'				=> $result['qty'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['pigment_id'], $this->request->post['selected']),				
@@ -307,14 +307,6 @@ class Pigment extends \Opencart\System\Engine\Controller {
 		$data['colours'] = $this->model_masters_pigment->getColors();
 
 		$data['user_token'] = $this->session->data['user_token'];
-
-		if (isset($this->request->post['name'])) {
-      		$data['name'] = $this->request->post['name'];
-    	} elseif (!empty($pigment_info)) {
-			$data['name'] = $pigment_info['name'];
-		} else {	
-      		$data['name'] = '';
-    	}
 
 		if(isset($this->request->get['pigment_id'])){
 			$data['pigment_id'] = $this->request->get['pigment_id'];

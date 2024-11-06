@@ -165,7 +165,6 @@ class Colour extends \Opencart\System\Engine\Controller {
 			$data['colours'][] = array(
 				'colour_id'		=> $result['colour_id'],
 				'name'				=> $result['name'],
-				'qty'				=> $result['qty'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['colour_id'], $this->request->post['selected']),				
 				'edit'				=> $this->url->link('masters/colour|form', 'user_token=' . $this->session->data['user_token'] . '&colour_id=' . $result['colour_id'] . $url, true)
@@ -309,14 +308,6 @@ class Colour extends \Opencart\System\Engine\Controller {
 		} else {	
       		$data['status'] = '';
     	}
-
-		if (isset($this->request->post['qty'])) {
-			$data['qty'] = $this->request->post['qty'];
-		} elseif (!empty($colour_info)) {
-			$data['qty'] = $colour_info['qty'];
-	  	} else {	
-			$data['qty'] = '';
-	  	}
 		
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

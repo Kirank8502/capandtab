@@ -5,7 +5,6 @@
         <tr>
           <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
           <td class="text-center">Name</td>
-          <td class="text-center">Qty</td>
           <td class="text-center">Status</td>
           <td class="text-end">Action</td>
         </tr>
@@ -16,7 +15,6 @@
             <tr>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ colour.colour_id }}" class="form-check-input"/></td>
               <td class="text-center">{{ colour.name }}</td>
-              <td class="text-center">{{ colour.qty }}</td>
               <td class="text-center">{% if colour.status %}Enabled{% else %}Disabled{% endif %}</td>
               <td class="text-end">
                 <a href="{{ colour.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>

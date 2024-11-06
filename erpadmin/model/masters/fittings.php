@@ -3,7 +3,7 @@ namespace Opencart\Admin\Model\Masters;
 
 class Fittings extends \Opencart\System\Engine\Model {
 	public function addFitting($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "fittings SET `name` = '" . $this->db->escape($data['fittings_name']) . "', `image` = '" . $data['fittings_image'] . "', `height` = '" . (float)$data['fittings_height'] . "', `weight` = '" . (float)$data['fittings_weight'] . "', `width` = '" . (float)$data['fittings_width'] . "', `inner_circle` = '" . (float)$data['fittings_inner_circle'] . "', `outer_circle` = '" . (float)$data['fittings_outer_circle'] . "', `thickness` = '" . (float)$data['fittings_thickness'] . "', qty = '" . (int)$data['fittings_qty']."', price = '" . (int)$data['fittings_price']."', status = '" . (int)$data['fittings_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "fittings SET `name` = '" . $this->db->escape($data['fittings_name']) . "', `image` = '" . $data['fittings_image'] . "', `height` = '" . (float)$data['fittings_height'] . "', `weight` = '" . (float)$data['fittings_weight'] . "', `width` = '" . (float)$data['fittings_width'] . "', `inner_circle` = '" . (float)$data['fittings_inner_circle'] . "', `outer_circle` = '" . (float)$data['fittings_outer_circle'] . "', `thickness` = '" . (float)$data['fittings_thickness'] . "', qty = '" . (int)$data['fittings_qty']."', price = '" . $data['fittings_price']."', status = '" . (int)$data['fittings_status']."'");
 		
 		$fittings_id= $this->db->getLastId();
 		
@@ -11,7 +11,7 @@ class Fittings extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editFitting($fittings_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "fittings SET `name` = '" . $this->db->escape($data['fittings_name']) . "', `image` = '" . $data['fittings_image'] . "', `height` = '" . (float)$data['fittings_height'] . "', `weight` = '" . (float)$data['fittings_weight'] . "', `width` = '" . (float)$data['fittings_width'] . "', `inner_circle` = '" . (float)$data['fittings_inner_circle'] . "', `outer_circle` = '" . (float)$data['fittings_outer_circle'] . "', `thickness` = '" . (float)$data['fittings_thickness'] . "', qty = '" . (int)$data['fittings_qty']."', price = '" . (int)$data['fittings_price']."', status = '" . (int)$data['fittings_status'] ."' WHERE fittings_id= '" . (int)$fittings_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "fittings SET `name` = '" . $this->db->escape($data['fittings_name']) . "', `image` = '" . $data['fittings_image'] . "', `height` = '" . (float)$data['fittings_height'] . "', `weight` = '" . (float)$data['fittings_weight'] . "', `width` = '" . (float)$data['fittings_width'] . "', `inner_circle` = '" . (float)$data['fittings_inner_circle'] . "', `outer_circle` = '" . (float)$data['fittings_outer_circle'] . "', `thickness` = '" . (float)$data['fittings_thickness'] . "', qty = '" . (int)$data['fittings_qty']."', price = '" . $data['fittings_price']."', status = '" . (int)$data['fittings_status'] ."' WHERE fittings_id= '" . (int)$fittings_id. "'");
 		
 		$this->cache->delete('fittings');
 	}

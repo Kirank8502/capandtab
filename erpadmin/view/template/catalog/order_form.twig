@@ -147,15 +147,17 @@
               </div>
             </div>
             <div class="row mb-3" id="input-check_color-class-main">
-              <label class="col-sm-1 col-form-label">Enable Pigment</label>
+              <label class="col-sm-1 col-form-label">Pigment or Master Batch</label>
               <div class="col-sm-11">
-                  <div class="form-check form-switch form-switch-lg">
-                    <input type="hidden" name="input-check-color" value="0"/>
-                    <input type="checkbox" name="input-check-color" value="1" id="input-check-color" class="form-check-input" {% if status %}checked{% endif %}/>
+                  <div class="input-group">
+                    <select name="check_color" id="input-check_color" class="form-select">
+                        <option value="1" {% if check_color == 1 %} selected{% endif %}>Pigment</option>
+                        <option value="2" {% if check_color == 2 %} selected{% endif %}>Master Batch</option>
+                      </select>
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-pigment-class-main">
+            {# <div class="row mb-3" id="input-pigment-class-main">
               <label class="col-sm-1 col-form-label">Pigment</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -180,7 +182,7 @@
                       </select>
                   </div>
               </div>
-            </div>
+            </div> #}
             <div class="row mb-3" id="input-fittings-class-main">
               <label class="col-sm-1 col-form-label">Extra Fittings</label>
               <div class="col-sm-11">
@@ -218,6 +220,14 @@
                   </div>
               </div>
             </div>
+            <div class="row mb-3" id="input-bags-class-main">
+              <label class="col-sm-1 col-form-label">Number Of Bags</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="bags" value="{{ bags }}" placeholder="Bags" id="bags" disabled class="form-control"/>
+                  </div>
+              </div>
+            </div>
           <input type="hidden" name="orders_id" value="{{ orders_id }}" id="input-order-id"/>
           <input type="hidden" name="latest_id" value="{{ latest_id }}" id="input-latest-id"/>
         </form>
@@ -237,8 +247,9 @@ $('#input-order-type').on('change', function() {
     var dieField = $('#input-die-class-main');
     var weightField = $('#input-weight-class-main');
     var accessoryField = $('#input-accessories-class-main');
+    var bagsField = $('#input-bags-class-main');
     var masterbatchField = $('#input-master_batch-class-main');
-    var pigmentField = $('#input-pigment-class-main');
+    // var pigmentField = $('#input-pigment-class-main');
     // var po_no = $('#input-po_no-class-main');
     var colorcheckField = $('#input-check_color-class-main');
     var req_qty = $('#input-required_qty-class-main');
@@ -251,11 +262,12 @@ $('#input-order-type').on('change', function() {
         productField.show();
         fittingsField.show();
         colorcheckField.hide();
-        masterbatchField.hide();
-        pigmentField.hide();
+        // masterbatchField.hide();
+        // pigmentField.hide();
         vendorField.hide();
         dieField.hide();
         accessoryField.hide();
+        bagsField.hide();
         req_qty.hide();
     } else {
         powderField.show();
@@ -264,20 +276,21 @@ $('#input-order-type').on('change', function() {
         productField.hide();
         fittingsField.hide();
         colorcheckField.show();
-        masterbatchField.show();
-        pigmentField.show();
+        // masterbatchField.show();
+        // pigmentField.show();
         vendorField.show();
         dieField.show();
         accessoryField.show();
+        bagsField.show();
         req_qty.show();
         weightField.show();
-        if($('#input-check-color').is(":checked")){
-          $('#input-master_batch-class-main').hide();
-          $('#input-pigment-class-main').show();
-        } else {
-          $('#input-master_batch-class-main').show();
-          $('#input-pigment-class-main').hide();
-        }
+        // if($('#input-check-color').is(":checked")){
+        //   $('#input-master_batch-class-main').hide();
+        //   $('#input-pigment-class-main').show();
+        // } else {
+        //   $('#input-master_batch-class-main').show();
+        //   $('#input-pigment-class-main').hide();
+        // }
     }
 });
 
@@ -293,9 +306,9 @@ $(document).ready(function() {
     $('#input-vendor-class-main').hide();
     $('#input-die-class-main').hide();
     $('#input-powder-class-main').hide();
-    $('#input-master_batch-class-main').hide();
-    $('#input-pigment-class-main').hide();
-    // $('#input-po_no-class-main').show();
+    // $('#input-master_batch-class-main').hide();
+    // $('#input-pigment-class-main').hide();
+    $('#input-bags-class-main').hide();
     $('#input-required_qty-class-main').hide();
     $('#input-client-class-main').show();
     $('#input-check_color-class-main').hide();
@@ -307,7 +320,7 @@ $(document).ready(function() {
     $('#input-powder-class-main').show();
     //$('#input-master_batch-class-main').show();
     //$('#input-pigment-class-main').show();
-    // $('#input-po_no-class-main').hide();
+    $('#input-bags-class-main').show();
     $('#input-check_color-class-main').show();
     $('#input-required_qty-class-main').show();
     $('#input-product-class-main').hide();
@@ -324,13 +337,13 @@ $(document).ready(function() {
       $('#po_no').val(month + '-' + year + '-' + latestId);
     }
 
-    if($('#input-check-color').is(":checked")){
-      $('#input-master_batch-class-main').hide();
-      $('#input-pigment-class-main').show();
-    } else {
-      $('#input-master_batch-class-main').show();
-      $('#input-pigment-class-main').hide();
-    }
+    // if($('#input-check-color').is(":checked")){
+    //   $('#input-master_batch-class-main').hide();
+    //   $('#input-pigment-class-main').show();
+    // } else {
+    //   $('#input-master_batch-class-main').show();
+    //   $('#input-pigment-class-main').hide();
+    // }
   }
     
 });
@@ -341,13 +354,15 @@ $(document).ready(function() {
     url: 'index.php?route=catalog/order|calculateQty&user_token={{user_token}}&qty='+$(this).val()+'&accessories_id='+$('#input-accessories-class').val(),
     type: 'GET',
     success: function(response) {
-      $('#req_qty').val(response);
+      $('#req_qty').val(response.req_qty);
+      $('#bags').val(response.bags);
     }
    });
  });
 
   document.getElementById('form-order').addEventListener('submit', function() {
     document.getElementById('req_qty').disabled = false;
+    document.getElementById('bags').disabled = false;
   });
 
 
@@ -378,7 +393,11 @@ $('#input-die-class').change(function() {
     success: function(response) {
       if(response.message != 'Store') {
         $('#die-error').html(response.message);
-        $('#order_save_btn').prop('disabled',$('#order_save_btn').val() === '');
+        if(response.success == 0){
+          $('#order_save_btn').prop('disabled',$('#order_save_btn').val() === '');
+        }else{
+          $('#order_save_btn').prop('disabled',false);
+        }
       }else{
         $('#die-error').html('');
       }
@@ -413,13 +432,13 @@ if($('#input-order-type').val() == 1){
 }
 });
 
-$('#input-check-color').change(function() {
-  if($(this).is(":checked")){
-    $('#input-master_batch-class-main').hide();
-    $('#input-pigment-class-main').show();
-  } else {
-    $('#input-master_batch-class-main').show();
-    $('#input-pigment-class-main').hide();
-  }
-});
+// $('#input-check-color').change(function() {
+//   if($(this).is(":checked")){
+//     $('#input-master_batch-class-main').hide();
+//     $('#input-pigment-class-main').show();
+//   } else {
+//     $('#input-master_batch-class-main').show();
+//     $('#input-pigment-class-main').hide();
+//   }
+// });
 </script>

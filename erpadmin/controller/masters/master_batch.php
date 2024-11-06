@@ -152,10 +152,10 @@ class MasterBatch extends \Opencart\System\Engine\Controller {
 		$results = $this->model_masters_master_batch->getMasterBatchs($master_batch_data);
 		
 		foreach ($results as $result) {
+			$colour_name = $this->model_masters_master_batch->getColour($result['colour_id']);
 			$data['master_batchs'][] = array(
-				'master_batch_id'		=> $result['master_batch_id'],
-				'name'				=> $result['name'],
-				'qty'				=> $result['qty'],
+				'master_batch_id'	=> $result['master_batch_id'],
+				'name'				=> $colour_name['name'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['master_batch_id'], $this->request->post['selected']),				
 				'edit'				=> $this->url->link('masters/master_batch|form', 'user_token=' . $this->session->data['user_token'] . '&master_batch_id=' . $result['master_batch_id'] . $url, true)
@@ -280,6 +280,8 @@ class MasterBatch extends \Opencart\System\Engine\Controller {
 
 		$data['user_token'] = $this->session->data['user_token'];
 
+		$data['colours'] = $this->model_masters_master_batch->getColors();
+
 		if (isset($this->request->post['name'])) {
       		$data['name'] = $this->request->post['name'];
     	} elseif (!empty($master_batch_info)) {
@@ -288,12 +290,12 @@ class MasterBatch extends \Opencart\System\Engine\Controller {
       		$data['name'] = '';
     	}
 
-		if (isset($this->request->post['color'])) {
-			$data['color'] = $this->request->post['color'];
+		if (isset($this->request->post['colour_id'])) {
+			$data['colour_id'] = $this->request->post['colour_id'];
 	  	} elseif (!empty($master_batch_info)) {
-			$data['color'] = $master_batch_info['color'];
+			$data['colour_id'] = $master_batch_info['colour_id'];
 	  	} else {	
-			$data['color'] = '';
+			$data['colour_id'] = '';
 	  	}
 
 		if (isset($this->request->post['image'])) {
