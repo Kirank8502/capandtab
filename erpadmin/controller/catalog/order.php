@@ -1,5 +1,7 @@
 <?php
 namespace Opencart\Admin\Controller\Catalog;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 class Order extends \Opencart\System\Engine\Controller {
 	private $error = array();
 	public function index():void {
@@ -201,7 +203,8 @@ class Order extends \Opencart\System\Engine\Controller {
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
-				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
+				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true),
+				'export'            => $this->url->link('catalog/order|exportData', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
 		}
 		
@@ -348,6 +351,14 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['qty'] = $order_info['qty'];
 	  	} else {	
 			$data['qty'] = 0;
+	  	}
+
+		if (isset($this->request->post['weight'])) {
+			$data['weight'] = $this->request->post['weight'];
+	  	} elseif (!empty($order_info)) {
+			$data['weight'] = $order_info['total_weight'];
+	  	} else {	
+			$data['weight'] = 0;
 	  	}
 
 		if (isset($this->request->post['bags'])) {
@@ -628,10 +639,10 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		// $ceil_val = ceil($calculate);
 
-		$final_val = $fittings['total_weight'];
+		$final_val = ceil($fittings['total_weight']);
 
 		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($final_val));
+		$this->response->setOutput(json_encode((int)$final_val));
 	}
 
 	public function checkAvaiability(){
@@ -655,4 +666,114 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function exportData(){
+		require_once(DIR_SYSTEM . 'library/dompdf/vendor/autoload.php');
+		$dompdf = new Dompdf();
+		$this->load->model('catalog/order');
+
+		$orders = $this->model_catalog_order->getOrder($this->request->get['orders_id']);
+		if($orders['moulder_id'] != 0){
+			$client_moulder_data = $this->model_catalog_order->getMoulder($orders['moulder_id']);
+			$powder = $this->model_catalog_order->getPowder($orders['powder_id']);
+			$accessory = $this->model_catalog_order->getAccessory($orders['accessories_id']);
+			$die = $this->model_catalog_order->getDietype($orders['die_id']);
+			$colour = $this->model_catalog_order->getColour($orders['colour_id']);
+			$product = $this->model_catalog_order->getProduct($orders['product_id']);
+		}elseif($orders['client_id'] != 0){
+			$powder = 'None';
+			$client_moulder_data = $this->model_catalog_order->getClient($orders['client_id']);
+		}
+
+		$html = '<html>
+		<head>
+			<link rel="stylesheet" href="./view/stylesheet/bootstrap.css"/>
+			<style>
+                /* Inline or local Bootstrap styles */
+                body { font-family: Arial, sans-serif; }
+				.detail_box p{font-size:16px;}
+            </style>
+		</head>
+		<body>';
+		$html .= '<div class="container">';
+		$html .= '<h1 class="text-center mt-4">Asha Enterprises</h1>';
+		$html .= '<p class="text-center my-0">Registered Office: - B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
+		$html .= '<p class="text-center my-0">Store Office: - Shop No 4, Sai Krupa Chawl, Wagralpada Main Road, Boidapada, Vasai-401208</p>';
+		$html .= '<p class="text-center mt-0 mb-4">GSTN-27AGVPS5933R1Z1</p>';
+		$html .= '</div>';
+		$html .= '<div class="container border border-2 border-dark">';
+		$html .= '<div class="mx-5 my-2 d-flex justify-content-between">';
+		$html .= '<div class="detail_box">';
+		$html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
+		$html .= '<p>'.$client_moulder_data['address'].'</p>';
+		$html .= '</div>';
+		$html .= '<div class="detail_box">';
+		$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
+		$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
+		$html .= '<p>PO Date:- '.$orders['targeted_date'].'</p>';
+		$html .= '<p>Delivery Date:- '.$orders['targeted_date'].'</p>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '<h4 class="text-center mt-2">Purchase Order</h4>';
+		$html .= '<div class="container border border-dark border-2 mt-4">';
+		$html .= '<p class="mb-1">Please supply following materials as per the terms and conditions mentioned below.</p>';
+		$html .= '</div>';
+		$html .= '<table class="container table-bordered my-5">';
+		$html .= '<thead>';
+		$html .= '<tr>';
+		$html .= '<th style="width:20%" class="text-center p-2">Parts Name / Fittings Name</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Die Type</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Powder Type</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Powder KG</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Powder Bags</th>';
+		$html .= '</tr>';
+		$html .= '</thead>';
+		$html .= '<tbody>';
+		$html .= '<tr>';
+		$html .= '<td class="text-center p-2">'.$accessory['name'].'</td>';
+		$html .= '<td class="text-center p-2">'.$die['type'].'</td>';
+		$html .= '<td class="text-center p-2">'.$powder['name'].'</td>';
+		$html .= '<td class="text-center p-2">'.($powder['weight'] ? $powder['weight'] : 0).'</td>';
+		$html .= '<td class="text-center p-2">'.$orders['bags'].'</td>';
+		$html .= '</tr>';
+		$html .= '</tbody>';
+		$html .= '</table>';
+		$html .= '<table class="container table-bordered my-5">';
+		$html .= '<thead>';
+		$html .= '<tr>';
+		$html .= '<th style="width:20%" class="text-center p-2">Product Weight</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Colour</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Pigment Quantity</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Master Batch Grams</th>';
+		$html .= '<th style="width:20%" class="text-center p-2">Targeted Quantity</th>';
+		$html .= '</tr>';
+		$html .= '</thead>';
+		$html .= '<tbody>';
+		$html .= '<tr>';
+		$html .= '<td class="text-center p-2">1.2</td>';
+		$html .= '<td class="text-center p-2">'.$colour['name'].'</td>';
+		$html .= '<td class="text-center p-2">'.$orders['bags'].'</td>';
+		$html .= '<td class="text-center p-2">0</td>';
+		$html .= '<td class="text-center p-2">'.$orders['req_qty'].'</td>';
+		$html .= '</tr>';
+		$html .= '</tbody>';
+		$html .= '</table>';
+		$html .= '<div class="container border border-dark border-2 mt-4">';
+		$html .= '<p class="mb-3">Mentioned above product’s Die is available with mentioned above moulder. This Die is Asha Enterprises Property. Asha Enterprises have the rights to take back the die without any prior notice.</p>';
+		$html .= '<p class="mb-3">All invoices should be sent with full particulars such as purchase order No;, Date with proper instructions, together with E Way bill & E Invoice wherever  applicable. Failure to comply with this will delay the settlement of payments.</p>';
+		$html .= '<p class="mb-1">Vendor shall issue GST compliant tax invoices as envisaged under GST Law containing details such as our GSTINs (as communicated), HSNs, tax etc. as required under rule 46 of CGST Act, 2017. Further, such invoice should be captured by the vendor in his outward supplies statements i.e. GSTR1 in the month when the supply was made. Further, relevant tax on such invoice should be duly deposited with the government exchequer by the vendor so as to enable us to claim input tax credit.</p>';
+		$html .= '</div>';
+		$html .= '<p class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
+		$html .= '</body></html>';
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+        $dompdf->stream("order_raising.pdf", array("Attachment" => 1));
+	}
+
+	// public function vieww(){
+	// 	$this->response->setOutput($this->load->view('catalog/test'));
+	// }
 }

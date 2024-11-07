@@ -21,7 +21,10 @@
               <td class="text-center">{{ order.qty }}</td>
               {# <td class="text-center">{% if order.status %}Enabled{% else %}Disabled{% endif %}</td> #}
               <td class="text-end">
-                <a href="{{ order.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
+                <a href="{{ order.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
+                {% if order.order_type == 0 %}
+                <a href="{{ order.export }}" data-bs-toggle="tooltip" title="Add" class="btn btn-success"><i class="fa-solid fa-file-arrow-down"></i></a>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
