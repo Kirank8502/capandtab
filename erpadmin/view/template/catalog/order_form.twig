@@ -23,12 +23,21 @@
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="order_type" id="input-order-type" class="form-select">
-                        <option value="0" {% if order_type == 0 %} selected{% endif %}>Puchase order raising</option>
-                        <option value="1" {% if order_type == 1 %} selected{% endif %}>Puchase order receiving</option>
+                        <option value="0" {% if order_type == 0 %} selected{% endif %}>Puchase Order Raising</option>
+                        <option value="1" {% if order_type == 1 %} selected{% endif %}>Puchase Order Received</option>
                       </select>
                   </div>
               </div>
             </div>
+            {# <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">No Quantity</label>
+              <div class="col-sm-11">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="no_qty" value="0"/>
+                    <input type="checkbox" name="no_qty" value="1" id="no_qty" class="form-check-input" {% if status %}checked{% endif %}/>
+                  </div>
+              </div>
+            </div> #}
             <div class="row mb-3" id="input-client-class-main">
               <label class="col-sm-1 col-form-label">Client</label>
               <div class="col-sm-11">
@@ -84,8 +93,39 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-accessories-class-main">
-              <label class="col-sm-1 col-form-label">Spare Parts</label>
+            {# <div class="row mb-3" id="input-acc_fitts-class-main">
+              <label class="col-sm-1 col-form-label">Spare Parts / Extra Fittings</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="acc_fitts" id="input-acc_fitts-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for data in datas %}
+                          <option value="{{ data.acc_fitts_id }}"{% if data.acc_fitts_id == acc_fitts_id %} selected{% endif %}>{{ data.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div> #}
+            <div class="row mb-3" id="input-search-class-main">
+              <label class="col-sm-1 col-form-label">Spare Parts / Extra Fittings</label>
+              <div class="col-sm-11">
+                <div class="input-group">
+                  <select id="acc_fitts" name="acc_fitts_id[]" multiple="multiple" style="width: 100%">
+                    {% for data in datas %}
+                      <option value="{{ data.acc_fitts_id }}"{% if data.acc_fitts_id in acc_fitts_id %} selected{% endif %}>{{ data.name }}</option>
+                    {% endfor %}
+                      {# <option value="apple">Apple</option>
+                      <option value="banana">Banana</option>
+                      <option value="cherry">Cherry</option>
+                      <option value="grapes">Grapes</option>
+                      <option value="orange">Orange</option>
+                      <option value="pineapple">Pineapple</option> #}
+                  </select>
+               </div>
+              </div>
+            </div>
+            {# <div class="row mb-3" id="input-accessories-class-main">
+              <label class="col-sm-1 col-form-label">Spare Parts / Extra Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="accessories_id" id="input-accessories-class" class="form-select">
@@ -96,7 +136,7 @@
                       </select>
                   </div>
               </div>
-            </div>
+            </div> #}
             <div class="row mb-3" id="input-die-class-main">
               <label class="col-sm-1 col-form-label">Die</label>
               <div class="col-sm-11">
@@ -133,7 +173,7 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3">
+            <div class="row mb-3" id="input-color-class-main">
               <label class="col-sm-1 col-form-label">Colour</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -183,7 +223,7 @@
                   </div>
               </div>
             </div> #}
-            <div class="row mb-3" id="input-fittings-class-main">
+            {# <div class="row mb-3" id="input-fittings-class-main">
               <label class="col-sm-1 col-form-label">Extra Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -195,7 +235,7 @@
                       </select>
                   </div>
               </div>
-            </div>
+            </div> #}
             <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Targeted Date</label>
               <div class="col-sm-11">
@@ -212,14 +252,14 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3" id="input-weight-class-main">
+            {# <div class="row mb-3" id="input-weight-class-main">
               <label class="col-sm-1 col-form-label">Number Of Bags</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="weight" value="{{ weight }}" placeholder="Weight" id="weight" disabled class="form-control"/>
                   </div>
               </div>
-            </div>
+            </div> #}
             <div class="row mb-3" id="input-bags-class-main">
               <label class="col-sm-1 col-form-label">Number Of Bags</label>
               <div class="col-sm-11">
@@ -245,11 +285,12 @@ $('#input-order-type').on('change', function() {
     var fittingsField = $('#input-fittings-class-main');
     var vendorField = $('#input-vendor-class-main');
     var dieField = $('#input-die-class-main');
-    var weightField = $('#input-weight-class-main');
+    // var weightField = $('#input-weight-class-main');
     var accessoryField = $('#input-accessories-class-main');
     var bagsField = $('#input-bags-class-main');
     var masterbatchField = $('#input-master_batch-class-main');
     // var pigmentField = $('#input-pigment-class-main');
+    var colourField = $('#input-color-class-main');
     // var po_no = $('#input-po_no-class-main');
     var colorcheckField = $('#input-check_color-class-main');
     var req_qty = $('#input-required_qty-class-main');
@@ -258,9 +299,10 @@ $('#input-order-type').on('change', function() {
         powderField.hide();
         // po_no.show();
         clientField.show();
-        weightField.show();
+        // weightField.show();
+        colourField.hide();
         productField.show();
-        fittingsField.show();
+        // fittingsField.show();
         colorcheckField.hide();
         // masterbatchField.hide();
         // pigmentField.hide();
@@ -274,7 +316,8 @@ $('#input-order-type').on('change', function() {
         // po_no.hide();
         clientField.hide();
         productField.hide();
-        fittingsField.hide();
+        colourField.show();
+        // fittingsField.hide();
         colorcheckField.show();
         // masterbatchField.show();
         // pigmentField.show();
@@ -283,7 +326,7 @@ $('#input-order-type').on('change', function() {
         accessoryField.show();
         bagsField.show();
         req_qty.show();
-        weightField.show();
+        // weightField.show();
         // if($('#input-check-color').is(":checked")){
         //   $('#input-master_batch-class-main').hide();
         //   $('#input-pigment-class-main').show();
@@ -299,8 +342,8 @@ $('#input-order-type').on('change', function() {
 $(document).ready(function() {
   var orderType = $('#input-order-type').val();
   if (orderType == '1') {
-    $('#input-fittings-class-main').show();
-    $('#input-weight-class-main').show();
+    // $('#input-fittings-class-main').show();
+    // $('#input-weight-class-main').show();
     $('#input-product-class-main').show();
     $('#input-accessories-class-main').hide();
     $('#input-vendor-class-main').hide();
@@ -308,12 +351,13 @@ $(document).ready(function() {
     $('#input-powder-class-main').hide();
     // $('#input-master_batch-class-main').hide();
     // $('#input-pigment-class-main').hide();
+    $('#input-color-class-main').hide();
     $('#input-bags-class-main').hide();
     $('#input-required_qty-class-main').hide();
     $('#input-client-class-main').show();
     $('#input-check_color-class-main').hide();
   } else {
-    $('#input-weight-class-main').hide();
+    // $('#input-weight-class-main').hide();
     $('#input-accessories-class-main').show();
     $('#input-vendor-class-main').show();
     $('#input-die-class-main').show();
@@ -324,7 +368,8 @@ $(document).ready(function() {
     $('#input-check_color-class-main').show();
     $('#input-required_qty-class-main').show();
     $('#input-product-class-main').hide();
-    $('#input-fittings-class-main').hide();
+    // $('#input-fittings-class-main').hide();
+    $('#input-color-class-main').show();
     $('#input-client-class-main').hide();
     $('#quantity-error').html('');
     $('#input-latest-id').val();
@@ -405,15 +450,15 @@ $('#input-die-class').change(function() {
    });
 });
 
-$('#input-product-class').change(function() {
-  $.ajax({
-    url: 'index.php?route=catalog/order|productWeight&user_token={{user_token}}&product_id='+$(this).val(),
-    type: 'GET',
-    success: function(response) {
-      $('#weight').val(response);
-    }
-   });
-});
+// $('#input-product-class').change(function() {
+//   $.ajax({
+//     url: 'index.php?route=catalog/order|productWeight&user_token={{user_token}}&product_id='+$(this).val(),
+//     type: 'GET',
+//     success: function(response) {
+//       $('#weight').val(response);
+//     }
+//    });
+// });
 
 $('#qty').change(function() {
 if($('#input-order-type').val() == 1){
@@ -423,7 +468,7 @@ if($('#input-order-type').val() == 1){
     success: function(response) {
       if(response.message != 'Success') {
         $('#quantity-error').html(response.message);
-        $('#order_save_btn').prop('disabled',$('#order_save_btn').val() === '');
+        // $('#order_save_btn').prop('disabled',$('#order_save_btn').val() === '');
       }else{
         $('#quantity-error').html('');
       }
@@ -441,4 +486,11 @@ if($('#input-order-type').val() == 1){
 //     $('#input-pigment-class-main').hide();
 //   }
 // });
+
+$(document).ready(function() {
+    // Apply Select2 to all select elements
+    $('#acc_fitts').select2({
+        width: '100%' // Make sure the dropdown is responsive
+    });
+});
 </script>

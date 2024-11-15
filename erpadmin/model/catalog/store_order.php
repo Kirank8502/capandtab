@@ -55,8 +55,8 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 		$this->cache->delete('order');
 	}	
 	
-	public function getOrder($order_id) {
-		$query = $this->db->query("SELECT o.qty,o.orders_id as o_orders_id,o.moulder_id,o.client_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON (o.po_no = od.po_no) WHERE o.po_no='" . $order_id. "'");
+	public function getOrder($store_order_id) {
+		$query = $this->db->query("SELECT o.qty,o.orders_id as o_orders_id,o.order_type,o.moulder_id,o.client_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON (o.po_no = od.po_no) WHERE od.store_order_id='" . $store_order_id. "'");
 		
 		return $query->row;
 	}
@@ -106,7 +106,7 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 
 		$query = $this->db->query($sql);
 	
-		return $query->row;
+		return $query->rows;
 	}
 
 	public function getMoulder($moulder_id) {
@@ -166,15 +166,7 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 	}
 	
 	public function getOrders($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "orders WHERE 1";
-
-		if (!empty($data['filter_name'])) {
-			$sql .= " AND `name` LIKE '" . $this->db->escape($data['filter_name']) . "%'";
-		}
-
-		if (!empty($data['filter_code'])) {
-			$sql .= " AND `code` LIKE '" . $this->db->escape($data['filter_code']) . "%'";
-		}
+		$sql = "SELECT o.orders_id,o.po_no,o.order_type,o.moulder_id,o.client_id,o.qty,o.req_qty,od.image,od.image,od.qty_rev,od.store_order_id FROM " . DB_PREFIX . "orders o LEFT JOIN ".DB_PREFIX."order_details od ON (o.po_no = od.po_no) WHERE 1";
 		
 		$sort_data = array(
 			'`name`',
@@ -185,7 +177,7 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];	
 		} else {
-			$sql .= " ORDER BY `orders_id`";	
+			$sql .= " ORDER BY o.orders_id";
 		}
 		
 		$sql .= " DESC";

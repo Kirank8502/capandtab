@@ -250,3 +250,6 @@ ADD COLUMN `bags` int(11) NOT NULL DEFAULT 0 AFTER `req_qty`;
 
 ALTER TABLE `dd_die`
 ADD COLUMN `sr_no` varchar(50) NOT NULL DEFAULT '' AFTER `name`;
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `acc_fitts_id` varchar(255) NOT NULL DEFAULT '' AFTER `bags`;

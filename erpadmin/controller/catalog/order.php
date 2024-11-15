@@ -334,6 +334,14 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['dies'] = $this->model_catalog_order->getDies();
 		$data['accessories'] = $this->model_catalog_order->getAccessories();
 		$data['fittings'] = $this->model_catalog_order->getFittings();
+		$data['datas'] = array_merge($data['accessories'],$data['fittings']);
+		foreach ($data['datas'] as &$item) {
+			if(isset($item['accessories_id'])){
+				$item['acc_fitts_id'] = 'acc_' . $item['accessories_id'];
+			}elseif(isset($item['fittings_id'])){
+				$item['acc_fitts_id'] = 'fitts_' . $item['fittings_id'];
+			}
+		}
 
 		if (isset($this->request->get['orders_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$order_info = $this->model_catalog_order->getOrder($this->request->get['orders_id']);
@@ -351,6 +359,22 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['qty'] = $order_info['qty'];
 	  	} else {	
 			$data['qty'] = 0;
+	  	}
+
+		// if (isset($this->request->post['no_qty'])) {
+		// 	$data['no_qty'] = $this->request->post['no_qty'];
+	  	// } elseif (!empty($order_info)) {
+		// 	$data['no_qty'] = $order_info['no_qty'];
+	  	// } else {	
+		// 	$data['no_qty'] = 0;
+	  	// }
+
+		if (isset($this->request->post['acc_fitts_id'])) {
+			$data['acc_fitts_id'] = $this->request->post['acc_fitts_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['acc_fitts_id'] = $order_info['acc_fitts_id'];
+	  	} else {	
+			$data['acc_fitts_id'] = '';
 	  	}
 
 		if (isset($this->request->post['weight'])) {
@@ -669,10 +693,16 @@ class Order extends \Opencart\System\Engine\Controller {
 
 	public function exportData(){
 		require_once(DIR_SYSTEM . 'library/dompdf/vendor/autoload.php');
-		$dompdf = new Dompdf();
+		$options = new Options();
+		$options->set('isHtml5ParserEnabled', true);
+		$options->set('isPhpEnabled', true);
+		$options->set('isRemoteEnabled', true);
+		$options->set('debug', true);
+		$dompdf = new Dompdf($options);
 		$this->load->model('catalog/order');
-
+		$accessory = '';
 		$orders = $this->model_catalog_order->getOrder($this->request->get['orders_id']);
+		$this->load->model('tool/image');
 		if($orders['moulder_id'] != 0){
 			$client_moulder_data = $this->model_catalog_order->getMoulder($orders['moulder_id']);
 			$powder = $this->model_catalog_order->getPowder($orders['powder_id']);
@@ -680,100 +710,178 @@ class Order extends \Opencart\System\Engine\Controller {
 			$die = $this->model_catalog_order->getDietype($orders['die_id']);
 			$colour = $this->model_catalog_order->getColour($orders['colour_id']);
 			$product = $this->model_catalog_order->getProduct($orders['product_id']);
-		}elseif($orders['client_id'] != 0){
-			$powder = 'None';
-			$client_moulder_data = $this->model_catalog_order->getClient($orders['client_id']);
-		}
+			if (is_file(DIR_IMAGE . htmlspecialchars($accessory['image'] ?? '', ENT_QUOTES, 'UTF-8'))) {
+				$accessory['thumb'] = $this->model_tool_image->resize(htmlspecialchars($accessory['image'] ?? '', ENT_QUOTES, 'UTF-8'), 200, 200);
+			} else {
+				$accessory['thumb'] = $accessory['image'];
+			}
 
-		$html = '<html>
-		<head>
-			<link rel="stylesheet" href="./view/stylesheet/bootstrap.css"/>
-			<style>
-                /* Inline or local Bootstrap styles */
-                body { font-family: Arial, sans-serif; }
-				.detail_box p{font-size:16px;}
-            </style>
-		</head>
-		<body>';
-		$html .= '<div class="container">';
-		$html .= '<h1 class="text-center mt-4">Asha Enterprises</h1>';
-		$html .= '<p class="text-center my-0">Registered Office: - B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
-		$html .= '<p class="text-center my-0">Store Office: - Shop No 4, Sai Krupa Chawl, Wagralpada Main Road, Boidapada, Vasai-401208</p>';
-		$html .= '<p class="text-center mt-0 mb-4">GSTN-27AGVPS5933R1Z1</p>';
-		$html .= '</div>';
-		$html .= '<div class="container border border-2 border-dark">';
-		$html .= '<div class="mx-5 my-2 d-flex justify-content-between">';
-		$html .= '<div class="detail_box">';
-		$html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
-		$html .= '<p>'.$client_moulder_data['address'].'</p>';
-		$html .= '</div>';
-		$html .= '<div class="detail_box">';
-		$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
-		$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
-		$html .= '<p>PO Date:- '.$orders['targeted_date'].'</p>';
-		$html .= '<p>Delivery Date:- '.$orders['targeted_date'].'</p>';
-		$html .= '</div>';
-		$html .= '</div>';
-		$html .= '</div>';
-		$html .= '<h4 class="text-center mt-2">Purchase Order</h4>';
-		$html .= '<div class="container border border-dark border-2 mt-4">';
-		$html .= '<p class="mb-1">Please supply following materials as per the terms and conditions mentioned below.</p>';
-		$html .= '</div>';
-		$html .= '<table class="container table-bordered my-5">';
-		$html .= '<thead>';
-		$html .= '<tr>';
-		$html .= '<th style="width:20%" class="text-center p-2">Parts Name / Fittings Name</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Die Type</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Powder Type</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Powder KG</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Powder Bags</th>';
-		$html .= '</tr>';
-		$html .= '</thead>';
-		$html .= '<tbody>';
-		$html .= '<tr>';
-		$html .= '<td class="text-center p-2">'.$accessory['name'].'</td>';
-		$html .= '<td class="text-center p-2">'.$die['type'].'</td>';
-		$html .= '<td class="text-center p-2">'.$powder['name'].'</td>';
-		$html .= '<td class="text-center p-2">'.($powder['weight'] ? $powder['weight'] : 0).'</td>';
-		$html .= '<td class="text-center p-2">'.$orders['bags'].'</td>';
-		$html .= '</tr>';
-		$html .= '</tbody>';
-		$html .= '</table>';
-		$html .= '<table class="container table-bordered my-5">';
-		$html .= '<thead>';
-		$html .= '<tr>';
-		$html .= '<th style="width:20%" class="text-center p-2">Product Weight</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Colour</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Pigment Quantity</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Master Batch Grams</th>';
-		$html .= '<th style="width:20%" class="text-center p-2">Targeted Quantity</th>';
-		$html .= '</tr>';
-		$html .= '</thead>';
-		$html .= '<tbody>';
-		$html .= '<tr>';
-		$html .= '<td class="text-center p-2">1.2</td>';
-		$html .= '<td class="text-center p-2">'.$colour['name'].'</td>';
-		$html .= '<td class="text-center p-2">'.$orders['bags'].'</td>';
-		$html .= '<td class="text-center p-2">0</td>';
-		$html .= '<td class="text-center p-2">'.$orders['req_qty'].'</td>';
-		$html .= '</tr>';
-		$html .= '</tbody>';
-		$html .= '</table>';
-		$html .= '<div class="container border border-dark border-2 mt-4">';
-		$html .= '<p class="mb-3">Mentioned above product’s Die is available with mentioned above moulder. This Die is Asha Enterprises Property. Asha Enterprises have the rights to take back the die without any prior notice.</p>';
-		$html .= '<p class="mb-3">All invoices should be sent with full particulars such as purchase order No;, Date with proper instructions, together with E Way bill & E Invoice wherever  applicable. Failure to comply with this will delay the settlement of payments.</p>';
-		$html .= '<p class="mb-1">Vendor shall issue GST compliant tax invoices as envisaged under GST Law containing details such as our GSTINs (as communicated), HSNs, tax etc. as required under rule 46 of CGST Act, 2017. Further, such invoice should be captured by the vendor in his outward supplies statements i.e. GSTR1 in the month when the supply was made. Further, relevant tax on such invoice should be duly deposited with the government exchequer by the vendor so as to enable us to claim input tax credit.</p>';
-		$html .= '</div>';
-		$html .= '<p class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
-		$html .= '</body></html>';
+
+			$html = '<html>
+			<head>
+				<style>
+        	        /* Inline or local Bootstrap styles */
+        	        body { font-family: Arial, sans-serif; }
+					.detail_box p{font-size:16px;}
+					table{border-collapse:collapse;}
+					tr,td,th{border-style:solid;border-color:#000;}
+					table > :not(caption) > * > *{border-width: 0 1px;}
+					table > :not(caption) > *{border-width: 1px 0;}
+        	    </style>
+			</head>
+			<body>';
+			$html .= '<div style="display:flex;flex-direction:column;">';
+			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
+			$html .= '<h1 class="text-center mt-4" style="text-align:center;margin-top:10px;">Asha Enterprises</h1>';
+			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Registered Office: - B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
+			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Store Office: - Shop No 4, Sai Krupa Chawl, Wagralpada Main Road, Boidapada, Vasai-401208</p>';
+			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:10px;margin-top:0;">GSTN-27AGVPS5933R1Z1</p>';
+			$html .= '</div>';
+			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
+			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
+			$html .= '<div style="display: inline-block; width: 60%; vertical-align: top;" class="detail_box">';
+			$html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
+			$html .= '<p>'.$client_moulder_data['address'].'</p>';
+			$html .= '</div>';
+			$html .= '<div style="display: inline-block; width: 40%; vertical-align: top;" class="detail_box">';
+			$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
+			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
+			$html .= '<p>PO Date:- '.$orders['date_added'].'</p>';
+			$html .= '<p>Delivery Date:- '.$orders['targeted_date'].'</p>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order</h4>';
+			$html .= '<div style="max-width: 1320px;border:2px solid;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
+			$html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;margin-left:20px;" class="mb-1">Please supply following materials as per the terms and conditions mentioned below.</p>';
+			$html .= '</div>';
+			$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+			$html .= '<thead>';
+			$html .= '<tr>';
+			$html .= '<th rowspan="2" style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2"><img src="https://capandtab.com/image/'.(!empty($accessory) ? $accessory["image"] : "" ).'"" width="100" height="100" /></th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Parts Name / Fittings Name</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder Type</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder KG</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder Bags</th>';
+			$html .= '</tr>';
+			$html .= '<tr>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['name'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$powder['name'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.($orders['bags'] ? $orders['bags']*25 : 0).'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
+			$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '</table>';
+			$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;" class="container table-bordered my-5">';
+			$html .= '<thead>';
+			$html .= '<tr>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Product Weight</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Colour</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Pigment Quantity</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Master Batch Grams</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Targeted Quantity</th>';
+			$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '<tbody>';
+			$html .= '<tr>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['weight'].'</td>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$colour['name'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">0</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['req_qty'].'</td>';
+			$html .= '</tr>';
+			$html .= '</tbody>';
+			$html .= '</table>';
+			$html .= '<div style="max-width: 1320px;margin:20px auto;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;">';
+			$html .= '<div style="padding:10px;">';
+			$html .= '<p style="font-size:12px;" class="mb-3">Mentioned above product’s Die is available with mentioned above moulder. This Die is Asha Enterprises Property. Asha Enterprises have the rights to take back the die without any prior notice.</p>';
+			$html .= '<p style="font-size:12px;" class="mb-3">All invoices should be sent with full particulars such as purchase order No;, Date with proper instructions, together with E Way bill & E Invoice wherever  applicable. Failure to comply with this will delay the settlement of payments.</p>';
+			$html .= '<p style="font-size:12px;" class="mb-1">Vendor shall issue GST compliant tax invoices as envisaged under GST Law containing details such as our GSTINs (as communicated), HSNs, tax etc. as required under rule 46 of CGST Act, 2017. Further, such invoice should be captured by the vendor in his outward supplies statements i.e. GSTR1 in the month when the supply was made. Further, relevant tax on such invoice should be duly deposited with the government exchequer by the vendor so as to enable us to claim input tax credit.</p>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<p style="max-width: 1320px;margin:20px auto;width:100%;" class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
+			$html .= '</body></html>';
+
+		}elseif($orders['client_id'] != 0){
+			$fittings = $this->model_catalog_order->getFittingss($orders['fittings_id']);
+			$client_moulder_data = $this->model_catalog_order->getClient($orders['client_id']);
+			$i = 0;
+			$product_data = $this->model_catalog_order->getProduct($orders['product_id']);
+			array_unshift($fittings,['name' => $product_data['name'], 'image' => $product_data['image']]);
+
+			$html = '<html>
+			<head>
+				<style>
+        	        /* Inline or local Bootstrap styles */
+        	        body { font-family: Arial, sans-serif; }
+					.detail_box p{font-size:16px;}
+					table{border-collapse:collapse;}
+					tr,td,th{border-style:solid;border-color:#000;}
+					table > :not(caption) > * > *{border-width: 0 1px;}
+					table > :not(caption) > *{border-width: 1px 0;}
+        	    </style>
+			</head>
+			<body>';
+			$html .= '<div style="display:flex;flex-direction:column;">';
+			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
+			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
+			$html .= '<div style="display: inline-block; width: 60%; vertical-align: top;" class="detail_box">';
+			$html .= '<p>Client Name:- '.$client_moulder_data['name'].'</p>';
+			$html .= '<p>'.$client_moulder_data['address'].'</p>';
+			$html .= '</div>';
+			$html .= '<div style="display: inline-block; width: 40%; vertical-align: top;" class="detail_box">';
+			$html .= '<p>Client Code:- AEC'.$orders['orders_id'].'</p>';
+			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
+			$html .= '<p>Delivery Date:- '.$orders['targeted_date'].'</p>';
+			$html .= '<p>Payment Terms:- '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($this->request->get['date']) ? $this->request->get['date'] : '' ) ).'</p>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
+			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Asha Enterprises, B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
+			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Store Office: - Shop No 4, Sai Krupa Chawl, Wagralpada Main Road, Boidapada, Vasai-401208</p>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order Received</h4>';
+			$html .= '<div style="max-width: 1320px;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
+			$html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;" class="mb-1">Dear Sir” Kindly acknowledge mentioned below order received from you.</p>';
+			$html .= '</div>';
+			$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+			$html .= '<thead>';
+			$html .= '<tr>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Sr No</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Product / Fittings</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Name</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Colour</th>';
+			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Quantity</th>';
+			$html .= '</tr>';
+			foreach($fittings as $key => $value){
+				$i = $i + 1;
+				$html .= '<tr>';
+				$html .= '<td style="padding:0.5rem;text-align:center;">'.$i.'</td>';
+				$html .= '<th style="width:20%;padding:0.5rem;text-align:center;"><img src="https://capandtab.com/image/'.$value["image"].'"" width="100" height="100" /></th>';
+				$html .= '<td style="padding:0.5rem;text-align:center;">'.$value['name'].'</td>';
+				// $html .= '<td style="padding:0.5rem;text-align:center;">'.$colour['name'].'</td>';
+				$html .= '<td style="padding:0.5rem;text-align:center;">'.$orders['qty'].'</td>';
+				$html .= '</tr>';
+			}
+			$html .= '</thead>';
+			$html .= '</table>';
+			$html .= '<p style="max-width: 1320px;margin:20px auto;width:100%;" class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
+			$html .= '</body></html>';
+
+		}
 
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
-        $dompdf->stream("order_raising.pdf", array("Attachment" => 1));
-	}
+		$pdfOutput = $dompdf->output();
 
-	// public function vieww(){
-	// 	$this->response->setOutput($this->load->view('catalog/test'));
-	// }
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: attachment; filename="' . $client_moulder_data['name'] . " PO " . $orders['po_no'] . '.pdf"');
+		echo $pdfOutput;
+		exit;
+        // $dompdf->stream($client_moulder_data['name']." PO ".$orders['po_no'].".pdf", array("Attachment" => 1));
+	}
 }

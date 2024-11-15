@@ -1,0 +1,88 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" id="order_save_btn" form="form-store_order" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>Order</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
+      <div class="card-body">
+        <form id="form-store_order" action="{{ save }}" method="post" data-oc-toggle="ajax">
+            <div class="row my-3">
+              <label class="col-sm-1 col-form-label">PO No</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="po_no" value="{{ po_no }}" disabled placeholder="PO No" id="input-po_no" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row my-3">
+            <div class="row my-3" id="moulder_div">
+              <label class="col-sm-1 col-form-label">Moulder Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="moulder_name" value="{{ moulder_name }}" disabled placeholder="Moulder Name" id="input-moulder_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row my-3" id="client_div">
+              <label class="col-sm-1 col-form-label">Client Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="client_name" value="{{ client_name }}" disabled placeholder="Client Name" id="input-client_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Image</label>
+              <div class="col-sm-11">
+                <div class="card image">
+                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="card-img-top"/>
+                  <input type="hidden" name="image" value="{{ image }}" id="input-image"/>
+                  <div class="card-body">
+                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
+                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning btn-sm btn-block"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-sm-1 col-form-label">Goods Receive (weight)</label>
+                <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="qty_rev" value="{{ qty_rev }}" placeholder="Quantity Received" id="qty_rev" class="form-control"/>
+                  </div>
+                </div>
+            </div>
+            <input type="hidden" name="store_order_id" value="{{ store_order_id }}" id="input-store_order-id"/>
+            <input type="hidden" name="order_type" value="{{ order_type }}" id="input-order_type"/>
+            <input type="hidden" name="orders_id" value="{{ orders_id }}" id="input-orders_id"/>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
+
+<script>
+  $(document).ready(function(){
+    if($('#input-order_type').val() == 1){
+      $('#client_div').show();
+      $('#moulder_div').hide();
+    }else{
+      $('#client_div').hide();
+      $('#moulder_div').show();
+    }
+  });
+</script>
