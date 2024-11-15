@@ -361,13 +361,13 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['qty'] = 0;
 	  	}
 
-		// if (isset($this->request->post['no_qty'])) {
-		// 	$data['no_qty'] = $this->request->post['no_qty'];
-	  	// } elseif (!empty($order_info)) {
-		// 	$data['no_qty'] = $order_info['no_qty'];
-	  	// } else {	
-		// 	$data['no_qty'] = 0;
-	  	// }
+		if (isset($this->request->post['no_qty'])) {
+			$data['no_qty'] = $this->request->post['no_qty'];
+	  	} elseif (!empty($order_info)) {
+			$data['no_qty'] = $order_info['no_qty'];
+	  	} else {	
+			$data['no_qty'] = 0;
+	  	}
 
 		if (isset($this->request->post['acc_fitts_id'])) {
 			$data['acc_fitts_id'] = $this->request->post['acc_fitts_id'];

@@ -29,7 +29,7 @@
                   </div>
               </div>
             </div>
-            {# <div class="row mb-3">
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">No Quantity</label>
               <div class="col-sm-11">
                   <div class="form-check form-switch form-switch-lg">
@@ -37,7 +37,7 @@
                     <input type="checkbox" name="no_qty" value="1" id="no_qty" class="form-check-input" {% if status %}checked{% endif %}/>
                   </div>
               </div>
-            </div> #}
+            </div>
             <div class="row mb-3" id="input-client-class-main">
               <label class="col-sm-1 col-form-label">Client</label>
               <div class="col-sm-11">
@@ -261,7 +261,7 @@
               </div>
             </div> #}
             <div class="row mb-3" id="input-bags-class-main">
-              <label class="col-sm-1 col-form-label">Number Of Bags</label>
+              <label class="col-sm-1 col-form-label">Number Of Powder Bags</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="bags" value="{{ bags }}" placeholder="Bags" id="bags" disabled class="form-control"/>
@@ -390,8 +390,62 @@ $(document).ready(function() {
     //   $('#input-pigment-class-main').hide();
     // }
   }
-    
+  
+  var no_qty = $('#no_qty').prop('checked');
+  if(no_qty){
+      $('#input-accessories-class-main').hide();
+      $('#input-die-class-main').hide();
+      $('#input-powder-class-main').hide();
+      $('#input-product-class-main').hide();
+      $('#input-search-class-main').hide();
+      $('#input-color-class-main').hide();
+      $('#input-check_color-class-main').hide();
+      $('#input-required_qty-class-main').hide();
+      $('#input-bags-class-main').hide();
+    }else{
+      var orderType = $('#input-order-type').val();
+      $('#input-search-class-main').show();
+      if (orderType == '1') {
+        $('#input-product-class-main').show();
+      } else {
+        $('#input-accessories-class-main').show();
+        $('#input-die-class-main').show();
+        $('#input-powder-class-main').show();
+        $('#input-bags-class-main').show();
+        $('#input-check_color-class-main').show();
+        $('#input-required_qty-class-main').show();
+        $('#input-color-class-main').show();
+      }
+    }
 });
+  $('#no_qty').change(function() {
+    var no_qty = $(this).prop('checked');
+    if(no_qty){
+      $('#input-accessories-class-main').hide();
+      $('#input-die-class-main').hide();
+      $('#input-powder-class-main').hide();
+      $('#input-product-class-main').hide();
+      $('#input-search-class-main').hide();
+      $('#input-color-class-main').hide();
+      $('#input-check_color-class-main').hide();
+      $('#input-required_qty-class-main').hide();
+      $('#input-bags-class-main').hide();
+    }else{
+      var orderType = $('#input-order-type').val();
+      $('#input-search-class-main').show();
+      if (orderType == '1') {
+        $('#input-product-class-main').show();
+      } else {
+        $('#input-accessories-class-main').show();
+        $('#input-die-class-main').show();
+        $('#input-powder-class-main').show();
+        $('#input-bags-class-main').show();
+        $('#input-check_color-class-main').show();
+        $('#input-required_qty-class-main').show();
+        $('#input-color-class-main').show();
+      }
+    }
+  });
 
  $('#qty').on('input', function() {
   // Add Required Quantity by getting entered qty
@@ -399,7 +453,11 @@ $(document).ready(function() {
     url: 'index.php?route=catalog/order|calculateQty&user_token={{user_token}}&qty='+$(this).val()+'&accessories_id='+$('#input-accessories-class').val(),
     type: 'GET',
     success: function(response) {
+    if($('#no_qty').prop('checked')){
+      $('#req_qty').val($(this).val());
+    }else{
       $('#req_qty').val(response.req_qty);
+    }
       $('#bags').val(response.bags);
     }
    });
