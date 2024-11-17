@@ -733,7 +733,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			} else {
 				$accessory['thumb'] = $accessory['image'];
 			}
-
+			$po_date = strtotime($orders['date_added']);
+			$targeted_date = strtotime($orders['targeted_date']);
 
 			$html = '<html>
 			<head>
@@ -764,8 +765,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<div style="display: inline-block; width: 40%; vertical-align: top;" class="detail_box">';
 			$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
 			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
-			$html .= '<p>PO Date:- '.$orders['date_added'].'</p>';
-			$html .= '<p>Delivery Date:- '.$orders['targeted_date'].'</p>';
+			$html .= '<p>PO Date:- '.date("d-m-Y", $po_date).'</p>';
+			$html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
 			$html .= '</div>';
 			$html .= '</div>';
 			$html .= '</div>';
@@ -805,7 +806,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<tr>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['weight'].'</td>';
 			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$colour['name'].'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['req_qty'].'</td>';
 			$html .= '</tr>';
@@ -827,6 +828,9 @@ class Order extends \Opencart\System\Engine\Controller {
 			$i = 0;
 			$product_data = $this->model_catalog_order->getProduct($orders['product_id']);
 			array_unshift($fittings,['name' => $product_data['name'], 'image' => $product_data['image']]);
+
+			$payment_date = !empty($this->request->get['date']) ? strtotime($this->request->get['date']) : 0;
+			$targeted_date = strtotime($orders['targeted_date']);
 
 			$html = '<html>
 			<head>
@@ -851,8 +855,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<div style="display: inline-block; width: 40%; vertical-align: top;" class="detail_box">';
 			$html .= '<p>Client Code:- AEC'.$orders['orders_id'].'</p>';
 			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
-			$html .= '<p>Delivery Date:- '.$orders['targeted_date'].'</p>';
-			$html .= '<p>Payment Terms:- '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($this->request->get['date']) ? $this->request->get['date'] : '' ) ).'</p>';
+			$html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
+			$html .= '<p>Payment Terms:- '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($payment_date) ? date("d-m-Y", $payment_date) : '' ) ).'</p>';
 			$html .= '</div>';
 			$html .= '</div>';
 			$html .= '</div>';
