@@ -806,7 +806,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['weight'].'</td>';
 			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$colour['name'].'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">0</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['req_qty'].'</td>';
 			$html .= '</tr>';
 			$html .= '</tbody>';
