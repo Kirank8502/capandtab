@@ -203,6 +203,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		
 		foreach ($results as $result) {
 			$date = strtotime($result['targeted_date']);
+			$po_date = strtotime($result['date_added']);
 			$data['orders'][] = array(
 				'orders_id'			=> $result['orders_id'],
 				'po_no'				=> $result['po_no'],
@@ -210,7 +211,9 @@ class Order extends \Opencart\System\Engine\Controller {
 				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$result['acc_fitts_id'])] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$result['acc_fitts_id'])] : 0))),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
+				'date_added'		=> date("d-m-Y", $po_date),
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
+				'view'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] .'&view_mode=1'. $url, true),
 				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true),
 				'export'            => $this->url->link('catalog/order|exportData', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
@@ -286,6 +289,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->load->model('catalog/order');
 		$data['text_form'] = !isset($this->request->get['orders_id']) ? 'Add' : 'Edit';
 		$data['edit_data'] = !isset($this->request->get['orders_id']) ? False : True;
+		$data['view_mode'] = !isset($this->request->get['view_mode']) ? False : True;
 		$this->document->setTitle('Order');
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -719,7 +723,8 @@ class Order extends \Opencart\System\Engine\Controller {
 		if($orders['moulder_id'] != 0){
 			$client_moulder_data = $this->model_catalog_order->getMoulder($orders['moulder_id']);
 			$powder = $this->model_catalog_order->getPowder($orders['powder_id']);
-			$accessory = $this->model_catalog_order->getAccessory($orders['accessories_id']);
+			$acc_id = !empty($orders['acc_fitts_id']) && $orders['acc_fitts_id'] > 0 && str_starts_with($orders['acc_fitts_id'],'acc_') ? str_replace("acc_","",$orders['acc_fitts_id']) : ((!empty($orders['acc_fitts_id']) && $orders['acc_fitts_id'] > 0 && str_starts_with($orders['acc_fitts_id'],'fitts_')) ? str_replace("fitts_","",$orders['acc_fitts_id']) : 0);
+			$accessory = $this->model_catalog_order->getAccessory($acc_id);
 			$die = $this->model_catalog_order->getDietype($orders['die_id']);
 			$colour = $this->model_catalog_order->getColour($orders['colour_id']);
 			$product = $this->model_catalog_order->getProduct($orders['product_id']);
@@ -817,7 +822,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</body></html>';
 
 		}elseif($orders['client_id'] != 0){
-			$fittings = $this->model_catalog_order->getFittingss($orders['fittings_id']);
+			$fittings = $this->model_catalog_order->getFittingss($orders['acc_fitts_id']);
 			$client_moulder_data = $this->model_catalog_order->getClient($orders['client_id']);
 			$i = 0;
 			$product_data = $this->model_catalog_order->getProduct($orders['product_id']);

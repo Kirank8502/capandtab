@@ -6,6 +6,7 @@
           <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
           <td class="text-center">Po No</td>
           <td class="text-center">Targeted Date</td>
+          <td class="text-center">PO Date</td>
           <td class="text-center">Product Name</td>
           <td class="text-center">Order Type</td>
           <td class="text-center">Qty</td>
@@ -20,11 +21,13 @@
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ order.orders_id }}" class="form-check-input"/></td>
               <td class="text-center">{{ order.po_no }}</td>
               <td class="text-center">{{ order.targeted_date }}</td>
+              <td class="text-center">{{ order.date_added }}</td>
               <td class="text-center">{{ order.product_name }}</td>
               <td class="text-center">{% if order.order_type == 0 %} Puchase Order Raising {% else %} Puchase Order Received {% endif %}</td>
               <td class="text-center">{{ order.qty }}</td>
               {# <td class="text-center">{% if order.status %}Enabled{% else %}Disabled{% endif %}</td> #}
               <td class="text-end">
+                <a href="{{ order.view }}" data-bs-toggle="tooltip" title="View" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a>
                 <a href="{{ order.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
                 {% if order.order_type == 0 %}
                   <a href="{{ order.export }}" data-bs-toggle="tooltip" title="Export" class="btn btn-success"><i class="fa-solid fa-file-arrow-down"></i></a>
