@@ -32,7 +32,7 @@ class Order extends \Opencart\System\Engine\Model {
 			// }
 		// }
 
-		$acc_fitts_id = isset($data['acc_fitts_id']) ? (is_array($data['acc_fitts_id']) ? (implode(',', (!empty($data['acc_fitts_id']) ? $data['acc_fitts_id'] : 0))) : 0):0;
+		$acc_fitts_id = !empty($data['acc_fitts_id']) ? $data['acc_fitts_id'] : 0;
 
 		$fittings_id = isset($data['fittings_ids']) ? (is_array($data['fittings_ids']) ? (implode(',', (!empty($data['fittings_ids']) ? $data['fittings_ids'] : 0))) : 0):0;
 
@@ -57,7 +57,7 @@ class Order extends \Opencart\System\Engine\Model {
 		// 	}
 		// }
 
-		$acc_fitts_id = isset($data['acc_fitts_id']) ? (is_array($data['acc_fitts_id']) ? (implode(',', (!empty($data['acc_fitts_id']) ? $data['acc_fitts_id'] : 0))) : 0):0;
+		$acc_fitts_id = !empty($data['acc_fitts_id']) ? $data['acc_fitts_id'] : 0;
 
 		$fittings_id = isset($data['fittings_ids']) ? (is_array($data['fittings_ids']) ? (implode(',', (!empty($data['fittings_ids']) ? $data['fittings_ids'] : 0))) : 0):0;
 

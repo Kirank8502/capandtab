@@ -187,6 +187,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$results = $this->model_catalog_order->getOrders($supplier_data);
 		$products = $this->model_catalog_order->getProducts();
 		$accessories = $this->model_catalog_order->getAccessories();
+		$fittings = $this->model_catalog_order->getFittings();
 
 		foreach($products as $key => $value) {
 			$product[$value['product_id']] = $value['name'];
@@ -195,6 +196,10 @@ class Order extends \Opencart\System\Engine\Controller {
 		foreach($accessories as $key_1 => $value_1) {
 			$accessory[$value_1['accessories_id']] = $value_1['name'];
 		}
+
+		foreach($fittings as $key_2 => $value_2) {
+			$fitts[$value_2['fittings_id']] = $value_2['name'];
+		}
 		
 		foreach ($results as $result) {
 			$date = strtotime($result['targeted_date']);
@@ -202,7 +207,7 @@ class Order extends \Opencart\System\Engine\Controller {
 				'orders_id'			=> $result['orders_id'],
 				'po_no'				=> $result['po_no'],
 				'targeted_date'		=> date("d-m-Y", $date),
-				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['accessories_id']) && $result['accessories_id'] > 0) ? $accessory[$result['accessories_id']] : 0)),
+				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$result['acc_fitts_id'])] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$result['acc_fitts_id'])] : 0))),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
@@ -210,7 +215,7 @@ class Order extends \Opencart\System\Engine\Controller {
 				'export'            => $this->url->link('catalog/order|exportData', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
 		}
-		
+
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
