@@ -110,16 +110,10 @@
               <label class="col-sm-1 col-form-label">Spare Parts / Extra Fittings</label>
               <div class="col-sm-11">
                 <div class="input-group">
-                  <select id="acc_fitts" name="acc_fitts_id[]" multiple="multiple" style="width: 100%">
+                  <select id="acc_fitts" name="acc_fitts_id" style="width: 100%">
                     {% for data in datas %}
-                      <option value="{{ data.acc_fitts_id }}"{% if data.acc_fitts_id in acc_fitts_id %} selected{% endif %}>{{ data.name }}</option>
+                      <option value="{{ data.acc_fitts_id }}"{% if data.acc_fitts_id == acc_fitts_id %} selected{% endif %}>{{ data.name }}</option>
                     {% endfor %}
-                      {# <option value="apple">Apple</option>
-                      <option value="banana">Banana</option>
-                      <option value="cherry">Cherry</option>
-                      <option value="grapes">Grapes</option>
-                      <option value="orange">Orange</option>
-                      <option value="pineapple">Pineapple</option> #}
                   </select>
                </div>
               </div>
@@ -223,7 +217,7 @@
                   </div>
               </div>
             </div> #}
-            {# <div class="row mb-3" id="input-fittings-class-main">
+            <div class="row mb-3" id="input-fittings-class-main">
               <label class="col-sm-1 col-form-label">Extra Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -235,7 +229,7 @@
                       </select>
                   </div>
               </div>
-            </div> #}
+            </div>
             <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Targeted Date</label>
               <div class="col-sm-11">
@@ -289,6 +283,7 @@ $('#input-order-type').on('change', function() {
     var accessoryField = $('#input-accessories-class-main');
     var bagsField = $('#input-bags-class-main');
     var masterbatchField = $('#input-master_batch-class-main');
+    var spare_fitts_Field = $('#input-search-class-main');
     // var pigmentField = $('#input-pigment-class-main');
     var colourField = $('#input-color-class-main');
     // var po_no = $('#input-po_no-class-main');
@@ -302,8 +297,9 @@ $('#input-order-type').on('change', function() {
         // weightField.show();
         colourField.hide();
         productField.show();
-        // fittingsField.show();
+        fittingsField.show();
         colorcheckField.hide();
+        spare_fitts_Field.hide();
         // masterbatchField.hide();
         // pigmentField.hide();
         vendorField.hide();
@@ -317,8 +313,9 @@ $('#input-order-type').on('change', function() {
         clientField.hide();
         productField.hide();
         colourField.show();
-        // fittingsField.hide();
+        fittingsField.hide();
         colorcheckField.show();
+        spare_fitts_Field.show();
         // masterbatchField.show();
         // pigmentField.show();
         vendorField.show();
@@ -342,7 +339,7 @@ $('#input-order-type').on('change', function() {
 $(document).ready(function() {
   var orderType = $('#input-order-type').val();
   if (orderType == '1') {
-    // $('#input-fittings-class-main').show();
+    $('#input-fittings-class-main').show();
     // $('#input-weight-class-main').show();
     $('#input-product-class-main').show();
     $('#input-accessories-class-main').hide();
@@ -351,6 +348,7 @@ $(document).ready(function() {
     $('#input-powder-class-main').hide();
     // $('#input-master_batch-class-main').hide();
     // $('#input-pigment-class-main').hide();
+    $('#input-search-class-main').hide();
     $('#input-color-class-main').hide();
     $('#input-bags-class-main').hide();
     $('#input-required_qty-class-main').hide();
@@ -365,10 +363,11 @@ $(document).ready(function() {
     //$('#input-master_batch-class-main').show();
     //$('#input-pigment-class-main').show();
     $('#input-bags-class-main').show();
+    $('#input-search-class-main').show();
     $('#input-check_color-class-main').show();
     $('#input-required_qty-class-main').show();
     $('#input-product-class-main').hide();
-    // $('#input-fittings-class-main').hide();
+    $('#input-fittings-class-main').hide();
     $('#input-color-class-main').show();
     $('#input-client-class-main').hide();
     $('#quantity-error').html('');
@@ -402,12 +401,14 @@ $(document).ready(function() {
       $('#input-check_color-class-main').hide();
       $('#input-required_qty-class-main').hide();
       $('#input-bags-class-main').hide();
+      $('#input-fittings-class-main').hide();
     }else{
       var orderType = $('#input-order-type').val();
-      $('#input-search-class-main').show();
       if (orderType == '1') {
         $('#input-product-class-main').show();
+        $('#input-fittings-class-main').show();
       } else {
+        $('#input-search-class-main').show();
         $('#input-accessories-class-main').show();
         $('#input-die-class-main').show();
         $('#input-powder-class-main').show();
@@ -430,12 +431,14 @@ $(document).ready(function() {
       $('#input-check_color-class-main').hide();
       $('#input-required_qty-class-main').hide();
       $('#input-bags-class-main').hide();
+      $('#input-fittings-class-main').hide();
     }else{
       var orderType = $('#input-order-type').val();
-      $('#input-search-class-main').show();
       if (orderType == '1') {
         $('#input-product-class-main').show();
+        $('#input-fittings-class-main').show();
       } else {
+        $('#input-search-class-main').show();
         $('#input-accessories-class-main').show();
         $('#input-die-class-main').show();
         $('#input-powder-class-main').show();
@@ -450,7 +453,8 @@ $(document).ready(function() {
  $('#qty').on('input', function() {
   // Add Required Quantity by getting entered qty
    $.ajax({
-    url: 'index.php?route=catalog/order|calculateQty&user_token={{user_token}}&qty='+$(this).val()+'&accessories_id='+$('#input-accessories-class').val(),
+    url: 'index.php?route=catalog/order|calculateQty&user_token={{user_token}}&qty='+$(this).val()+'&accessories_id='+$('#acc_fitts').val(),
+    // url: 'index.php?route=catalog/order|calculateQty&user_token={{user_token}}&qty='+$(this).val()+'&accessories_id='+$('#input-accessories-class').val(),
     type: 'GET',
     success: function(response) {
     if($('#no_qty').prop('checked')){
@@ -546,9 +550,12 @@ if($('#input-order-type').val() == 1){
 // });
 
 $(document).ready(function() {
-    // Apply Select2 to all select elements
     $('#acc_fitts').select2({
-        width: '100%' // Make sure the dropdown is responsive
+        width: '100%'
+    });
+
+    $('#input-fittings-class').select2({
+        width: '100%'
     });
 });
 </script>

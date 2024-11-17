@@ -197,8 +197,11 @@ class Order extends \Opencart\System\Engine\Controller {
 		}
 		
 		foreach ($results as $result) {
+			$date = strtotime($result['targeted_date']);
 			$data['orders'][] = array(
 				'orders_id'			=> $result['orders_id'],
+				'po_no'				=> $result['po_no'],
+				'targeted_date'		=> date("d-m-Y", $date),
 				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['accessories_id']) && $result['accessories_id'] > 0) ? $accessory[$result['accessories_id']] : 0)),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
@@ -671,7 +674,12 @@ class Order extends \Opencart\System\Engine\Controller {
 
 	public function checkAvaiability(){
 		$this->load->model('catalog/order');
-
+		// if(strpos($this->request->get['fittings_id'],'fitts_') != false){
+		// 	$id = explode('_',$this->request->get['fittings_id']);
+		// 	$fittings_id = $id[1];
+		// }else{
+		// $fittings_id = $this->request->get['fittings_id'];
+		// }
 		$qty = [];
 		$json = [];
 

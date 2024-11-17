@@ -47,15 +47,15 @@ class Order extends \Opencart\System\Engine\Model {
 	
 	public function editOrder($order_id, $data) {
 
-		if($data['order_type'] == 0 && $data['powder_id'] != 0){
-			$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "powder WHERE powder_id LIKE '%".$data['powder_id']."%'");
-			if($sql->row['qty'] >= $data['bags']){
-				$cal = $sql->row['qty'] - $data['bags'];
-				$sql_update = $this->db->query("UPDATE " . DB_PREFIX . "powder SET `qty` = ".(int)$cal." WHERE powder_id LIKE '%".$data['powder_id']."%'");
-			}else{
-				return false;
-			}
-		}
+		// if($data['order_type'] == 0 && $data['powder_id'] != 0){
+		// 	$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "powder WHERE powder_id LIKE '%".$data['powder_id']."%'");
+		// 	if($sql->row['qty'] >= $data['bags']){
+		// 		$cal = $sql->row['qty'] - $data['bags'];
+		// 		$sql_update = $this->db->query("UPDATE " . DB_PREFIX . "powder SET `qty` = ".(int)$cal." WHERE powder_id LIKE '%".$data['powder_id']."%'");
+		// 	}else{
+		// 		return false;
+		// 	}
+		// }
 
 		$acc_fitts_id = isset($data['acc_fitts_id']) ? (is_array($data['acc_fitts_id']) ? (implode(',', (!empty($data['acc_fitts_id']) ? $data['acc_fitts_id'] : 0))) : 0):0;
 
@@ -218,6 +218,10 @@ class Order extends \Opencart\System\Engine\Model {
 
 	public function getFittings($data = array()) {
 		$sql = "SELECT fittings_id,name,qty FROM " . DB_PREFIX . "fittings WHERE 1 ";
+		
+		if(!empty($data['fittings_id'])){
+			$sql .= " AND fittings_id = ".$data['fittings_id']."";
+		}
 
 		$query = $this->db->query($sql);
 	
@@ -481,7 +485,11 @@ class Order extends \Opencart\System\Engine\Model {
 		$sql = "SELECT name,weight FROM " . DB_PREFIX . "accessories WHERE status = '1' ";
 
 		if(!empty($data['qty']) && !empty($data['accessories_id'])){
-			$sql .= " AND accessories_id = " . $data['accessories_id'] . "";
+			if(str_starts_with($data['accessories_id'],'acc_') != false){
+				$id = explode('_',$data['accessories_id']);
+				$accessory_id = $id[1];
+				$sql .= " AND accessories_id = " . $accessory_id . "";
+			}
 		}
 
 		$query = $this->db->query($sql);

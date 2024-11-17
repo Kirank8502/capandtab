@@ -3,7 +3,8 @@ namespace Opencart\Admin\Model\Catalog;
 
 class Product extends \Opencart\System\Engine\Model {
 	public function addProduct($data) {
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".implode(',', $data['fittings_ids'])."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status']."'");
+		$fittings_id = !empty($data['fittings_ids']) && is_array($data['fittings_ids']) ? implode(',', $data['fittings_ids']) : 0;
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".$fittings_id."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status']."'");
 		
 		$product_id= $this->db->getLastId();
 		
@@ -11,7 +12,8 @@ class Product extends \Opencart\System\Engine\Model {
 	}
 	
 	public function editProduct($product_id, $data) {
-      	$this->db->query("UPDATE " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".implode(',', $data['fittings_ids'])."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status'] ."' WHERE product_id= '" . (int)$product_id. "'");
+		$fittings_id = !empty($data['fittings_ids']) && is_array($data['fittings_ids']) ? implode(',', $data['fittings_ids']) : 0;
+      	$this->db->query("UPDATE " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".$fittings_id."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status'] ."' WHERE product_id= '" . (int)$product_id. "'");
 		
 		$this->cache->delete('product');
 	}

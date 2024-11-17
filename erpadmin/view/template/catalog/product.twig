@@ -54,44 +54,44 @@ $('#button-filter').on('click', function () {
     $('#product').load('index.php?route=masters/product|list&user_token={{ user_token }}' + url);
 });
 
-$('#input-name').autocomplete({
-    'source': function (request, response) {
-        $.ajax({
-            url: 'index.php?route=masters/product|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
-            dataType: 'json',
-            success: function (json) {
-                response($.map(json, function (item) {
-                    return {
-                        label: item['name'],
-                        value: item['product_id']
-                    }
-                }));
-            }
-        });
-    },
-    'select': function (item) {
-        $('#input-name').val(item['label']);
-    }
-});
+// $('#input-name').autocomplete({
+//     'source': function (request, response) {
+//         $.ajax({
+//             url: 'index.php?route=masters/product|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+//             dataType: 'json',
+//             success: function (json) {
+//                 response($.map(json, function (item) {
+//                     return {
+//                         label: item['name'],
+//                         value: item['product_id']
+//                     }
+//                 }));
+//             }
+//         });
+//     },
+//     'select': function (item) {
+//         $('#input-name').val(item['label']);
+//     }
+// });
 
-$('#input-model').autocomplete({
-    'source': function (request, response) {
-        $.ajax({
-            url: 'index.php?route=masters/product|autocomplete&user_token={{ user_token }}&filter_model=' + encodeURIComponent(request),
-            dataType: 'json',
-            success: function (json) {
-                response($.map(json, function (item) {
-                    return {
-                        label: item['model'],
-                        value: item['product_id']
-                    }
-                }));
-            }
-        });
-    },
-    'select': function (item) {
-        $('#input-model').val(item['label']);
-    }
-});
+// $('#input-model').autocomplete({
+//     'source': function (request, response) {
+//         $.ajax({
+//             url: 'index.php?route=masters/product|autocomplete&user_token={{ user_token }}&filter_model=' + encodeURIComponent(request),
+//             dataType: 'json',
+//             success: function (json) {
+//                 response($.map(json, function (item) {
+//                     return {
+//                         label: item['model'],
+//                         value: item['product_id']
+//                     }
+//                 }));
+//             }
+//         });
+//     },
+//     'select': function (item) {
+//         $('#input-model').val(item['label']);
+//     }
+// });
 //--></script>
 {{ footer }}
