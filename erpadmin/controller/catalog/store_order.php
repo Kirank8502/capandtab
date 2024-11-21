@@ -264,7 +264,7 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 		$data['moulders'] = $this->model_catalog_store_order->getMoulders();
 
 		if (isset($this->request->get['orders_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$order_info = $this->model_catalog_store_order->getOrder($this->request->get['store_order_id']);
+			$order_info = $this->model_catalog_store_order->getOrder($this->request->get['store_order_id'],$this->request->get['orders_id']);
 		}
 
 		$data['user_token'] = $this->session->data['user_token'];
@@ -333,6 +333,14 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 			$data['order_type'] = 0;
 	  	}
 
+		if (isset($this->request->post['image'])) {
+			$data['image'] = $this->request->post['image'];
+	  	} elseif (!empty($order_info)) {
+			$data['image'] = $order_info['image'];
+	  	} else {	
+			$data['image'] = '';
+	  	}
+
 		// if (isset($this->request->post['targeted_date'])) {
 		// 	$data['targeted_date'] = $this->request->post['targeted_date'];
 	  	// } elseif (!empty($order_info)) {
@@ -341,10 +349,10 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 		// 	$data['targeted_date'] = '';
 	  	// }
 
-		if (isset($this->request->post['po_no'])) {
-			$data['po_no'] = $this->request->post['po_no'];
+		if (isset($this->request->post['order_po_no'])) {
+			$data['po_no'] = $this->request->post['order_po_no'];
 	  	} elseif (!empty($order_info)) {
-			$data['po_no'] = $order_info['po_no'];
+			$data['po_no'] = $order_info['order_po_no'];
 	  	} else {	
 			$data['po_no'] = '';
 	  	}

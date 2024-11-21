@@ -61,7 +61,7 @@ class Order extends \Opencart\System\Engine\Model {
 
 		$fittings_id = isset($data['fittings_ids']) ? (is_array($data['fittings_ids']) ? (implode(',', (!empty($data['fittings_ids']) ? $data['fittings_ids'] : 0))) : 0):0;
 
-      	$this->db->query("UPDATE " . DB_PREFIX . "orders SET `po_no` = '" . (!empty($data['po_no']) ? $data['po_no'] : 0) . "', `product_id` = '" . (!empty($data['product_id']) ? (int)$data['product_id'] : 0) . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (!empty($data['client_id']) ? (int)$data['client_id'] : 0) . "', powder_id = '" . (!empty($data['powder_id']) ? (int)$data['powder_id'] : 0) . "', colour_id = '" . (int)$data['colour_id'] . "', `acc_fitts_id` = '".$acc_fitts_id."', `no_qty` = ".$data['no_qty'].", master_batch_id = '" . (!empty($data['master_batch_id']) ? (int)$data['master_batch_id'] : 0) . "', pigment_id = '" . (!empty($data['pigment_id']) ? (int)$data['pigment_id'] : 0) . "', die_id = '" . (!empty($data['die_id']) ? (int)$data['die_id'] : 0) . "', moulder_id = '" . (!empty($data['moulder_id']) ? (int)$data['moulder_id'] : 0) . "', accessories_id = '" . (!empty($data['accessories_id']) ? (int)$data['accessories_id'] : 0) . "', `fittings_id` = '".$fittings_id."', address = '" . $this->db->escape($data['address']) . "', check_color = '".(!empty($data['check_color']) ? (int)$data['check_color'] : 0)."', bags = '".(!empty($data['bags']) ? (int)$data['bags'] : 0)."', total_weight = '".(!empty($data['weight']) ? (int)$data['weight'] : 0)."', qty = '" . (int)$data['qty'] . "', req_qty = '" . ((!empty($data['req_qty']) && $data['req_qty'] > 0) ? (int)$data['req_qty'] : 0) . "', targeted_date = date('" . $data['targeted_date'] . "') WHERE `orders_id` = ".$order_id);
+      	$this->db->query("UPDATE " . DB_PREFIX . "orders SET `po_no` = '" . (!empty($data['po_no']) ? $data['po_no'] : 0) . "', `product_id` = '" . (!empty($data['product_id']) ? (int)$data['product_id'] : 0) . "', order_type = '" . (int)$data['order_type'] . "', client_id = '" . (!empty($data['client_id']) ? (int)$data['client_id'] : 0) . "', powder_id = '" . (!empty($data['powder_id']) ? (int)$data['powder_id'] : 0) . "', colour_id = '" . (int)$data['colour_id'] . "', `acc_fitts_id` = '".$acc_fitts_id."', `no_qty` = ".(!empty($data['no_qty']) ? $data['no_qty'] : 0).", master_batch_id = '" . (!empty($data['master_batch_id']) ? (int)$data['master_batch_id'] : 0) . "', pigment_id = '" . (!empty($data['pigment_id']) ? (int)$data['pigment_id'] : 0) . "', die_id = '" . (!empty($data['die_id']) ? (int)$data['die_id'] : 0) . "', moulder_id = '" . (!empty($data['moulder_id']) ? (int)$data['moulder_id'] : 0) . "', accessories_id = '" . (!empty($data['accessories_id']) ? (int)$data['accessories_id'] : 0) . "', `fittings_id` = '".$fittings_id."', address = '" . $this->db->escape($data['address']) . "', check_color = '".(!empty($data['check_color']) ? (int)$data['check_color'] : 0)."', bags = '".(!empty($data['bags']) ? (int)$data['bags'] : 0)."', total_weight = '".(!empty($data['weight']) ? (int)$data['weight'] : 0)."', qty = '" . (int)$data['qty'] . "', req_qty = '" . ((!empty($data['req_qty']) && $data['req_qty'] > 0) ? (int)$data['req_qty'] : 0) . "', targeted_date = date('" . $data['targeted_date'] . "') WHERE `orders_id` = ".$order_id);
 
 		return true;
 		
@@ -75,6 +75,12 @@ class Order extends \Opencart\System\Engine\Model {
 	
 	public function getOrder($order_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "orders WHERE orders_id= '" . (int)$order_id. "'");
+		
+		return $query->row;
+	}
+
+	public function getOrderDetail($order_id) {
+		$query = $this->db->query("SELECT od.*,o.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON o.orders_id = od.orders_id  WHERE o.orders_id= '" . (int)$order_id. "'");
 		
 		return $query->row;
 	}
@@ -108,7 +114,7 @@ class Order extends \Opencart\System\Engine\Model {
 	}
 
 	public function getClient($client_id) {
-		$sql = "SELECT name,address FROM " . DB_PREFIX . "client WHERE client_id = '".$client_id."' ";
+		$sql = "SELECT name,address,email FROM " . DB_PREFIX . "client WHERE client_id = '".$client_id."' ";
 
 		$query = $this->db->query($sql);
 	
@@ -160,7 +166,7 @@ class Order extends \Opencart\System\Engine\Model {
 	}
 
 	public function getMoulder($moulder_id) {
-		$sql = "SELECT name,address FROM " . DB_PREFIX . "moulder WHERE moulder_id = '".$moulder_id."' ";
+		$sql = "SELECT name,address,email FROM " . DB_PREFIX . "moulder WHERE moulder_id = '".$moulder_id."' ";
 
 		$query = $this->db->query($sql);
 	
@@ -175,8 +181,14 @@ class Order extends \Opencart\System\Engine\Model {
 		return $query->rows;
 	}
 
-	public function getAccessory($data_id) {
-		$sql = "SELECT accessories_id,name,qty,image,weight FROM " . DB_PREFIX . "accessories WHERE accessories_id = ".$data_id."";
+	public function getAccessoryFittings($data) {
+		if (!empty($data) && $data > 0 && str_starts_with($data,'acc_')){
+			$acc_id = str_replace("acc_","",$data);
+			$sql = "SELECT accessories_id,name,qty,image,weight FROM " . DB_PREFIX . "accessories WHERE accessories_id = ".$acc_id."";
+		} elseif (!empty($data) && $data > 0 && str_starts_with($data,'fitts_')) {
+			$fitts = str_replace("fitts_","",$data);
+			$sql = "SELECT fittings_id,name,qty,image,weight FROM " . DB_PREFIX . "fittings WHERE fittings_id = ".$fitts."";
+		}
 
 		$query = $this->db->query($sql);
 	

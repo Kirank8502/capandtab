@@ -14,6 +14,7 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$data['add'] = $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['delete'] = $this->url->link('catalog/order|delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['send'] = $this->url->link('catalog/order|send', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['list'] = $this->getList();
 		
 		$data['header'] = $this->load->controller('common/header');
@@ -724,7 +725,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$client_moulder_data = $this->model_catalog_order->getMoulder($orders['moulder_id']);
 			$powder = $this->model_catalog_order->getPowder($orders['powder_id']);
 			$acc_id = !empty($orders['acc_fitts_id']) && $orders['acc_fitts_id'] > 0 && str_starts_with($orders['acc_fitts_id'],'acc_') ? str_replace("acc_","",$orders['acc_fitts_id']) : ((!empty($orders['acc_fitts_id']) && $orders['acc_fitts_id'] > 0 && str_starts_with($orders['acc_fitts_id'],'fitts_')) ? str_replace("fitts_","",$orders['acc_fitts_id']) : 0);
-			$accessory = $this->model_catalog_order->getAccessory($acc_id);
+			$accessory = $this->model_catalog_order->getAccessoryFittings($acc_id);
 			$die = $this->model_catalog_order->getDietype($orders['die_id']);
 			$colour = $this->model_catalog_order->getColour($orders['colour_id']);
 			$product = $this->model_catalog_order->getProduct($orders['product_id']);
@@ -758,11 +759,11 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</div>';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
 			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
-			$html .= '<div style="display: inline-block; width: 60%; vertical-align: top;" class="detail_box">';
+			$html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
 			$html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
 			$html .= '<p>'.$client_moulder_data['address'].'</p>';
 			$html .= '</div>';
-			$html .= '<div style="display: inline-block; width: 40%; vertical-align: top;" class="detail_box">';
+			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
 			$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
 			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
 			$html .= '<p>PO Date:- '.date("d-m-Y", $po_date).'</p>';
@@ -786,7 +787,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</tr>';
 			$html .= '<tr>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['name'].'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$powder['name'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($powder['name']) ? $powder['name'] : 'None').'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.($orders['bags'] ? $orders['bags']*25 : 0).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
 			$html .= '</tr>';
@@ -808,7 +809,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$colour['name'].'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['req_qty'].'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($orders['qty']) ? $orders['qty'] : $orders['req_qty']).'</td>';
 			$html .= '</tr>';
 			$html .= '</tbody>';
 			$html .= '</table>';
@@ -848,11 +849,11 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<div style="display:flex;flex-direction:column;">';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
 			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
-			$html .= '<div style="display: inline-block; width: 60%; vertical-align: top;" class="detail_box">';
+			$html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
 			$html .= '<p>Client Name:- '.$client_moulder_data['name'].'</p>';
 			$html .= '<p>'.$client_moulder_data['address'].'</p>';
 			$html .= '</div>';
-			$html .= '<div style="display: inline-block; width: 40%; vertical-align: top;" class="detail_box">';
+			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
 			$html .= '<p>Client Code:- AEC'.$orders['orders_id'].'</p>';
 			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
 			$html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
@@ -905,5 +906,52 @@ class Order extends \Opencart\System\Engine\Controller {
 		echo $pdfOutput;
 		exit;
         // $dompdf->stream($client_moulder_data['name']." PO ".$orders['po_no'].".pdf", array("Attachment" => 1));
+	}
+
+
+	public function send(){
+		$data = [];
+		$this->load->model('catalog/order');
+		if (isset($this->request->post['selected'])) {
+			foreach ($this->request->post['selected'] as $orders_id) {
+				$order_data = $this->model_catalog_order->getOrderDetail($orders_id);
+				if($order_data['order_type'] == '0'){
+					$email = $this->model_catalog_order->getMoulder($order_data['moulder_id']);
+				}else{
+					$email = $this->model_catalog_order->getClient($order_data['client_id']);
+				}
+
+				if ($this->config->get('config_mail_engine') && !empty($email['email'])) {
+					$mail_option = [
+						'parameter'     => $this->config->get('config_mail_parameter'),
+						'smtp_hostname' => $this->config->get('config_mail_smtp_hostname'),
+						'smtp_username' => $this->config->get('config_mail_smtp_username'),
+						'smtp_password' => html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8'),
+						'smtp_port'     => $this->config->get('config_mail_smtp_port'),
+						'smtp_timeout'  => $this->config->get('config_mail_smtp_timeout')
+					];
+					$data['name'] = !empty($email['name']) ? $email['name'] : "Sir/Ma'am";
+					$mail = new \Opencart\System\Library\Mail($this->config->get('config_mail_engine'), $mail_option);
+					$mail->setTo($email['email']);
+					$mail->setFrom($this->config->get('config_mail_smtp_username'));
+					$mail->setSender('CAPANDTAB');
+					$mail->setSubject('Testing');
+					$data['phone'] = $this->config->get('config_telephone');
+					$mail->setHtml($this->load->view('catalog/lr_copy_mail', $data));
+					if (!empty($order_data)) {
+						$mail->addAttachment(!empty($order_data['image']) ? $order_data['image'] : '');
+					}
+					$mail->send();
+				}
+			}
+
+			$this->session->data['success'] = 'Mail Sent Successfully';
+
+			$json['success'] = 'Mail Sent Successfully';
+			$json['redirect'] = $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'], true);
+			
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+		}
 	}
 }

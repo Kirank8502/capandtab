@@ -3,11 +3,11 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="float-end">
-        <button type="submit" form="form-order" formaction="{{ send }}" data-bs-toggle="tooltip" title="Send Mail" onclick="return confirm('{{ text_confirm }}');" class="btn btn-primary"><i class="fa-regular fa-envelope"></i></button>
-        <a href="{{ add }}" data-bs-toggle="tooltip" title="Add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-        <button type="submit" form="form-order" formaction="{{ delete }}" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+        {# <a href="{{ add }}" data-bs-toggle="tooltip" title="Add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a> #}
+        {# <button type="submit" form="form-lr_copy" formaction="{{ delete }}" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button> #}
+        <a href="{{ send }}" data-bs-toggle="tooltip" title="Send" class="btn btn-primary"><i class="fa-solid fa-envelope"></i></a>
       </div>
-      <h1>Order</h1>
+      <h1>LR Copy</h1>
       <ol class="breadcrumb">
         {% for breadcrumb in breadcrumbs %}
           <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
@@ -19,18 +19,18 @@
     <div class="row">
       <div class="col col-md-12">
         <div class="card">
-          <div class="card-header"><i class="fa-solid fa-list"></i>Order List</div>
-          <div id="order" class="card-body">{{ list }}</div>
+          <div class="card-header"><i class="fa-solid fa-list"></i>LR Copy List</div>
+          <div id="lr_copy" class="card-body">{{ list }}</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 <script type="text/javascript"><!--
-$('#order').on('click', 'thead a, .pagination a', function (e) {
+$('#lr_copy').on('click', 'thead a, .pagination a', function (e) {
     e.preventDefault();
 
-    $('#order').load(this.href);
+    $('#lr_copy').load(this.href);
 });
 
 $('#button-filter').on('click', function () {
@@ -48,21 +48,21 @@ $('#button-filter').on('click', function () {
         url += '&filter_status=' + filter_status;
     }
 
-    window.history.pushState({}, null, 'index.php?route=catalog/order&user_token={{ user_token }}' + url);
+    window.history.pushState({}, null, 'index.php?route=catalog/lr_copy&user_token={{ user_token }}' + url);
 
-    $('#order').load('index.php?route=catalog/order|list&user_token={{ user_token }}' + url);
+    $('#lr_copy').load('index.php?route=catalog/lr_copy|list&user_token={{ user_token }}' + url);
 });
 
 $('#input-name').autocomplete({
     'source': function (request, response) {
         $.ajax({
-            url: 'index.php?route=catalog/order|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+            url: 'index.php?route=catalog/lr_copy|autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
             dataType: 'json',
             success: function (json) {
                 response($.map(json, function (item) {
                     return {
                         label: item['name'],
-                        value: item['order_id']
+                        value: item['lr_copy_id']
                     }
                 }));
             }
@@ -76,13 +76,13 @@ $('#input-name').autocomplete({
 $('#input-model').autocomplete({
     'source': function (request, response) {
         $.ajax({
-            url: 'index.php?route=catalog/order|autocomplete&user_token={{ user_token }}&filter_model=' + encodeURIComponent(request),
+            url: 'index.php?route=catalog/lr_copy|autocomplete&user_token={{ user_token }}&filter_model=' + encodeURIComponent(request),
             dataType: 'json',
             success: function (json) {
                 response($.map(json, function (item) {
                     return {
                         label: item['model'],
-                        value: item['order_id']
+                        value: item['lr_copy_id']
                     }
                 }));
             }

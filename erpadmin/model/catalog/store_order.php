@@ -55,8 +55,12 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 		$this->cache->delete('order');
 	}	
 	
-	public function getOrder($store_order_id) {
-		$query = $this->db->query("SELECT o.qty,o.orders_id as o_orders_id,o.order_type,o.moulder_id,o.client_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON (o.po_no = od.po_no) WHERE od.store_order_id='" . $store_order_id. "'");
+	public function getOrder($store_order_id,$order_id) {
+		if(!empty($store_order_id)){
+			$query = $this->db->query("SELECT o.qty,o.orders_id as o_orders_id,o.order_type,o.po_no as order_po_no,o.moulder_id,o.client_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON (o.po_no = od.po_no) WHERE od.store_order_id='" . $store_order_id. "'");
+		}elseif($order_id){
+			$query = $this->db->query("SELECT o.qty,o.orders_id as o_orders_id,o.order_type,o.po_no as order_po_no,o.moulder_id,o.client_id,od.* FROM " . DB_PREFIX . "orders o LEFT JOIN " . DB_PREFIX . "order_details od ON (o.po_no = od.po_no) WHERE o.orders_id='" . $order_id. "'");
+		}
 		
 		return $query->row;
 	}
