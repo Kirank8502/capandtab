@@ -41,12 +41,12 @@ class LRCopy extends \Opencart\System\Engine\Controller {
             $mail->setFrom('kirankidecha85@gmail.com');
             $mail->setSender('Your Store');
             $mail->setSubject('Testing');
-            $mail->setHtml($this->load->view('catalog/mail_test', $data));
+            $mail->setHtml($this->load->view('catalog/lr_copy_mail', $data));
 
-            $file_path = DIR_DOWNLOAD . 'your_file.pdf'; // Ensure the file path is correct
-            if (file_exists($file_path)) {
-                $mail->addAttachment($file_path);
-            }
+            // $file_path = DIR_DOWNLOAD . 'your_file.pdf'; // Ensure the file path is correct
+            // if (file_exists($file_path)) {
+            //     $mail->addAttachment($file_path);
+            // }
             $mail->send();
         }
     }

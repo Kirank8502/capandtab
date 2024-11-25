@@ -464,10 +464,10 @@ $(document).ready(function() {
     type: 'GET',
     success: function(response) {
     if($('#input-powder-class').val()){
-      $('#req_qty').val($(this).val());
+      $('#req_qty').val(response.req_qty);
       $('#bags').val(response.bags);
     }else{
-      $('#req_qty').val(0);
+      $('#req_qty').val($(this).val());
       $('#bags').val(0);
     }
     }

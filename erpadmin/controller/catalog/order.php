@@ -180,8 +180,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			'filter_name'  => $filter_name,
 			'sort'  => $sort,
 			'order' => $order,
-			'start' => ($page - 1) * (int)$this->config->get('config_limit_admin'),
-			'limit' => $this->config->get('config_limit_admin')
+			'start' => ($page - 1) * 10,
+			'limit' => 10
 		);
 		$order_total = $this->model_catalog_order->getTotalOrders();
 		
@@ -269,11 +269,11 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['pagination'] = $this->load->controller('common/pagination', [
 			'total' => $order_total,
 			'page'  => $page,
-			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('catalog/order|list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+			'limit' => 10,
+			'url'   => $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
 		]);
 
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($order_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($order_total - $this->config->get('config_pagination_admin'))) ? $order_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $order_total, ceil($order_total / $this->config->get('config_pagination_admin')));
+		$data['results'] = sprintf($this->language->get('text_pagination'), ($order_total) ? (($page - 1) * 10) + 1 : 0, ((($page - 1) * 10) > ($order_total - 10)) ? $order_total : ((($page - 1) * 10) + 10), $order_total, ceil($order_total / 10));
 
 		// $data['results'] = sprintf($this->language->get('text_pagination'), ($stone_pnc_range_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($stone_pnc_range_total - $this->config->get('config_limit_admin'))) ? $stone_pnc_range_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $stone_pnc_range_total, ceil($stone_pnc_range_total / $this->config->get('config_limit_admin')));
 
@@ -725,7 +725,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$client_moulder_data = $this->model_catalog_order->getMoulder($orders['moulder_id']);
 			$powder = $this->model_catalog_order->getPowder($orders['powder_id']);
 			$acc_id = !empty($orders['acc_fitts_id']) && $orders['acc_fitts_id'] > 0 && str_starts_with($orders['acc_fitts_id'],'acc_') ? str_replace("acc_","",$orders['acc_fitts_id']) : ((!empty($orders['acc_fitts_id']) && $orders['acc_fitts_id'] > 0 && str_starts_with($orders['acc_fitts_id'],'fitts_')) ? str_replace("fitts_","",$orders['acc_fitts_id']) : 0);
-			$accessory = $this->model_catalog_order->getAccessoryFittings($acc_id);
+			$accessory = $this->model_catalog_order->getAccessoryFittings($orders['acc_fitts_id']);
 			$die = $this->model_catalog_order->getDietype($orders['die_id']);
 			$colour = $this->model_catalog_order->getColour($orders['colour_id']);
 			$product = $this->model_catalog_order->getProduct($orders['product_id']);
@@ -736,7 +736,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			}
 			$po_date = strtotime($orders['date_added']);
 			$targeted_date = strtotime($orders['targeted_date']);
-
 			$html = '<html>
 			<head>
 				<style>
@@ -752,9 +751,9 @@ class Order extends \Opencart\System\Engine\Controller {
 			<body>';
 			$html .= '<div style="display:flex;flex-direction:column;">';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
-			$html .= '<h1 class="text-center mt-4" style="text-align:center;margin-top:10px;">Asha Enterprises</h1>';
-			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Registered Office: - B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
-			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Store Office: - Shop No 4, Sai Krupa Chawl, Wagralpada Main Road, Boidapada, Vasai-401208</p>';
+			$html .= '<h1 class="text-center mt-4" style="text-align:center;margin-top:10px;">Noel Enterprises</h1>';
+			// $html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Registered Office: - B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
+			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Store Office: - Shop No 4, Sai Krupa Chawl, Waghral Pada Main Road, Bhoidapada, Vasai East-401208</p>';
 			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:10px;margin-top:0;">GSTN-27AGVPS5933R1Z1</p>';
 			$html .= '</div>';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
@@ -809,7 +808,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$colour['name'].'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($orders['qty']) ? $orders['qty'] : $orders['req_qty']).'</td>';
+			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($orders['req_qty']) ? $orders['req_qty'] : $orders['qty']).'</td>';
 			$html .= '</tr>';
 			$html .= '</tbody>';
 			$html .= '</table>';
@@ -824,7 +823,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</body></html>';
 
 		}elseif($orders['client_id'] != 0){
-			$fittings = $this->model_catalog_order->getFittingss($orders['acc_fitts_id']);
+			$fittings = $this->model_catalog_order->getFittingss($orders['fittings_id']);
 			$client_moulder_data = $this->model_catalog_order->getClient($orders['client_id']);
 			$i = 0;
 			$product_data = $this->model_catalog_order->getProduct($orders['product_id']);
@@ -862,8 +861,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</div>';
 			$html .= '</div>';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
-			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Asha Enterprises, B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
-			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Store Office: - Shop No 4, Sai Krupa Chawl, Wagralpada Main Road, Boidapada, Vasai-401208</p>';
+			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Noel Enterprises, Shop No 4, Sai Krupa Chawl, Waghral Pada Main Road, Bhoidapada, Vasai East-401208</p>';
+			// $html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Store Office: - </p>';
 			$html .= '</div>';
 			$html .= '</div>';
 			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order Received</h4>';
@@ -936,7 +935,7 @@ class Order extends \Opencart\System\Engine\Controller {
 					$mail->setFrom($this->config->get('config_mail_smtp_username'));
 					$mail->setSender('CAPANDTAB');
 					$mail->setSubject('Testing');
-					$data['phone'] = $this->config->get('config_telephone');
+					// $data['phone'] = $this->config->get('config_telephone');
 					$mail->setHtml($this->load->view('catalog/lr_copy_mail', $data));
 					if (!empty($order_data)) {
 						$mail->addAttachment(!empty($order_data['image']) ? $order_data['image'] : '');

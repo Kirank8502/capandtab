@@ -69,6 +69,18 @@ class Order extends \Opencart\System\Engine\Model {
 	}
 	
 	public function deleteOrder($order_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "orders WHERE orders_id= '" . (int)$order_id. "'");
+
+		if($query->row['order_type'] == 0 && $query->row['powder_id'] != 0){
+			$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "powder WHERE powder_id LIKE '%".$query->row['powder_id']."%'");
+			if($sql->row['qty']){
+				$cal = $sql->row['qty'] + $query->row['bags'];
+				$sql_update = $this->db->query("UPDATE " . DB_PREFIX . "powder SET `qty` = ".(int)$cal." WHERE powder_id LIKE '%".$query->row['powder_id']."%'");
+			}else{
+				return false;
+			}
+		}
+
 		$this->db->query("DELETE FROM " . DB_PREFIX . "orders WHERE orders_id= '" . (int)$order_id. "'");			
 		$this->cache->delete('order');
 	}	
@@ -114,7 +126,7 @@ class Order extends \Opencart\System\Engine\Model {
 	}
 
 	public function getClient($client_id) {
-		$sql = "SELECT name,address,email FROM " . DB_PREFIX . "client WHERE client_id = '".$client_id."' ";
+		$sql = "SELECT name,address FROM " . DB_PREFIX . "client WHERE client_id = '".$client_id."' ";
 
 		$query = $this->db->query($sql);
 	
@@ -496,13 +508,16 @@ class Order extends \Opencart\System\Engine\Model {
 	public function getAccessoriesDetails($data = array()) {
 		$sql = "SELECT name,weight FROM " . DB_PREFIX . "accessories WHERE status = '1' ";
 
-		if(!empty($data['qty']) && !empty($data['accessories_id'])){
-			if(str_starts_with($data['accessories_id'],'acc_') != false){
-				$id = explode('_',$data['accessories_id']);
-				$accessory_id = $id[1];
-				$sql .= " AND accessories_id = " . $accessory_id . "";
-			}
-		}
+		$acc_id = ((!empty($data['accessories_id']) && $data['accessories_id'] > 0 && str_starts_with($data['accessories_id'],'acc_')) ? str_replace("acc_","",$data['accessories_id']) : 0);
+
+		$sql .= " AND accessories_id = ".$acc_id."";
+		// if(!empty($data['qty']) && !empty($data['accessories_id'])){
+		// 	if(str_starts_with($data['accessories_id'],'acc_') != false){
+		// 		$id = explode('_',$data['accessories_id']);
+		// 		$accessory_id = $id[1];
+		// 		$sql .= " AND accessories_id = " . $accessory_id . "";
+		// 	}
+		// }
 
 		$query = $this->db->query($sql);
 	
