@@ -1,0 +1,119 @@
+<form id="form-purchase" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#purchase">
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
+          <td class="text-center">Product</td>
+          <td class="text-center">Rate</td>
+          <td class="text-center">Amount</td>
+          <td class="text-center">Qty</td>
+          <td class="text-center">Purchase Date</td>
+          <td class="text-end">Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% if purchases %}
+          {% for purchase in purchases %}
+            <tr>
+              <td class="text-center"><input type="checkbox" name="selected[]" value="{{ purchase.purchase_id }}" class="form-check-input"/></td>
+              <td class="text-center">{{ purchase.product_id }}</td>
+              <td class="text-center">{{ purchase.rate }}</td>
+              <td class="text-center">{{ purchase.amount }}</td>
+              <td class="text-center">{{ purchase.qty }}</td>
+              <td class="text-center">{{ purchase.purchase_date }}</td>
+              <td class="text-end">
+                <a href="{{ purchase.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td class="text-center" colspan="7">{{ text_no_results }}</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 text-start">{{ pagination }}</div>
+    <div class="col-sm-6 text-end">{{ results }}</div>
+  </div>
+</form>
+
+<div class="modal fade" id="exampleModalTemp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Payment Terms</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center flex-column">
+        <div class="row mb-3" id="input-payment_term-class-main">
+          <label class="col-sm-2 col-form-label">Term</label>
+          <div class="col-sm-10">
+            <div class="input-group">
+              <select name="payment_term" id="input-payment_term" class="form-select">
+                <option value="1">Advance</option>
+                <option value="2">Select Date</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3" id="input-term_date-class-main">
+          <label class="col-sm-2 col-form-label">Date</label>
+          <div class="col-sm-10">
+              <div class="input-group">
+                <input type="date" name="term_date" value="{{ term_date }}" id="term_date" class="form-control date"/>
+              </div>
+          </div>
+        </div>
+        <button id="payment_term_submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#print_pdf').on('click',function(e) {
+  e.preventDefault();
+  var exporturl = $(this).data('val');
+  var term = 1;
+  var date = 0;
+
+  $('#exampleModalTemp').modal('show');
+  $('#payment_term_submit').on('click',function(e){
+    term = $('#input-payment_term').val();
+    date = $('#term_date').val();
+    $('#exampleModalTemp').modal('hide');
+    window.location.href = exporturl+'&term='+term+'&date='+date;
+    // $.ajax({
+    //     url: exporturl+'&term='+term+'&date='+date,
+    //     type: 'GET',
+    //     success: function(response) {
+    //       var blob = new Blob([response], { type: 'application/pdf' });
+        
+    //       var link = document.createElement('a');
+    //       link.href = URL.createObjectURL(blob);
+    //       link.download = 'filename.pdf';
+    //       link.click();
+    //     },
+    //     error: function() {
+    //         // $('.modal-body').html('<p>Image could not be loaded.</p>');
+    //     }
+    // });
+  });
+});
+
+$('#input-payment_term').on('change',function(e){
+  if($(this).val() == 2){
+    $('#input-term_date-class-main').show();
+  }else{
+    $('#input-term_date-class-main').hide();
+  }
+});
+
+$(document).ready(function() {
+  $('#input-term_date-class-main').hide();
+});
+</script>

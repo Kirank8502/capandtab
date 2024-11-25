@@ -52,6 +52,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			if ($this->user->hasPermission('access', 'catalog/purchase')) {
+				$catalog[] = [
+					'name'	   => 'Purchase',
+					'href'     => $this->url->link('catalog/purchase', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			if ($this->user->hasPermission('access', 'catalog/lr_copy')) {
 				$catalog[] = [
 					'name'	   => 'LR Copy',
@@ -155,7 +163,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				$data['menus'][] = [
 					'id'       => 'menu-catalog',
 					'icon'	   => 'fa-solid fa-tag',
-					'name'	   => $this->language->get('text_catalog'),
+					'name'	   => 'Menu',
 					'href'     => '',
 					'children' => $catalog
 				];

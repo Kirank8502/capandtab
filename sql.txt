@@ -256,3 +256,17 @@ ADD COLUMN `acc_fitts_id` varchar(255) NOT NULL DEFAULT '' AFTER `bags`;
 
 ALTER TABLE `dd_orders`
 ADD COLUMN `no_qty` tinyint(1) NOT NULL DEFAULT 0 AFTER `bags`;
+
+CREATE TABLE `dd_purchase` (
+  `purchase_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` varchar(50) NOT NULL DEFAULT '',
+  `file` varchar(255) NOT NULL DEFAULT '',
+  `vendor_id` varchar(50) NOT NULL DEFAULT '',
+  `qty` int(10) NOT NULL DEFAULT 0,
+  `rate` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `gst` int(5) NOT NULL DEFAULT 0,
+  `purchase_date` date NOT NULL DEFAULT '2020-01-01',
+  `date_added` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`purchase_id`)
+);
