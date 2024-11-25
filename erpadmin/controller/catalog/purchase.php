@@ -251,6 +251,7 @@ class Purchase extends \Opencart\System\Engine\Controller {
 				'qty'				=> $result['qty'],
 				'rate'				=> $result['rate'],
 				'amount'		    => $result['amount'],
+				'file'		        => HTTP_CATALOG .'crm_storage/download/'. $result['file'],
 				'edit'				=> $this->url->link('catalog/purchase|form', 'user_token=' . $this->session->data['user_token'] . '&purchase_id=' . $result['purchase_id'] . $url, true),
 			);
 		}

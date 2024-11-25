@@ -9,6 +9,7 @@
           <td class="text-center">Amount</td>
           <td class="text-center">Qty</td>
           <td class="text-center">Purchase Date</td>
+          <td class="text-center">Invoice</td>
           <td class="text-end">Action</td>
         </tr>
       </thead>
@@ -22,6 +23,7 @@
               <td class="text-center">{{ purchase.amount }}</td>
               <td class="text-center">{{ purchase.qty }}</td>
               <td class="text-center">{{ purchase.purchase_date }}</td>
+              <td class="text-center"><a href="{{ purchase.file }}" target="_blank" data-bs-toggle="tooltip" title="View" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a></td>
               <td class="text-end">
                 <a href="{{ purchase.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
               </td>
