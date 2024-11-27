@@ -27,7 +27,7 @@
               <div class="col-sm-11">
                   <div class="input-group">
                    <select name="order_type" id="input-order-type" {% if view_mode %} disabled {% endif %} class="form-select">
-                        <option value="0" {% if order_type == 0 %} selected{% endif %}>Puchase Order Raising</option>
+                        <option value="0" {% if order_type == 0 %} selected{% endif %}>Job Work Order</option>
                         <option value="1" {% if order_type == 1 %} selected{% endif %}>Puchase Order Received</option>
                       </select>
                   </div>
@@ -189,6 +189,7 @@
               <div class="col-sm-11">
                   <div class="input-group">
                     <select name="check_color" id="input-check_color" class="form-select" {% if view_mode %} disabled {% endif %}>
+                        <option value="0" {% if check_color == 0 %} selected{% endif %}>None</option>
                         <option value="1" {% if check_color == 1 %} selected{% endif %}>Pigment</option>
                         <option value="2" {% if check_color == 2 %} selected{% endif %}>Master Batch</option>
                       </select>

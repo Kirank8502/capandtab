@@ -23,7 +23,7 @@
               <td class="text-center">{{ order.targeted_date }}</td>
               <td class="text-center">{{ order.date_added }}</td>
               <td class="text-center">{{ order.product_name }}</td>
-              <td class="text-center">{% if order.order_type == 0 %} Puchase Order Raising {% else %} Puchase Order Received {% endif %}</td>
+              <td class="text-center">{% if order.order_type == 0 %} Job Work Order {% else %} Puchase Order Received {% endif %}</td>
               <td class="text-center">{{ order.qty }}</td>
               {# <td class="text-center">{% if order.status %}Enabled{% else %}Disabled{% endif %}</td> #}
               <td class="text-end">

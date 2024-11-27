@@ -270,3 +270,9 @@ CREATE TABLE `dd_purchase` (
   `date_added` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`purchase_id`)
 );
+
+ALTER TABLE `dd_purchase`
+ADD COLUMN `orders_id` int(11) NOT NULL DEFAULT 0 AFTER `vendor_id`;
+
+ALTER TABLE `dd_purchase`
+ADD COLUMN `gst_status` tinyint(1) NOT NULL DEFAULT 0 AFTER `gst`;

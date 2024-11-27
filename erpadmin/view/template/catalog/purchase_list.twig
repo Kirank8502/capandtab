@@ -5,6 +5,7 @@
         <tr>
           <td class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></td>
           <td class="text-center">Product</td>
+          <td class="text-center">Vendor</td>
           <td class="text-center">Rate</td>
           <td class="text-center">Amount</td>
           <td class="text-center">Qty</td>
@@ -19,6 +20,7 @@
             <tr>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ purchase.purchase_id }}" class="form-check-input"/></td>
               <td class="text-center">{{ purchase.product_id }}</td>
+              <td class="text-center">{{ purchase.vendor_id }}</td>
               <td class="text-center">{{ purchase.rate }}</td>
               <td class="text-center">{{ purchase.amount }}</td>
               <td class="text-center">{{ purchase.qty }}</td>

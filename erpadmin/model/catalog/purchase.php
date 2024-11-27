@@ -5,7 +5,35 @@ class Purchase extends \Opencart\System\Engine\Model {
 
 		$product_ids = isset($data['product_id']) ? (is_array($data['product_id']) ? (implode(',', (!empty($data['product_id']) ? $data['product_id'] : 0))) : 0):0;
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "purchase SET `product_id` = '" . $this->db->escape($product_ids) . "', file = '".(!empty($data['filename']) ? $this->db->escape($data['filename']) : '')."' , vendor_id = '" . (!empty($data['vendor_id']) ? $this->db->escape($data['vendor_id']) : '') . "', `rate` = '" . (!empty($data['rate']) ? $data['rate'] : 0.00) . "', `amount` = '" . (!empty($data['amount']) ? $data['amount'] : 0.00) . "', qty = '" . (!empty($data['qty']) ? (int)$data['qty'] : 0) . "', gst = '" . (!empty($data['gst']) ? (int)$data['gst'] : 0) . "', purchase_date = date('" . $data['purchase_date'] . "'), date_added = NOW()");
+		foreach($data['product_id'] as $key => $value){
+			if(str_starts_with($value,'acc_')){
+				$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "accessories WHERE accessories_id = ".str_replace("acc_","",$value)."");
+				$qty = $sql->row['qty']+$data['qty'];
+				$this->db->query("UPDATE " . DB_PREFIX . "accessories SET qty = ".$qty." WHERE accessories_id = ".str_replace("acc_","",$value)."");
+			}elseif(str_starts_with($value,'fitts_')){
+				$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "fittings WHERE fittings_id = ".str_replace("fitts_","",$value)."");
+				$qty = $sql->row['qty']+$data['qty'];
+				$this->db->query("UPDATE " . DB_PREFIX . "fittings SET qty = ".$qty." WHERE fittings_id = ".str_replace("fitts_","",$value)."");
+			}elseif(str_starts_with($value,'prod_')){
+
+			}elseif(str_starts_with($value,'pow_')){
+				$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "powder WHERE powder_id = ".str_replace("pow_","",$value)."");
+				$qty = $sql->row['qty']+$data['qty'];
+				$this->db->query("UPDATE " . DB_PREFIX . "powder SET qty = ".$qty." WHERE powder_id = ".str_replace("pow_","",$value)."");
+			}elseif(str_starts_with($value,'mb_')){
+				$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "master_batch WHERE master_batch_id = ".str_replace("mb_","",$value)."");
+				$qty = $sql->row['qty']+$data['qty'];
+				$this->db->query("UPDATE " . DB_PREFIX . "master_batch SET qty = ".$qty." WHERE master_batch_id = ".str_replace("mb_","",$value)."");
+			}elseif(str_starts_with($value,'pig_')){
+				$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "pigment WHERE pigment_id = ".str_replace("pig_","",$value)."");
+				$qty = $sql->row['qty']+$data['qty'];
+				$this->db->query("UPDATE " . DB_PREFIX . "pigment SET qty = ".$qty." WHERE pigment_id = ".str_replace("pig_","",$value)."");
+			}elseif(str_starts_with($value,'dies_')){
+				
+			}
+		}
+
+		$this->db->query("INSERT INTO " . DB_PREFIX . "purchase SET `product_id` = '" . $this->db->escape($product_ids) . "', file = '".(!empty($data['filename']) ? $this->db->escape($data['filename']) : '')."' , vendor_id = '" . (!empty($data['vendor_id']) ? $this->db->escape($data['vendor_id']) : '') . "', orders_id = '" . (!empty($data['orders_id']) ? $this->db->escape($data['orders_id']) : 0) . "', `rate` = '" . (!empty($data['rate']) ? $data['rate'] : 0.00) . "', `amount` = '" . (!empty($data['amount']) ? $data['amount'] : 0.00) . "', qty = '" . (!empty($data['qty']) ? (int)$data['qty'] : 0) . "', gst = '" . (!empty($data['gst']) ? (int)$data['gst'] : 0) . "', gst_status = '" . (!empty($data['gst_status']) ? (int)$data['gst_status'] : 0) . "', purchase_date = date('" . $data['purchase_date'] . "'), date_added = NOW()");
 
 		$purchase_id = $this->db->getLastId();
 
@@ -18,7 +46,7 @@ class Purchase extends \Opencart\System\Engine\Model {
 
 		$product_ids = isset($data['product_id']) ? (is_array($data['product_id']) ? (implode(',', (!empty($data['product_id']) ? $data['product_id'] : 0))) : 0):0;
 
-      	$this->db->query("UPDATE " . DB_PREFIX . "purchase SET `product_id` = '" . $this->db->escape($product_ids) . "', file = '".(!empty($data['filename']) ? $this->db->escape($data['filename']) : '')."' , vendor_id = '" . (!empty($data['vendor_id']) ? $this->db->escape($data['vendor_id']) : '') . "', `rate` = '" . (!empty($data['rate']) ? $data['rate'] : 0.00) . "', `amount` = '" . (!empty($data['amount']) ? $data['amount'] : 0.00) . "', qty = '" . (!empty($data['qty']) ? (int)$data['qty'] : 0) . "', gst = '" . (!empty($data['gst']) ? (int)$data['gst'] : 0) . "', purchase_date = date('" . $data['purchase_date'] . "') WHERE `purchase_id` = ".$purchase_id);
+      	$this->db->query("UPDATE " . DB_PREFIX . "purchase SET `product_id` = '" . $this->db->escape($product_ids) . "', file = '".(!empty($data['filename']) ? $this->db->escape($data['filename']) : '')."' , vendor_id = '" . (!empty($data['vendor_id']) ? $this->db->escape($data['vendor_id']) : '') . "', orders_id = '" . (!empty($data['orders_id']) ? $this->db->escape($data['orders_id']) : 0) . "', `rate` = '" . (!empty($data['rate']) ? $data['rate'] : 0.00) . "', `amount` = '" . (!empty($data['amount']) ? $data['amount'] : 0.00) . "', qty = '" . (!empty($data['qty']) ? (int)$data['qty'] : 0) . "', gst = '" . (!empty($data['gst']) ? (int)$data['gst'] : 0) . "', gst_status = '" . (!empty($data['gst_status']) ? (int)$data['gst_status'] : 0) . "', purchase_date = date('" . $data['purchase_date'] . "') WHERE `purchase_id` = ".$purchase_id);
 
 		return true;
 		
@@ -233,6 +261,14 @@ class Purchase extends \Opencart\System\Engine\Model {
       	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "purchase");
 		
 		return $query->row['total'];
+	}
+
+	public function getOrders() {
+		$sql = "SELECT orders_id,po_no FROM " . DB_PREFIX . "orders WHERE 1";
+
+		$query = $this->db->query($sql);
+	
+		return $query->rows;
 	}
 
 	public function getOrderDetails($data=array()) {

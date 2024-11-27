@@ -193,33 +193,37 @@ class Purchase extends \Opencart\System\Engine\Controller {
 		$master_batchs = $this->model_catalog_purchase->getMasterBatchs();
 		$pigments = $this->model_catalog_purchase->getPigments();
 		$dies = $this->model_catalog_purchase->getDies();
+		
+		$moulders = $this->model_catalog_purchase->getMoulders();
+		$clients = $this->model_catalog_purchase->getClients();
 
 		foreach($products as $key => $value) {
 			$product[$value['product_id']] = $value['name'];
 		}
-
 		foreach($accessories as $key_1 => $value_1) {
 			$accessory[$value_1['accessories_id']] = $value_1['name'];
 		}
-
 		foreach($fittings as $key_2 => $value_2) {
 			$fitts[$value_2['fittings_id']] = $value_2['name'];
 		}
-
         foreach($powders as $key_3 => $value_3) {
 			$pow[$value_3['powder_id']] = $value_3['name'];
 		}
-
 		foreach($master_batchs as $key_4 => $value_4) {
 			$mb[$value_4['master_batch_id']] = $value_4['name'];
 		}
-
 		foreach($pigments as $key_5 => $value_5) {
 			$pig[$value_5['pigment_id']] = $value_5['name'];
 		}
-
         foreach($dies as $key_6 => $value_6) {
 			$di[$value_6['die_id']] = $value_6['name'];
+		}
+
+		foreach($moulders as $key_7 => $value_7) {
+			$mol[$value_7['moulder_id']] = $value_7['name'];
+		}
+		foreach($clients as $key_8 => $value_8) {
+			$cli[$value_8['client_id']] = $value_8['name'];
 		}
 		
 		foreach ($results as $result) {
@@ -248,6 +252,7 @@ class Purchase extends \Opencart\System\Engine\Controller {
 				'purchase_id'		=> $result['purchase_id'],
 				'purchase_date'		=> date("d-m-Y", $date),
 				'product_id'        => implode(',',$all_prod),
+				'vendor_id'         => !empty($result['vendor_id']) && str_starts_with($result['vendor_id'],'cli_') ? $cli[str_replace("cli_","",$result['vendor_id'])] : (str_starts_with($result['vendor_id'],'cli_') ? $mol[str_replace("mol_","",$result['vendor_id'])] : 'None'),
 				'qty'				=> $result['qty'],
 				'rate'				=> $result['rate'],
 				'amount'		    => $result['amount'],
@@ -367,6 +372,7 @@ class Purchase extends \Opencart\System\Engine\Controller {
 		$data['action'] = $this->url->link('catalog/purchase|save', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
 		$data['back'] = $this->url->link('catalog/purchase', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['orders'] = $this->model_catalog_purchase->getOrders();
 		$data['products'] = $this->model_catalog_purchase->getProducts();
 		$data['clients'] = $this->model_catalog_purchase->getClients();
 		$data['powders'] = $this->model_catalog_purchase->getPowders();
@@ -453,6 +459,22 @@ class Purchase extends \Opencart\System\Engine\Controller {
 			$data['gst'] = $order_info['gst'];
 	  	} else {
 			$data['gst'] = 0;
+	  	}
+
+		if (isset($this->request->post['gst_status'])) {
+			$data['gst_status'] = $this->request->post['gst_status'];
+	  	} elseif (!empty($order_info)) {
+			$data['gst_status'] = $order_info['gst_status'];
+	  	} else {
+			$data['gst_status'] = 0;
+	  	}
+
+		if (isset($this->request->post['orders_id'])) {
+			$data['orders_id'] = $this->request->post['orders_id'];
+	  	} elseif (!empty($order_info)) {
+			$data['orders_id'] = $order_info['orders_id'];
+	  	} else {
+			$data['orders_id'] = 0;
 	  	}
 
 		if (isset($this->request->post['vendor_id'])) {

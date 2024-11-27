@@ -18,6 +18,19 @@
       <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
       <div class="card-body">
         <form id="form-purchase" action="{{ action }}" method="post" data-oc-toggle="ajax">
+            <div class="row mb-3" id="input-po_no-class-main">
+              <label class="col-sm-1 col-form-label">PO NO</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="orders_id" id="input-po_no-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for order in orders %}
+                          <option value="{{ order.orders_id }}"{% if order.orders_id == orders_id %} selected{% endif %}>{{ order.po_no }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
             <div class="row mb-3" id="input-vendor-class-main">
               <label class="col-sm-1 col-form-label">Vendor</label>
               <div class="col-sm-11">
@@ -44,12 +57,11 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label for="input-filename" class="col-sm-1 col-form-label">Purchase Invoice</label>
+              <label class="col-sm-1 col-form-label">Purchase Date</label>
               <div class="col-sm-11">
-                <div class="input-group">
-                  <button type="button" id="button-upload" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload</button>
-                  <input type="text" name="filename" value="{{ file }}" placeholder="FileName" id="input-filename" class="form-control"/>
-                </div>
+                  <div class="input-group">
+                    <input type="date" name="purchase_date" value="{{ purchase_date }}" placeholder="Purchase Date" id="purchase_date" class="form-control date"/>
+                  </div>
               </div>
             </div>
             <div class="row mb-3">
@@ -69,14 +81,15 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Amount</label>
+              <label class="col-sm-1 col-form-label">With GST</label>
               <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="number" name="amount" value="{{ amount }}" min="0.00" step="0.01" placeholder="Amount" id="amount" class="form-control"/>
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="gst_status" value="0"/>
+                    <input type="checkbox" name="gst_status" value="1" id="gst_status" class="form-check-input" {% if gst_status %}checked{% endif %}/>
                   </div>
               </div>
             </div>
-            <div class="row mb-3">
+            <div class="row mb-3" id="input-gst-class-main">
               <label class="col-sm-1 col-form-label">GST (in %)</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -85,11 +98,20 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Purchase Date</label>
+              <label class="col-sm-1 col-form-label">Amount</label>
               <div class="col-sm-11">
                   <div class="input-group">
-                    <input type="date" name="purchase_date" value="{{ purchase_date }}" placeholder="Purchase Date" id="purchase_date" class="form-control date"/>
+                    <input type="number" name="amount" value="{{ amount }}" min="0.00" step="0.01" placeholder="Amount" id="amount" class="form-control"/>
                   </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="input-filename" class="col-sm-1 col-form-label">Purchase Invoice</label>
+              <div class="col-sm-11">
+                <div class="input-group">
+                  <button type="button" id="button-upload" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload</button>
+                  <input type="text" name="filename" value="{{ file }}" placeholder="FileName" id="input-filename" class="form-control"/>
+                </div>
               </div>
             </div>
           <input type="hidden" name="purchase_id" value="{{ purchase_id }}" id="input-purchase-id"/>
@@ -109,6 +131,14 @@ $(document).ready(function() {
     $('#input-vendor-class').select2({
         width: '100%'
     });
+
+  var gst_status = $('#gst_status').prop('checked');
+  if(gst_status){
+    $('#input-gst-class-main').show();
+  }else{
+    $('#input-gst-class-main').hide();
+  }
+
 });
 
 
@@ -171,4 +201,18 @@ $('#button-upload').on('click', function () {
 });
 
 
+$('#gst_status').change(function() {
+    var gst_status = $(this).prop('checked');
+    if(gst_status){
+      $('#input-gst-class-main').show();
+    }else{
+      $('#input-gst-class-main').hide();
+    }
+});
+
+$('#gst').change(function () {
+  var gst_val = ($(this).val())/100;
+  var cal_val = ($('#rate').val())*(gst_val);
+  $('#amount').val(cal_val);
+});
 </script>

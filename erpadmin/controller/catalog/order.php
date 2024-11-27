@@ -752,9 +752,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<div style="display:flex;flex-direction:column;">';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
 			$html .= '<h1 class="text-center mt-4" style="text-align:center;margin-top:10px;">Noel Enterprises</h1>';
-			// $html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Registered Office: - B/4 Ghanshyam Building, S.V Road, Dahisar-East, Mumbai-400068</p>';
-			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:0;margin-top:0;">Store Office: - Shop No 4, Sai Krupa Chawl, Waghral Pada Main Road, Bhoidapada, Vasai East-401208</p>';
-			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:10px;margin-top:0;">GSTN-27AGVPS5933R1Z1</p>';
+			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:10px;margin-top:0;">Store Office: - Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
 			$html .= '</div>';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
 			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
@@ -771,7 +769,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</div>';
 			$html .= '</div>';
 			$html .= '</div>';
-			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order</h4>';
+			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Job Work Order</h4>';
 			$html .= '<div style="max-width: 1320px;border:2px solid;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
 			$html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;margin-left:20px;" class="mb-1">Please supply following materials as per the terms and conditions mentioned below.</p>';
 			$html .= '</div>';
@@ -788,7 +786,28 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['name'].'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($powder['name']) ? $powder['name'] : 'None').'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.($orders['bags'] ? $orders['bags']*25 : 0).'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
+			if(!empty($powder['qty']) && $powder['qty'] > 0){
+				$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
+			}elseif(!empty($powder['qty'])){
+				$html .= '<td style="padding:0rem;text-align:center;" class="text-center p-2">';
+				
+				$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+				$html .= '<tr>';
+				$html .= '<th>Total</th>';
+				$html .= '<th>Delivered</th>';
+				$html .= '<th>Balance</th>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td>'.($orders['bags']).'</td>';
+				$html .= '<td>'.($orders['bags'] - abs($powder['qty'])).'</td>';
+				$html .= '<td>'.(abs($powder['qty'])).'</td>';
+				$html .= '</tr>';
+				$html .= '</table>';
+				
+				$html .= '</td>';
+			}else{
+				$html .= '<td style="padding:0rem;text-align:center;" class="text-center p-2">0</td>';
+			}
 			$html .= '</tr>';
 			$html .= '</thead>';
 			$html .= '</table>';
@@ -796,7 +815,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<thead>';
 			$html .= '<tr>';
 			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Product Weight</th>';
-			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Colour</th>';
 			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Pigment Quantity</th>';
 			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Master Batch Grams</th>';
 			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Targeted Quantity</th>';
@@ -805,7 +823,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<tbody>';
 			$html .= '<tr>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['weight'].'</td>';
-			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$colour['name'].'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
 			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($orders['req_qty']) ? $orders['req_qty'] : $orders['qty']).'</td>';
@@ -861,7 +878,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '</div>';
 			$html .= '</div>';
 			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
-			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Noel Enterprises, Shop No 4, Sai Krupa Chawl, Waghral Pada Main Road, Bhoidapada, Vasai East-401208</p>';
+			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Noel Enterprises, Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
 			// $html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Store Office: - </p>';
 			$html .= '</div>';
 			$html .= '</div>';

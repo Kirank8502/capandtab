@@ -14,12 +14,12 @@ class Order extends \Opencart\System\Engine\Model {
 
 		if($data['order_type'] == 0 && $data['powder_id'] != 0){
 			$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "powder WHERE powder_id LIKE '%".$data['powder_id']."%'");
-			if($sql->row['qty'] >= $data['bags']){
+			// if($sql->row['qty'] >= $data['bags']){
 				$cal = $sql->row['qty'] - $data['bags'];
 				$sql_update = $this->db->query("UPDATE " . DB_PREFIX . "powder SET `qty` = ".(int)$cal." WHERE powder_id LIKE '%".$data['powder_id']."%'");
-			}else{
-				return false;
-			}
+			// }else{
+				// return false;
+			// }
 		}
 		
 		// if($data['order_type'] == 1){
@@ -142,7 +142,7 @@ class Order extends \Opencart\System\Engine\Model {
 	}
 
 	public function getPowder($powder_id) {
-		$sql = "SELECT name,weight FROM " . DB_PREFIX . "powder WHERE powder_id = '".$powder_id."' ";
+		$sql = "SELECT name,weight,qty FROM " . DB_PREFIX . "powder WHERE powder_id = '".$powder_id."' ";
 
 		$query = $this->db->query($sql);
 	
