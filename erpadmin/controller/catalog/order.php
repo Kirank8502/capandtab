@@ -870,7 +870,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<p>'.$client_moulder_data['address'].'</p>';
 			$html .= '</div>';
 			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
-			$html .= '<p>Client Code:- AEC'.$orders['orders_id'].'</p>';
+			$html .= '<p>Client Code:- AEC'.$orders['client_id'].'</p>';
 			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
 			$html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
 			$html .= '<p>Payment Terms:- '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($payment_date) ? date("d-m-Y", $payment_date) : '' ) ).'</p>';
