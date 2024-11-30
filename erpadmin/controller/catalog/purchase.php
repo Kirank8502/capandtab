@@ -429,6 +429,14 @@ class Purchase extends \Opencart\System\Engine\Controller {
 			$data['qty'] = 0;
 	  	}
 
+		if (isset($this->request->post['payment_date'])) {
+			$data['payment_date'] = $this->request->post['payment_date'];
+	  	} elseif (!empty($order_info)) {
+			$data['payment_date'] = $order_info['payment_date'];
+	  	} else {
+			$data['payment_date'] = 0;
+	  	}
+
         if (isset($this->request->post['file'])) {
 			$data['file'] = $this->request->post['file'];
 	  	} elseif (!empty($order_info)) {

@@ -171,8 +171,8 @@ class Category extends \Opencart\System\Engine\Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->document->addScript('view/javascript/ckeditor/ckeditor.js');
-		$this->document->addScript('view/javascript/ckeditor/adapters/jquery.js');
+		// $this->document->addScript('view/javascript/ckeditor/ckeditor.js');
+		// $this->document->addScript('view/javascript/ckeditor/adapters/jquery.js');
 
 		$data['text_form'] = !isset($this->request->get['category_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 
@@ -217,9 +217,9 @@ class Category extends \Opencart\System\Engine\Controller {
 			$data['category_id'] = 0;
 		}
 
-		$this->load->model('localisation/language');
+		// $this->load->model('localisation/language');
 
-		$data['languages'] = $this->model_localisation_language->getLanguages();
+		// $data['languages'] = $this->model_localisation_language->getLanguages();
 
 		if (isset($this->request->get['category_id'])) {
 			$data['category_description'] = $this->model_catalog_category->getDescriptions($this->request->get['category_id']);
@@ -227,10 +227,16 @@ class Category extends \Opencart\System\Engine\Controller {
 			$data['category_description'] = [];
 		}
 
+		// if (!empty($category_info)) {
+		// 	$data['path'] = $category_info['path'];
+		// } else {
+		// 	$data['path'] = '';
+		// }
+
 		if (!empty($category_info)) {
-			$data['path'] = $category_info['path'];
+			$data['category_name'] = $category_info['name'];
 		} else {
-			$data['path'] = '';
+			$data['category_name'] = '';
 		}
 
 		if (!empty($category_info)) {
@@ -239,50 +245,50 @@ class Category extends \Opencart\System\Engine\Controller {
 			$data['parent_id'] = 0;
 		}
 
-		$this->load->model('catalog/filter');
+		// $this->load->model('catalog/filter');
 
-		if (isset($this->request->get['category_id'])) {
-			$filters = $this->model_catalog_category->getFilters($this->request->get['category_id']);
-		} else {
-			$filters = [];
-		}
+		// if (isset($this->request->get['category_id'])) {
+		// 	$filters = $this->model_catalog_category->getFilters($this->request->get['category_id']);
+		// } else {
+		// 	$filters = [];
+		// }
 
-		$data['category_filters'] = [];
+		// $data['category_filters'] = [];
 
-		foreach ($filters as $filter_id) {
-			$filter_info = $this->model_catalog_filter->getFilter($filter_id);
+		// foreach ($filters as $filter_id) {
+		// 	$filter_info = $this->model_catalog_filter->getFilter($filter_id);
 
-			if ($filter_info) {
-				$data['category_filters'][] = [
-					'filter_id' => $filter_info['filter_id'],
-					'name'      => $filter_info['group'] . ' &gt; ' . $filter_info['name']
-				];
-			}
-		}
+		// 	if ($filter_info) {
+		// 		$data['category_filters'][] = [
+		// 			'filter_id' => $filter_info['filter_id'],
+		// 			'name'      => $filter_info['group'] . ' &gt; ' . $filter_info['name']
+		// 		];
+		// 	}
+		// }
 
-		$data['stores'] = [];
+		// $data['stores'] = [];
 		
-		$data['stores'][] = [
-			'store_id' => 0,
-			'name'     => $this->language->get('text_default')
-		];
+		// $data['stores'][] = [
+		// 	'store_id' => 0,
+		// 	'name'     => $this->language->get('text_default')
+		// ];
 
-		$this->load->model('setting/store');
+		// $this->load->model('setting/store');
 
-		$stores = $this->model_setting_store->getStores();
+		// $stores = $this->model_setting_store->getStores();
 
-		foreach ($stores as $store) {
-			$data['stores'][] = [
-				'store_id' => $store['store_id'],
-				'name'     => $store['name']
-			];
-		}
+		// foreach ($stores as $store) {
+		// 	$data['stores'][] = [
+		// 		'store_id' => $store['store_id'],
+		// 		'name'     => $store['name']
+		// 	];
+		// }
 
-		if (isset($this->request->get['category_id'])) {
-			$data['category_store'] = $this->model_catalog_category->getStores($this->request->get['category_id']);
-		} else {
-			$data['category_store'] = [0];
-		}
+		// if (isset($this->request->get['category_id'])) {
+		// 	$data['category_store'] = $this->model_catalog_category->getStores($this->request->get['category_id']);
+		// } else {
+		// 	$data['category_store'] = [0];
+		// }
 
 		if (!empty($category_info)) {
 			$data['image'] = $category_info['image'];
@@ -324,35 +330,35 @@ class Category extends \Opencart\System\Engine\Controller {
 			$data['status'] = true;
 		}
 
-		$data['category_seo_url'] = [];
+		// $data['category_seo_url'] = [];
 
-		if (isset($this->request->get['category_id'])) {
-			$results = $this->model_catalog_category->getSeoUrls($this->request->get['category_id']);
+		// if (isset($this->request->get['category_id'])) {
+		// 	$results = $this->model_catalog_category->getSeoUrls($this->request->get['category_id']);
 
-			foreach ($results as $store_id => $languages) {
-				foreach ($languages as $language_id => $keyword) {
-					$pos = strrpos($keyword, '/');
+		// 	foreach ($results as $store_id => $languages) {
+		// 		foreach ($languages as $language_id => $keyword) {
+		// 			$pos = strrpos($keyword, '/');
 
-					if ($pos !== false) {
-						$keyword = substr($keyword, $pos + 1);
-					} else {
-						$keyword = $keyword;
-					}
+		// 			if ($pos !== false) {
+		// 				$keyword = substr($keyword, $pos + 1);
+		// 			} else {
+		// 				$keyword = $keyword;
+		// 			}
 
-					$data['category_seo_url'][$store_id][$language_id] = $keyword;
-				}
-			}
-		}
+		// 			$data['category_seo_url'][$store_id][$language_id] = $keyword;
+		// 		}
+		// 	}
+		// }
 
-		$this->load->model('design/layout');
+		// $this->load->model('design/layout');
 
-		$data['layouts'] = $this->model_design_layout->getLayouts();
+		// $data['layouts'] = $this->model_design_layout->getLayouts();
 
-		if (isset($this->request->get['category_id'])) {
-			$data['category_layout'] = $this->model_catalog_category->getLayouts($this->request->get['category_id']);
-		} else {
-			$data['category_layout'] = [];
-		}
+		// if (isset($this->request->get['category_id'])) {
+		// 	$data['category_layout'] = $this->model_catalog_category->getLayouts($this->request->get['category_id']);
+		// } else {
+		// 	$data['category_layout'] = [];
+		// }
 
 		$data['user_token'] = $this->session->data['user_token'];
 
@@ -375,55 +381,55 @@ class Category extends \Opencart\System\Engine\Controller {
 			$json['error']['warning'] = $this->language->get('error_permission');
 		}
 
-		foreach ($this->request->post['category_description'] as $language_id => $value) {
-			if ((oc_strlen(trim($value['name'])) < 1) || (oc_strlen($value['name']) > 255)) {
-				$json['error']['name_' . $language_id] = $this->language->get('error_name');
-			}
+		// foreach ($this->request->post['category_description'] as $language_id => $value) {
+		// 	if ((oc_strlen(trim($value['name'])) < 1) || (oc_strlen($value['name']) > 255)) {
+		// 		$json['error']['name_' . $language_id] = $this->language->get('error_name');
+		// 	}
 
-			if ((oc_strlen(trim($value['meta_title'])) < 1) || (oc_strlen($value['meta_title']) > 255)) {
-				$json['error']['meta_title_' . $language_id] = $this->language->get('error_meta_title');
-			}
-		}
+		// 	if ((oc_strlen(trim($value['meta_title'])) < 1) || (oc_strlen($value['meta_title']) > 255)) {
+		// 		$json['error']['meta_title_' . $language_id] = $this->language->get('error_meta_title');
+		// 	}
+		// }
 
 		$this->load->model('catalog/category');
 
-		if (isset($this->request->post['category_id']) && $this->request->post['parent_id']) {
-			$results = $this->model_catalog_category->getPaths($this->request->post['parent_id']);
+		// if (isset($this->request->post['category_id'])) {
+		// 	$results = $this->model_catalog_category->getPaths($this->request->post['parent_id']);
 			
-			foreach ($results as $result) {
-				if ($result['path_id'] == $this->request->post['category_id']) {
-					$json['error']['parent'] = $this->language->get('error_parent');
+		// 	foreach ($results as $result) {
+		// 		if ($result['path_id'] == $this->request->post['category_id']) {
+		// 			$json['error']['parent'] = $this->language->get('error_parent');
 					
-					break;
-				}
-			}
-		}
+		// 			break;
+		// 		}
+		// 	}
+		// }
 
-		if ($this->request->post['category_seo_url']) {
-			$this->load->model('design/seo_url');
+		// if ($this->request->post['category_seo_url']) {
+		// 	$this->load->model('design/seo_url');
 
-			foreach ($this->request->post['category_seo_url'] as $store_id => $language) {
-				foreach ($language as $language_id => $keyword) {
-					if ((oc_strlen(trim($keyword)) < 1) || (oc_strlen($keyword) > 64)) {
-						$json['error']['keyword_' . $store_id . '_' . $language_id] = $this->language->get('error_keyword');
-					}
+		// 	foreach ($this->request->post['category_seo_url'] as $store_id => $language) {
+		// 		foreach ($language as $language_id => $keyword) {
+		// 			if ((oc_strlen(trim($keyword)) < 1) || (oc_strlen($keyword) > 64)) {
+		// 				$json['error']['keyword_' . $store_id . '_' . $language_id] = $this->language->get('error_keyword');
+		// 			}
 
-					if (preg_match('/[^a-zA-Z0-9\/_-]|[\p{Cyrillic}]+/u', $keyword)) {
-						$json['error']['keyword_' . $store_id . '_' . $language_id] = $this->language->get('error_keyword_character');
-					}
+		// 			if (preg_match('/[^a-zA-Z0-9\/_-]|[\p{Cyrillic}]+/u', $keyword)) {
+		// 				$json['error']['keyword_' . $store_id . '_' . $language_id] = $this->language->get('error_keyword_character');
+		// 			}
 
-					$seo_url_info = $this->model_design_seo_url->getSeoUrlByKeyword($keyword, $store_id);
+		// 			$seo_url_info = $this->model_design_seo_url->getSeoUrlByKeyword($keyword, $store_id);
 
-					if ($seo_url_info && (!isset($this->request->post['category_id']) || $seo_url_info['key'] != 'path' || $seo_url_info['value'] != $this->model_catalog_category->getPath($this->request->post['category_id']))) {
-						$json['error']['keyword_' . $store_id . '_' . $language_id] = $this->language->get('error_keyword_exists');
-					}
-				}
-			}
-		}
+		// 			if ($seo_url_info && (!isset($this->request->post['category_id']) || $seo_url_info['key'] != 'path' || $seo_url_info['value'] != $this->model_catalog_category->getPath($this->request->post['category_id']))) {
+		// 				$json['error']['keyword_' . $store_id . '_' . $language_id] = $this->language->get('error_keyword_exists');
+		// 			}
+		// 		}
+		// 	}
+		// }
 
-		if (isset($json['error']) && !isset($json['error']['warning'])) {
-			$json['error']['warning'] = $this->language->get('error_warning');
-		}
+		// if (isset($json['error']) && !isset($json['error']['warning'])) {
+		// 	$json['error']['warning'] = $this->language->get('error_warning');
+		// }
 
 		if (!$json) {
 			if (!$this->request->post['category_id']) {

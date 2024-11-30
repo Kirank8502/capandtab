@@ -204,6 +204,7 @@ class Product extends \Opencart\System\Engine\Controller {
 			$data['products'][] = array(
 				'product_id'		=> $result['product_id'],
 				'name'				=> $result['name'],
+				'qty'				=> $result['qty'],
 				'image'				=> $data['thumb'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['product_id'], $this->request->post['selected']),				
@@ -350,6 +351,46 @@ class Product extends \Opencart\System\Engine\Controller {
 		} else {	
       		$data['name'] = '';
     	}
+
+		if (isset($this->request->post['qty'])) {
+			$data['qty'] = $this->request->post['qty'];
+	  	} elseif (!empty($product_info)) {
+			$data['qty'] = $product_info['qty'];
+	  	} else {
+			$data['qty'] = 0;
+	  	}
+
+		if (isset($this->request->post['product_cost'])) {
+			$data['product_cost'] = $this->request->post['product_cost'];
+	  	} elseif (!empty($product_info)) {
+			$data['product_cost'] = $product_info['product_cost'];
+	  	} else {
+			$data['product_cost'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['labor_cost'])) {
+			$data['labor_cost'] = $this->request->post['labor_cost'];
+	  	} elseif (!empty($product_info)) {
+			$data['labor_cost'] = $product_info['labor_cost'];
+	  	} else {
+			$data['labor_cost'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['transportation_cost'])) {
+			$data['transportation_cost'] = $this->request->post['transportation_cost'];
+	  	} elseif (!empty($product_info)) {
+			$data['transportation_cost'] = $product_info['transportation_cost'];
+	  	} else {
+			$data['transportation_cost'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['total_price'])) {
+			$data['total_price'] = $this->request->post['total_price'];
+	  	} elseif (!empty($product_info)) {
+			$data['total_price'] = $product_info['total_price'];
+	  	} else {
+			$data['total_price'] = 0.00;
+	  	}
 
 		if (isset($this->request->post['image'])) {
 			$data['image'] = $this->request->post['image'];

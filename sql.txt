@@ -276,3 +276,14 @@ ADD COLUMN `orders_id` int(11) NOT NULL DEFAULT 0 AFTER `vendor_id`;
 
 ALTER TABLE `dd_purchase`
 ADD COLUMN `gst_status` tinyint(1) NOT NULL DEFAULT 0 AFTER `gst`;
+
+ALTER TABLE `dd_product` ADD COLUMN `qty` int DEFAULT 0 AFTER `name`;
+
+ALTER TABLE `dd_product`
+ADD COLUMN `product_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `qty`,
+ADD COLUMN `labor_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `product_cost`,
+ADD COLUMN `transportation_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `labor_cost`,
+ADD COLUMN `total_price` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `transportation_cost`;
+
+ALTER TABLE `dd_purchase`
+ADD COLUMN `payment_date` int NOT NULL DEFAULT 0 AFTER `purchase_date`;

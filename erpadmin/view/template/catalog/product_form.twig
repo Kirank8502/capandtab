@@ -41,6 +41,46 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Quantity</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="qty" value="{{ qty }}" min="0" placeholder="Quantity" id="qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Product Cost</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="product_cost" value="{{ product_cost }}" min="0" step="0.01" placeholder="Product Cost" id="product_cost" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Labor Cost</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="labor_cost" value="{{ labor_cost }}" min="0" step="0.01" placeholder="Labor Cost" id="labor_cost" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Transportation Cost</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="transportation_cost" value="{{ transportation_cost }}" min="0" step="0.01" placeholder="Transportation Cost" id="transportation_cost" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Total Price</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="total_price" value="{{ total_price }}" min="0" step="0.01" placeholder="Total Price" id="total_price" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Extra Fittings</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -86,6 +126,19 @@
 $(document).ready(function() {
     $('#input-fittings-class').select2({
         width: '100%'
+    });
+    
+    var product_cost = 0.00;
+    var labor_cost = 0.00;
+    var transportation_cost = 0.00;
+    var total_price = 0.00;
+
+    $('#product_cost, #labor_cost, #transportation_cost').change(function() {
+      product_cost = $('#product_cost').val();
+      labor_cost = $('#labor_cost').val();
+      transportation_cost = $('#transportation_cost').val();
+      total_price = parseFloat(product_cost)+parseFloat(labor_cost)+parseFloat(transportation_cost);
+      $('#total_price').val(parseFloat(total_price).toFixed(2));
     });
 });
 </script>

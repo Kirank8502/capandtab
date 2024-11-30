@@ -4,7 +4,7 @@ namespace Opencart\Admin\Model\Catalog;
 class Product extends \Opencart\System\Engine\Model {
 	public function addProduct($data) {
 		$fittings_id = !empty($data['fittings_ids']) && is_array($data['fittings_ids']) ? implode(',', $data['fittings_ids']) : 0;
-      	$this->db->query("INSERT INTO " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".$fittings_id."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status']."'");
+      	$this->db->query("INSERT INTO " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `qty` = '" . $this->db->escape($data['qty']) . "', `product_cost` = '" . (!empty($data['product_cost']) ? $this->db->escape($data['product_cost']) : 0.00) . "', `labor_cost` = '" . (!empty($data['labor_cost']) ? $this->db->escape($data['labor_cost']) : 0.00) . "', `transportation_cost` = '" . (!empty($data['transportation_cost']) ? $this->db->escape($data['transportation_cost']) : 0.00) . "', `total_price` = '" . (!empty($data['total_price']) ? $this->db->escape($data['total_price']) : 0.00) . "', `fittings_id` = '".$fittings_id."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status']."'");
 		
 		$product_id= $this->db->getLastId();
 		
@@ -13,7 +13,7 @@ class Product extends \Opencart\System\Engine\Model {
 	
 	public function editProduct($product_id, $data) {
 		$fittings_id = !empty($data['fittings_ids']) && is_array($data['fittings_ids']) ? implode(',', $data['fittings_ids']) : 0;
-      	$this->db->query("UPDATE " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `fittings_id` = '".$fittings_id."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status'] ."' WHERE product_id= '" . (int)$product_id. "'");
+      	$this->db->query("UPDATE " . DB_PREFIX . "product SET `name` = '" . $this->db->escape($data['product_name']) . "', `qty` = '" . $this->db->escape($data['qty']) . "', `product_cost` = '" . (!empty($data['product_cost']) ? $this->db->escape($data['product_cost']) : 0.00) . "', `labor_cost` = '" . (!empty($data['labor_cost']) ? $this->db->escape($data['labor_cost']) : 0.00) . "', `transportation_cost` = '" . (!empty($data['transportation_cost']) ? $this->db->escape($data['transportation_cost']) : 0.00) . "', `total_price` = '" . (!empty($data['total_price']) ? $this->db->escape($data['total_price']) : 0.00) . "', `fittings_id` = '".$fittings_id."', `image` = '" . $data['image'] . "', `category_id` = '". (int)$data['category_id'] ."', status = '" . (int)$data['product_status'] ."' WHERE product_id= '" . (int)$product_id. "'");
 		
 		$this->cache->delete('product');
 	}

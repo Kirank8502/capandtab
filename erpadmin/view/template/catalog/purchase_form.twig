@@ -65,6 +65,20 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Payment Date</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="payment_date" id="input-payment-date" class="form-select">
+                        <option value="0" {% if payment_date == 0 %} selected{% endif %}>None</option>
+                        <option value="30" {% if payment_date == 30 %} selected{% endif %}>30 Days</option>
+                        <option value="45" {% if payment_date == 45 %} selected{% endif %}>45 Days</option>
+                        <option value="60" {% if payment_date == 60 %} selected{% endif %}>60 Days</option>
+                        <option value="90" {% if payment_date == 90 %} selected{% endif %}>90 Days</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Quantity</label>
               <div class="col-sm-11">
                   <div class="input-group">
