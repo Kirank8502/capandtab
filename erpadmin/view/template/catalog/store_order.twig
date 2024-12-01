@@ -3,6 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="float-end">
+        <button type="submit" form="form-store_order" formaction="{{ send }}" data-bs-toggle="tooltip" title="Send Mail" onclick="return confirm('{{ text_confirm }}');" class="btn btn-primary"><i class="fa-regular fa-envelope"></i></button>
         {# <a href="{{ add }}" data-bs-toggle="tooltip" title="Add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a> #}
         {# <button type="submit" form="form-store_order" formaction="{{ delete }}" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button> #}
       </div>
@@ -85,11 +86,11 @@
   </div>
 </div>
 <script type="text/javascript"><!--
-$('#store_order').on('click', 'thead a, .pagination a', function (e) {
-    e.preventDefault();
+// $('#store_order').on('click', 'thead a, .pagination a', function (e) {
+//     e.preventDefault();
 
-    $('#store_order').load(this.href);
-});
+//     $('#store_order').load(this.href);
+// });
 
 $('#button-filter').on('click', function () {
     var url = '';

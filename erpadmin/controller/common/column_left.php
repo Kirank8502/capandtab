@@ -60,6 +60,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			if ($this->user->hasPermission('access', 'catalog/sale')) {
+				$catalog[] = [
+					'name'	   => 'Sale',
+					'href'     => $this->url->link('catalog/sale', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			if ($this->user->hasPermission('access', 'catalog/lr_copy')) {
 				$catalog[] = [
 					'name'	   => 'LR Copy',

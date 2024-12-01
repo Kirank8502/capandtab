@@ -114,7 +114,7 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 	}
 
 	public function getMoulder($moulder_id) {
-		$sql = "SELECT moulder_id,name,address FROM " . DB_PREFIX . "moulder WHERE status = '1' AND moulder_id = ".$moulder_id." ";
+		$sql = "SELECT moulder_id,name,address,email FROM " . DB_PREFIX . "moulder WHERE moulder_id = ".$moulder_id." ";
 
 		$query = $this->db->query($sql);
 	
@@ -122,7 +122,7 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 	}
 
 	public function getClient($client_id) {
-		$sql = "SELECT client_id,name,address FROM " . DB_PREFIX . "client WHERE status = '1' AND client_id = ".$client_id." ";
+		$sql = "SELECT client_id,name,address,email FROM " . DB_PREFIX . "client WHERE client_id = ".$client_id." ";
 
 		$query = $this->db->query($sql);
 	
@@ -204,7 +204,23 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 	}
 	
 	public function getTotalOrders() {
-      	$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "orders");
+      	$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "orders o LEFT JOIN ".DB_PREFIX."order_details od ON (o.po_no = od.po_no) WHERE 1";
+
+		  $sort_data = array(
+			'`name`',
+			'code',
+			'status'
+		);	
+		
+		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+			$sql .= " ORDER BY " . $data['sort'];	
+		} else {
+			$sql .= " ORDER BY o.orders_id";
+		}
+		
+		$sql .= " DESC";
+
+		$query = $this->db->query($sql);
 		
 		return $query->row['total'];
 	}
@@ -432,5 +448,10 @@ class StoreOrder extends \Opencart\System\Engine\Model {
 		return $query->row;
 	}
 
+	public function getOrderDetail($orders_id) {
+		$query = $this->db->query("SELECT od.image,o.order_type,o.client_id,o.moulder_id FROM " . DB_PREFIX . "order_details od LEFT JOIN " . DB_PREFIX . "orders o ON o.orders_id = od.orders_id  WHERE od.orders_id= '" . (int)$orders_id. "'");
+		
+		return $query->row;
+	}
 }
 ?>

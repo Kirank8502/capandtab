@@ -85,4 +85,9 @@
       $('#moulder_div').show();
     }
   });
+
+  document.getElementById('form-store_order').addEventListener('submit', function() {
+    document.getElementById('input-po_no').disabled = false;
+    document.getElementById('input-moulder_name').disabled = false;
+  });
 </script>

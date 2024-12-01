@@ -11,6 +11,7 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 
 		// $data['add'] = $this->url->link('catalog/store_order|form', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		// $data['delete'] = $this->url->link('catalog/store_order|delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['send'] = $this->url->link('catalog/store_order|send', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['list'] = $this->getList();
 
 		$data['save'] = $this->url->link('catalog/store_order|save', 'user_token=' . $this->session->data['user_token'], true);
@@ -90,8 +91,8 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 			'filter_name'  => $filter_name,
 			'sort'  => $sort,
 			'order' => $order,
-			'start' => ($page - 1) * (int)$this->config->get('config_limit_admin'),
-			'limit' => $this->config->get('config_limit_admin')
+			'start' => ($page - 1) * 10,
+			'limit' => 10
 		);
 		$order_total = $this->model_catalog_store_order->getTotalOrders();
 		
@@ -135,11 +136,11 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 		$data['pagination'] = $this->load->controller('common/pagination', [
 			'total' => $order_total,
 			'page'  => $page,
-			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('catalog/store_order|list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+			'limit' => 10,
+			'url'   => $this->url->link('catalog/store_order', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
 		]);
 
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($order_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($order_total - $this->config->get('config_pagination_admin'))) ? $order_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $order_total, ceil($order_total / $this->config->get('config_pagination_admin')));
+		$data['results'] = sprintf($this->language->get('text_pagination'), ($order_total) ? (($page - 1) * 10) + 1 : 0, ((($page - 1) * 10) > ($order_total - 10)) ? $order_total : ((($page - 1) * 10) + 10), $order_total, ceil($order_total / 10));
 
 		// $data['results'] = sprintf($this->language->get('text_pagination'), ($stone_pnc_range_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($stone_pnc_range_total - $this->config->get('config_limit_admin'))) ? $stone_pnc_range_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $stone_pnc_range_total, ceil($stone_pnc_range_total / $this->config->get('config_limit_admin')));
 
@@ -364,5 +365,49 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 		$this->response->setOutput($this->load->view('catalog/store_order_form', $data));
 	}
 
+	public function send(){
+		$data = [];
+		$this->load->model('catalog/store_order');
+		if (isset($this->request->post['selected'])) {
+			foreach ($this->request->post['selected'] as $orders_id) {
+				$order_data = $this->model_catalog_store_order->getOrderDetail($orders_id);
+				if($order_data['order_type'] == '0'){
+					$email = $this->model_catalog_store_order->getMoulder($order_data['moulder_id']);
+				}else{
+					$email = $this->model_catalog_store_order->getClient($order_data['client_id']);
+				}
+
+				if ($this->config->get('config_mail_engine') && !empty($email['email'])) {
+					$mail_option = [
+						'parameter'     => $this->config->get('config_mail_parameter'),
+						'smtp_hostname' => $this->config->get('config_mail_smtp_hostname'),
+						'smtp_username' => $this->config->get('config_mail_smtp_username'),
+						'smtp_password' => html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8'),
+						'smtp_port'     => $this->config->get('config_mail_smtp_port'),
+						'smtp_timeout'  => $this->config->get('config_mail_smtp_timeout')
+					];
+					$data['name'] = !empty($email['name']) ? $email['name'] : "Sir/Ma'am";
+					$mail = new \Opencart\System\Library\Mail($this->config->get('config_mail_engine'), $mail_option);
+					$mail->setTo($email['email']);
+					$mail->setFrom($this->config->get('config_mail_smtp_username'));
+					$mail->setSender('CAPANDTAB');
+					$mail->setSubject('Testing');
+					$mail->setHtml($this->load->view('catalog/lr_copy_mail', $data));
+					// if (!empty($order_data)) {
+					$mail->addAttachment('https://capandtab.com/image/catalog/demo/apple_logo.jpg');
+					// }
+					$mail->send();
+				}
+			}
+
+			$this->session->data['success'] = 'Mail Sent Successfully';
+
+			$json['success'] = 'Mail Sent Successfully';
+			$json['redirect'] = $this->url->link('catalog/store_order', 'user_token=' . $this->session->data['user_token'], true);
+			
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+		}
+	}
 
 }
