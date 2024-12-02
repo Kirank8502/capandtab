@@ -266,7 +266,7 @@ class Sale extends \Opencart\System\Engine\Model {
 	}
 
 	public function getOrders() {
-		$sql = "SELECT orders_id,po_no FROM " . DB_PREFIX . "orders WHERE 1";
+		$sql = "SELECT orders_id,po_no,client_id,moulder_id FROM " . DB_PREFIX . "orders WHERE 1";
 
 		$query = $this->db->query($sql);
 	

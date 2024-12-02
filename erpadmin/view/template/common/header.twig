@@ -31,7 +31,7 @@
   {% for script in scripts %}
     <script type="text/javascript" src="{{ script.href }}"></script>
   {% endfor %}
-  {% if route == 'catalog/order.form' or route == 'catalog/product.form' or route == 'catalog/purchase.form' %}
+  {% if route == 'catalog/order.form' or route == 'catalog/product.form' or route == 'catalog/purchase.form' or route == 'catalog/sale.form' %}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>

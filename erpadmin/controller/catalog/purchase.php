@@ -402,6 +402,21 @@ class Purchase extends \Opencart\System\Engine\Controller {
             }
 		}
 
+		foreach($data['moulders'] as $key_7 => $value_7) {
+			$mol[$value_7['moulder_id']] = $value_7['name'];
+		}
+		foreach($data['clients'] as $key_8 => $value_8) {
+			$cli[$value_8['client_id']] = $value_8['name'];
+		}
+
+		foreach($data['orders'] as $key => $value){
+			if(!empty($value['client_id'])){
+				$data['orders'][$key]['po_no'] = $value['po_no'] .', '. $cli[$value['client_id']];
+			}else{
+				$data['orders'][$key]['po_no'] = $value['po_no'] .', '. $mol[$value['moulder_id']];
+			}
+		}
+
         $data['vendors'] = array_merge($data['clients'],$data['moulders']);
 		foreach ($data['vendors'] as &$item) {
 			if(isset($item['client_id'])){

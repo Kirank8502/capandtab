@@ -224,9 +224,24 @@ $('#gst_status').change(function() {
     }
 });
 
-$('#gst').change(function () {
-  var gst_val = ($(this).val())/100;
-  var cal_val = ($('#rate').val())*(gst_val);
-  $('#amount').val(cal_val);
+$('#qty, #gst, #rate, #gst_status').change(function () {
+  var qty = 0;
+  var cal_val = 0;
+  if($('#gst_status').is(":checked")){
+    var gst_val = 0;
+    if($('#gst').val() > 0){
+      gst_val = ($('#gst').val())/100;
+    }
+    if($('#rate').val() > 0 && $('#qty').val() > 0 && gst_val > 0){
+      cal_val = $('#rate').val()*$('#qty').val()*(gst_val);
+    }else{
+      cal_val = $('#rate').val()*$('#qty').val();
+    }
+  }else{
+    if($('#rate').val() > 0 && $('#qty').val() > 0){
+      cal_val = $('#rate').val()*$('#qty').val();
+    }
+  }
+  $('#amount').val(cal_val.toFixed(2));
 });
 </script>
