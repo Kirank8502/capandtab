@@ -8,6 +8,7 @@
           <td class="text-center">Targeted Date</td>
           <td class="text-center">PO Date</td>
           <td class="text-center">Product Name</td>
+          <td class="text-center">Vendor Name</td>
           <td class="text-center">Order Type</td>
           <td class="text-center">Qty</td>
           {# <td class="text-center">Status</td> #}
@@ -23,6 +24,7 @@
               <td class="text-center">{{ order.targeted_date }}</td>
               <td class="text-center">{{ order.date_added }}</td>
               <td class="text-center">{{ order.product_name }}</td>
+              <td class="text-center">{{ order.vendor_name }}</td>
               {% if order.order_type == 0 %}
               <td class="text-center">Job Work Order</td>
               {% else %}

@@ -190,6 +190,9 @@ class Order extends \Opencart\System\Engine\Controller {
 		$accessories = $this->model_catalog_order->getAccessories();
 		$fittings = $this->model_catalog_order->getFittings();
 
+		$clients = $this->model_catalog_order->getClients();
+		$moulders = $this->model_catalog_order->getMoulders();
+
 		foreach($products as $key => $value) {
 			$product[$value['product_id']] = $value['name'];
 		}
@@ -201,6 +204,13 @@ class Order extends \Opencart\System\Engine\Controller {
 		foreach($fittings as $key_2 => $value_2) {
 			$fitts[$value_2['fittings_id']] = $value_2['name'];
 		}
+
+		foreach($moulders as $key_3 => $value_3) {
+			$mol[$value_3['moulder_id']] = $value_3['name'];
+		}
+		foreach($clients as $key_4 => $value_4) {
+			$cli[$value_4['client_id']] = $value_4['name'];
+		}
 		
 		foreach ($results as $result) {
 			$date = strtotime($result['targeted_date']);
@@ -210,6 +220,7 @@ class Order extends \Opencart\System\Engine\Controller {
 				'po_no'				=> $result['po_no'],
 				'targeted_date'		=> date("d-m-Y", $date),
 				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$result['acc_fitts_id'])] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$result['acc_fitts_id'])] : ((!empty($result['fittings_id']) && $result['fittings_id'] > 0) ? $fitts[$result['fittings_id']] : 0) ))),
+				'vendor_name'		=> ($result['order_type'] == 1 ? $cli[$result['client_id']] : $mol[$result['moulder_id']] ),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
 				'date_added'		=> date("d-m-Y", $po_date),
