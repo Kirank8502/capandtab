@@ -227,6 +227,7 @@ class Purchase extends \Opencart\System\Engine\Controller {
 		}
 		
 		foreach ($results as $result) {
+			$all_prod = [];
 			$date = strtotime($result['purchase_date']);
 			$po_date = strtotime($result['date_added']);
             $prod_ids = explode(",",$result['product_id']);

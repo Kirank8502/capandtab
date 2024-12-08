@@ -227,6 +227,7 @@ class Sale extends \Opencart\System\Engine\Controller {
 		}
 		
 		foreach ($results as $result) {
+			$all_prod = [];
 			$date = strtotime($result['sale_date']);
 			$po_date = strtotime($result['date_added']);
             $prod_ids = explode(",",$result['product_id']);
