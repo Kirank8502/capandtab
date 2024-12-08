@@ -409,11 +409,25 @@ class Purchase extends \Opencart\System\Engine\Controller {
 			$cli[$value_8['client_id']] = $value_8['name'];
 		}
 
+		foreach($data['products'] as $key => $value) {
+			$product[$value['product_id']] = $value['name'];
+		}
+
+		foreach($data['accessories'] as $key_1 => $value_1) {
+			$accessory[$value_1['accessories_id']] = $value_1['name'];
+		}
+
+		foreach($data['fittings'] as $key_2 => $value_2) {
+			$fitts[$value_2['fittings_id']] = $value_2['name'];
+		}
+
+		// $acc_fitts_id = !empty($data['orders']['acc_fitts_id']) && $data['orders']['acc_fitts_id'] > 0 && str_starts_with($data['orders']['acc_fitts_id'],'acc_') ? str_replace("acc_","",$data['orders']['acc_fitts_id']) : ((!empty($data['orders']['acc_fitts_id']) && $data['orders']['acc_fitts_id'] > 0 && str_starts_with($data['orders']['acc_fitts_id'],'fitts_')) ? str_replace("fitts_","",$data['orders']['acc_fitts_id']) : 0);
+		// $acc_fitts_id = ;
 		foreach($data['orders'] as $key => $value){
 			if(!empty($value['client_id'])){
-				$data['orders'][$key]['po_no'] = $value['po_no'] .', '. $cli[$value['client_id']];
+				$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $cli[$value['client_id']] .''.(!empty($value['product_id']) ? '| '.$product[$value['product_id']] : '');
 			}else{
-				$data['orders'][$key]['po_no'] = $value['po_no'] .', '. $mol[$value['moulder_id']];
+				$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $mol[$value['moulder_id']].'| '.(((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$value['acc_fitts_id'])] : ((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$value['acc_fitts_id'])] : 0)));
 			}
 		}
 

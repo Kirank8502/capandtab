@@ -209,7 +209,7 @@ class Order extends \Opencart\System\Engine\Controller {
 				'orders_id'			=> $result['orders_id'],
 				'po_no'				=> $result['po_no'],
 				'targeted_date'		=> date("d-m-Y", $date),
-				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$result['acc_fitts_id'])] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$result['acc_fitts_id'])] : 0))),
+				'product_name'      => ((!empty($result['product_id']) && $result['product_id'] > 0) ? $product[$result['product_id']] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$result['acc_fitts_id'])] : ((!empty($result['acc_fitts_id']) && $result['acc_fitts_id'] > 0 && str_starts_with($result['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$result['acc_fitts_id'])] : ((!empty($result['fittings_id']) && $result['fittings_id'] > 0) ? $fitts[$result['fittings_id']] : 0) ))),
 				'qty'				=> $result['qty'],
 				'order_type'		=> $result['order_type'],
 				'date_added'		=> date("d-m-Y", $po_date),

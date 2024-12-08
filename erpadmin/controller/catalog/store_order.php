@@ -394,7 +394,7 @@ class StoreOrder extends \Opencart\System\Engine\Controller {
 					$mail->setSubject('Testing');
 					$mail->setHtml($this->load->view('catalog/lr_copy_mail', $data));
 					// if (!empty($order_data)) {
-					$mail->addAttachment('https://capandtab.com/image/catalog/demo/apple_logo.jpg');
+					// $mail->addAttachment(DIR_IMAGE.'/catalog/demo/apple_logo.jpg');
 					// }
 					$mail->send();
 				}
