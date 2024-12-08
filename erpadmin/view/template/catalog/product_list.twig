@@ -7,6 +7,10 @@
           <td class="text-center">Image</td>
           <td class="text-center">Name</td>
           <td class="text-center">Quantity</td>
+          <td class="text-center">Product Cost</td>
+          <td class="text-center">Labor Cost</td>
+          <td class="text-center">Transportation Cost</td>
+          <td class="text-center">Total Price</td>
           <td class="text-center">Status</td>
           <td class="text-end">Action</td>
         </tr>
@@ -19,6 +23,10 @@
               <td class="text-center" style="width:10%"><img src="{{product.image}}" id="product_image" data-val="{{ product.product_id }}" data-toggle="modal" data-target="#exampleModal"/></td>
               <td class="text-center">{{ product.name }}</td>
               <td class="text-center">{{ product.qty }}</td>
+              <td class="text-center">{{ product.product_cost }}</td>
+              <td class="text-center">{{ product.labor_cost }}</td>
+              <td class="text-center">{{ product.transportation_cost }}</td>
+              <td class="text-center">{{ product.total_price }}</td>
               <td class="text-center">{% if product.status %}Enabled{% else %}Disabled{% endif %}</td>
               <td class="text-end">
                 <a href="{{ product.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
