@@ -598,4 +598,50 @@ class Purchase extends \Opencart\System\Engine\Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function getpodata() {
+		$json = [];
+		$fittingsArray = [];
+		$this->load->model('catalog/purchase');
+
+		$data['products'] = $this->model_catalog_purchase->getProducts();
+		$data['powders'] = $this->model_catalog_purchase->getPowders();
+		$data['master_batchs'] = $this->model_catalog_purchase->getMasterBatchs();
+		$data['pigments'] = $this->model_catalog_purchase->getPigments();
+		$data['dies'] = $this->model_catalog_purchase->getDies();
+		$data['accessories'] = $this->model_catalog_purchase->getAccessories();
+		$data['fittings'] = $this->model_catalog_purchase->getFittings();
+		$data['clients'] = $this->model_catalog_purchase->getClients();
+		$data['colours'] = $this->model_catalog_purchase->getColours();
+		$data['moulders'] = $this->model_catalog_purchase->getMoulders();
+		
+		if (isset($this->request->get['orders_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$json = $this->model_catalog_purchase->getOrder($this->request->get['orders_id']);
+		}
+
+		if (!empty($json['fittings_id'])) {
+			$fittings = explode(',', $json['fittings_id']);
+			foreach ($fittings as $index => $fitting) {
+				$fittingsArray[] = 'fitts_' . ($index + 1);
+			}
+		}		
+
+		$json['datas'] = array(
+			'prod_'.$json['product_id'],
+			'pow_'.$json['powder_id'],
+			'mb_'.$json['master_batch_id'],
+			'pig_'.$json['pigment_id'],
+			'dies_'.$json['die_id'],
+			'acc_'.$json['accessories_id']
+		);
+
+		if(!empty($fittingsArray)){
+			foreach ($fittingsArray as $fitting) {
+				$json['datas'][] = $fitting;
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 }

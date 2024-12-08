@@ -244,4 +244,26 @@ $('#qty, #gst, #rate, #gst_status').change(function () {
   }
   $('#amount').val(cal_val.toFixed(2));
 });
+
+
+$('#input-po_no-class').change(function() {
+    $.ajax({
+    url: 'index.php?route=catalog/purchase|getpodata&user_token={{user_token}}&orders_id='+$(this).val(),
+    type: 'GET',
+    success: function(response) {
+      if(response.moulder_id > 0){
+        $('#input-vendor-class').val('mol_'+response.moulder_id).trigger('change');
+      }else if(response.client_id > 0){
+        $('#input-vendor-class').val('cli_'+response.client_id).trigger('change');
+      }
+
+      if(response.datas){
+        $('#product_id').val(response.datas).trigger('change');
+      }
+      // console.log(response);
+      $('#qty').val(response.qty);
+    }
+   });
+});
+
 </script>

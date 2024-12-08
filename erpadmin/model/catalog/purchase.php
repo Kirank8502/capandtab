@@ -273,6 +273,14 @@ class Purchase extends \Opencart\System\Engine\Model {
 		return $query->rows;
 	}
 
+	public function getOrder($orders_id) {
+		$sql = "SELECT * FROM " . DB_PREFIX . "orders WHERE orders_id = ".$orders_id."";
+
+		$query = $this->db->query($sql);
+	
+		return $query->row;
+	}
+
 	public function getOrderDetails($data=array()) {
 
 		$sql = "SELECT `status`, COUNT(purchase_id) AS total FROM ".DB_PREFIX."purchase WHERE 1 ";
