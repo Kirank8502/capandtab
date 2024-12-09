@@ -68,6 +68,14 @@
                   </div>
               </div>
             </div>
+            <div class="row mb-3" id="input-order_by-class-main">
+              <label class="col-sm-1 col-form-label">Order By</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="order_by" value="{{ order_by }}" placeholder="Order By" id="input-order_by" {% if view_mode %} disabled {% endif %} class="form-control"/>
+                  </div>
+              </div>
+            </div>
             <div class="row mb-3" id="input-address-class-main">
               <label class="col-sm-1 col-form-label">Address</label>
               <div class="col-sm-11">

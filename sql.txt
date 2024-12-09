@@ -304,3 +304,6 @@ CREATE TABLE `dd_sale` (
   `date_added` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`sale_id`)
 );
+
+ALTER TABLE `dd_orders`
+ADD COLUMN `order_by` varchar(255) NOT NULL DEFAULT '' AFTER `bags`;

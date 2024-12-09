@@ -417,6 +417,14 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['bags'] = 0;
 	  	}
 
+		if (isset($this->request->post['order_by'])) {
+			$data['order_by'] = $this->request->post['order_by'];
+	  	} elseif (!empty($order_info)) {
+			$data['order_by'] = $order_info['order_by'];
+	  	} else {
+			$data['order_by'] = '';
+	  	}
+
 		if (isset($this->request->post['check_color'])) {
 			$data['check_color'] = $this->request->post['check_color'];
 	  	} elseif (!empty($order_info)) {
