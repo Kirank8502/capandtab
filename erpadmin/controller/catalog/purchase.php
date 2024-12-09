@@ -425,10 +425,12 @@ class Purchase extends \Opencart\System\Engine\Controller {
 		// $acc_fitts_id = !empty($data['orders']['acc_fitts_id']) && $data['orders']['acc_fitts_id'] > 0 && str_starts_with($data['orders']['acc_fitts_id'],'acc_') ? str_replace("acc_","",$data['orders']['acc_fitts_id']) : ((!empty($data['orders']['acc_fitts_id']) && $data['orders']['acc_fitts_id'] > 0 && str_starts_with($data['orders']['acc_fitts_id'],'fitts_')) ? str_replace("fitts_","",$data['orders']['acc_fitts_id']) : 0);
 		// $acc_fitts_id = ;
 		foreach($data['orders'] as $key => $value){
-			if(!empty($value['client_id'])){
-				$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $cli[$value['client_id']] .''.(!empty($value['product_id']) ? '| '.$product[$value['product_id']] : '');
-			}else{
-				$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $mol[$value['moulder_id']].'| '.(((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$value['acc_fitts_id'])] : ((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$value['acc_fitts_id'])] : 0)));
+			if($value['order_type'] == 0){
+				if(!empty($value['client_id'])){
+					$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $cli[$value['client_id']] .''.(!empty($value['product_id']) ? '| '.$product[$value['product_id']] : '');
+				}else{
+					$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $mol[$value['moulder_id']].'| '.(((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$value['acc_fitts_id'])] : ((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$value['acc_fitts_id'])] : 0)));
+				}
 			}
 		}
 
