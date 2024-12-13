@@ -257,6 +257,8 @@ class Purchase extends \Opencart\System\Engine\Controller {
 				'qty'				=> $result['qty'],
 				'rate'				=> $result['rate'],
 				'amount'		    => $result['amount'],
+				'gst_amount'		=> $result['gst_amount'],
+				'total_amount'		    => $result['total_amount'],
 				'file'		        => HTTP_CATALOG .'crm_storage/download/'. $result['file'],
 				'edit'				=> $this->url->link('catalog/purchase|form', 'user_token=' . $this->session->data['user_token'] . '&purchase_id=' . $result['purchase_id'] . $url, true),
 			);
@@ -527,6 +529,22 @@ class Purchase extends \Opencart\System\Engine\Controller {
 			$data['amount'] = $order_info['amount'];
 	  	} else {
 			$data['amount'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['gst_amount'])) {
+			$data['gst_amount'] = $this->request->post['gst_amount'];
+	  	} elseif (!empty($order_info)) {
+			$data['gst_amount'] = $order_info['gst_amount'];
+	  	} else {
+			$data['gst_amount'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['total_amount'])) {
+			$data['total_amount'] = $this->request->post['total_amount'];
+	  	} elseif (!empty($order_info)) {
+			$data['total_amount'] = $order_info['total_amount'];
+	  	} else {
+			$data['total_amount'] = 0.00;
 	  	}
 
         if (isset($this->request->post['gst'])) {

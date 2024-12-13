@@ -119,6 +119,22 @@
                   </div>
               </div>
             </div>
+            <div class="row mb-3" id="input-gst-amount-class-main">
+              <label class="col-sm-1 col-form-label">GST Amount</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="gst_amount" value="{{ gst_amount }}" min="0.00" step="0.01" placeholder="GST Amount" id="gst_amount" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Total Amount</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="total_amount" value="{{ total_amount }}" min="0.00" step="0.01" placeholder="Total Amount" id="total_amount" class="form-control"/>
+                  </div>
+              </div>
+            </div>
             <div class="row mb-3">
               <label for="input-filename" class="col-sm-1 col-form-label">Purchase Invoice</label>
               <div class="col-sm-11">
@@ -149,8 +165,10 @@ $(document).ready(function() {
   var gst_status = $('#gst_status').prop('checked');
   if(gst_status){
     $('#input-gst-class-main').show();
+    $('#input-gst-amount-class-main').show();
   }else{
     $('#input-gst-class-main').hide();
+    $('#input-gst-amount-class-main').hide();
   }
 
 });
@@ -219,8 +237,10 @@ $('#gst_status').change(function() {
     var gst_status = $(this).prop('checked');
     if(gst_status){
       $('#input-gst-class-main').show();
+      $('#input-gst-amount-class-main').show();
     }else{
       $('#input-gst-class-main').hide();
+      $('#input-gst-amount-class-main').hide();
     }
 });
 
@@ -229,6 +249,9 @@ $('#qty, #gst, #rate, #gst_status').change(function () {
   var cal_val = 0;
   if($('#gst_status').is(":checked")){
     var gst_val = 0;
+    var amount = 0.00;
+    var total_amount = 0;
+    amount = $('#rate').val()*$('#qty').val();
     if($('#gst').val() > 0){
       gst_val = ($('#gst').val())/100;
     }
@@ -237,12 +260,17 @@ $('#qty, #gst, #rate, #gst_status').change(function () {
     }else{
       cal_val = $('#rate').val()*$('#qty').val();
     }
+    $('#amount').val(amount.toFixed(2));
+    $('#gst_amount').val(cal_val.toFixed(2));
+    total_amount = parseFloat($('#amount').val()) + parseFloat($('#gst_amount').val());
+    $('#total_amount').val(total_amount.toFixed(2));
   }else{
     if($('#rate').val() > 0 && $('#qty').val() > 0){
       cal_val = $('#rate').val()*$('#qty').val();
+      $('#amount').val(cal_val.toFixed(2));
+      $('#total_amount').val(cal_val.toFixed(2));
     }
   }
-  $('#amount').val(cal_val.toFixed(2));
 });
 
 

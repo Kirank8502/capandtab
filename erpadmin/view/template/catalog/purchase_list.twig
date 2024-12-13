@@ -8,6 +8,8 @@
           <td class="text-center">Vendor</td>
           <td class="text-center">Rate</td>
           <td class="text-center">Amount</td>
+          <td class="text-center">GST Amount</td>
+          <td class="text-center">Total Amount</td>
           <td class="text-center">Qty</td>
           <td class="text-center">Purchase Date</td>
           <td class="text-center">Invoice</td>
@@ -23,6 +25,8 @@
               <td class="text-center">{{ purchase.vendor_id }}</td>
               <td class="text-center">{{ purchase.rate }}</td>
               <td class="text-center">{{ purchase.amount }}</td>
+              <td class="text-center">{{ purchase.gst_amount }}</td>
+              <td class="text-center">{{ purchase.total_amount }}</td>
               <td class="text-center">{{ purchase.qty }}</td>
               <td class="text-center">{{ purchase.purchase_date }}</td>
               <td class="text-center"><a href="{{ purchase.file }}" target="_blank" data-bs-toggle="tooltip" title="View" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a></td>
