@@ -78,7 +78,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 
 			if ($this->user->hasPermission('access', 'catalog/store_order')) {
 				$catalog[] = [
-					'name'	   => 'Orders',
+					'name'	   => 'Goods Received',
 					'href'     => $this->url->link('catalog/store_order', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];

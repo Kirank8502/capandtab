@@ -20,17 +20,17 @@
           {% for order in orders %}
             <tr>
               <td class="text-center"><input type="checkbox" name="selected[]" value="{{ order.orders_id }}" class="form-check-input"/></td>
-              <td class="text-center">{{ order.po_no }}</td>
-              <td class="text-center">{{ order.targeted_date }}</td>
-              <td class="text-center">{{ order.date_added }}</td>
-              <td class="text-center">{{ order.product_name }}</td>
-              <td class="text-center">{{ order.vendor_name }}</td>
+              <td class="text-center" {% if order.order_type == 1 %} style="color:darkgreen;font-weight:bold;" {% endif %}>{{ order.po_no }}</td>
+              <td class="text-center" {% if order.order_type == 1 %} style="color:darkgreen;font-weight:bold;" {% endif %}>{{ order.targeted_date }}</td>
+              <td class="text-center" {% if order.order_type == 1 %} style="color:darkgreen;font-weight:bold;" {% endif %}>{{ order.date_added }}</td>
+              <td class="text-center" {% if order.order_type == 1 %} style="color:darkgreen;font-weight:bold;" {% endif %}>{{ order.product_name }}</td>
+              <td class="text-center" {% if order.order_type == 1 %} style="color:darkgreen;font-weight:bold;" {% endif %}>{{ order.vendor_name }}</td>
               {% if order.order_type == 0 %}
               <td class="text-center">Job Work Order</td>
               {% else %}
               <td class="text-center" style="color:darkgreen;font-weight:bold;">Puchase Order Received</td>
               {% endif %}
-              <td class="text-center">{{ order.qty }}</td>
+              <td class="text-center" {% if order.order_type == 1 %} style="color:darkgreen;font-weight:bold;" {% endif %}>{{ order.qty }}</td>
               {# <td class="text-center">{% if order.status %}Enabled{% else %}Disabled{% endif %}</td> #}
               <td class="text-end">
                 <a href="{{ order.view }}" data-bs-toggle="tooltip" title="View" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a>

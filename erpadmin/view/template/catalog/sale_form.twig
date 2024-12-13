@@ -24,7 +24,7 @@
                   <div class="input-group">
                    <select name="orders_id" id="input-po_no-class" class="form-select">
                         <option value="0">None</option>
-                        {% for order in orders %}
+                        {% for order in new_orders %}
                           <option value="{{ order.orders_id }}"{% if order.orders_id == orders_id %} selected{% endif %}>{{ order.po_no }}</option>
                         {% endfor %}
                       </select>

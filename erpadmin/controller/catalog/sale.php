@@ -422,13 +422,48 @@ class Sale extends \Opencart\System\Engine\Controller {
 			$fitts[$value_2['fittings_id']] = $value_2['name'];
 		}
 
-		foreach($data['orders'] as $key => $value){
-			if($value['order_type'] == 1){
-				if(!empty($value['client_id'])){
-					$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $cli[$value['client_id']] .''.(!empty($value['product_id']) ? '| '.$product[$value['product_id']] : '');
-				}else{
-					$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $mol[$value['moulder_id']].'| '.(((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$value['acc_fitts_id'])] : ((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$value['acc_fitts_id'])] : 0)));
+		// foreach($data['orders'] as $key => $value){
+		// 	if($value['order_type'] == 1){
+		// 		if(!empty($value['client_id'])){
+		// 			$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $cli[$value['client_id']] .''.(!empty($value['product_id']) ? '| '.$product[$value['product_id']] : '');
+		// 		}else{
+		// 			$data['orders'][$key]['po_no'] = $value['po_no'] .'| '. $mol[$value['moulder_id']].'| '.(((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'acc_')) ? $accessory[str_replace("acc_","",$value['acc_fitts_id'])] : ((!empty($value['acc_fitts_id']) && $value['acc_fitts_id'] > 0 && str_starts_with($value['acc_fitts_id'],'fitts_')) ? $fitts[str_replace("fitts_","",$value['acc_fitts_id'])] : 0)));
+		// 		}
+		// 	}
+		// }
+
+		$data['new_orders'] = [];  // Create a new array to store filtered orders
+
+		foreach ($data['orders'] as $key => $value) {
+		
+			if ($value['order_type'] == 1) {
+			
+				$new_order = $value;  
+			
+			
+				if (!empty($value['client_id']) && isset($cli[$value['client_id']])) {
+					$new_order['po_no'] = $value['po_no'] 
+						. ' | ' . $cli[$value['client_id']] 
+						. (!empty($value['product_id']) && isset($product[$value['product_id']]) ? ' | ' . $product[$value['product_id']] : '');
+				} 
+			
+				elseif (!empty($value['moulder_id']) && isset($mol[$value['moulder_id']])) {
+					$accessory_name = 0;
+				
+					if (!empty($value['acc_fitts_id'])) {
+						if (str_starts_with($value['acc_fitts_id'], 'acc_') && isset($accessory[str_replace('acc_', '', $value['acc_fitts_id'])])) {
+							$accessory_name = $accessory[str_replace('acc_', '', $value['acc_fitts_id'])];
+						} elseif (str_starts_with($value['acc_fitts_id'], 'fitts_') && isset($fitts[str_replace('fitts_', '', $value['acc_fitts_id'])])) {
+							$accessory_name = $fitts[str_replace('fitts_', '', $value['acc_fitts_id'])];
+						}
+					}
+					$new_order['po_no'] = $value['po_no'] 
+						. ' | ' . $mol[$value['moulder_id']] 
+						. ' | ' . $accessory_name;
 				}
+			
+			
+				$data['new_orders'][] = $new_order;
 			}
 		}
 
