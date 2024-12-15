@@ -778,6 +778,9 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
 			$html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
 			$html .= '<p>'.$client_moulder_data['address'].'</p>';
+			if ($this->request->get['show_order_by'] == 1){
+				$html .= '<p>Order By:- '.$orders['order_by'].'</p>';
+			}
 			$html .= '</div>';
 			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
 			$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
@@ -887,6 +890,9 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
 			$html .= '<p>Client Name:- '.$client_moulder_data['name'].'</p>';
 			$html .= '<p>'.$client_moulder_data['address'].'</p>';
+			if ($this->request->get['show_order_by'] == 1){
+				$html .= '<p>Order By:- '.$orders['order_by'].'</p>';
+			}
 			$html .= '</div>';
 			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
 			$html .= '<p>Client Code:- AEC'.$orders['client_id'].'</p>';

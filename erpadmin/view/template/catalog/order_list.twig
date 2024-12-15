@@ -35,11 +35,12 @@
               <td class="text-end">
                 <a href="{{ order.view }}" data-bs-toggle="tooltip" title="View" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a>
                 <a href="{{ order.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
-                {% if order.order_type == 0 %}
-                  <a href="{{ order.export }}" data-bs-toggle="tooltip" title="Export" class="btn btn-success"><i class="fa-solid fa-file-arrow-down"></i></a>
-                {% else %}
-                  <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-target="#exampleModalTemp" title="Add" class="btn btn-success" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a>
-                {% endif %}
+                {# {% if order.order_type == 0 %} #}
+                  {# <a href="{{ order.export }}" data-bs-toggle="tooltip" title="Export" class="btn btn-success"><i class="fa-solid fa-file-arrow-down"></i></a> #}
+                  {# <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-order-type="{{order.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-success" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a> #}
+                {# {% else %} #}
+                  <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-order-type="{{order.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-success" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a>
+                {# {% endif %} #}
               </td>
             </tr>
           {% endfor %}
@@ -65,6 +66,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body d-flex justify-content-center flex-column">
+        <div class="row mb-3" id="input-show_order_by-class-main">
+          <label class="col-sm-4 col-form-label">Show Order By?</label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <select name="show_order_by" id="input-show_order_by" class="form-select">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+          </div>
+        </div>
         <div class="row mb-3" id="input-payment_term-class-main">
           <label class="col-sm-2 col-form-label">Term</label>
           <div class="col-sm-10">
@@ -94,15 +106,23 @@
 $('#print_pdf').on('click',function(e) {
   e.preventDefault();
   var exporturl = $(this).data('val');
+  var order_type = $(this).data('order-type');
   var term = 1;
   var date = 0;
+  var order_by = 0;
+
+  if(order_type == 0){
+    $('#input-payment_term-class-main').hide();
+    $('#input-term_date-class-main').hide();
+  }
 
   $('#exampleModalTemp').modal('show');
   $('#payment_term_submit').on('click',function(e){
     term = $('#input-payment_term').val();
     date = $('#term_date').val();
+    order_by = $('#input-show_order_by').val();
     $('#exampleModalTemp').modal('hide');
-    window.location.href = exporturl+'&term='+term+'&date='+date;
+    window.location.href = exporturl+'&term='+term+'&show_order_by='+order_by+'&date='+date;
     // $.ajax({
     //     url: exporturl+'&term='+term+'&date='+date,
     //     type: 'GET',
