@@ -255,6 +255,7 @@ class Purchase extends \Opencart\System\Engine\Controller {
 				'product_id'        => implode(',',$all_prod),
 				'vendor_id'         => !empty($result['vendor_id']) && str_starts_with($result['vendor_id'],'cli_') ? $cli[str_replace("cli_","",$result['vendor_id'])] : (str_starts_with($result['vendor_id'],'cli_') ? $mol[str_replace("mol_","",$result['vendor_id'])] : 'None'),
 				'qty'				=> $result['qty'],
+				'kgs_qty'			=> $result['kgs_qty'],
 				'rate'				=> $result['rate'],
 				'amount'		    => $result['amount'],
 				'gst_amount'		=> $result['gst_amount'],
