@@ -311,3 +311,6 @@ ADD COLUMN `order_by` varchar(255) NOT NULL DEFAULT '' AFTER `bags`;
 ALTER TABLE `dd_purchase`
 ADD COLUMN `gst_amount` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `amount`,
 ADD COLUMN `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `gst_amount`;
+
+ALTER TABLE `dd_purchase`
+ADD COLUMN `kgs_qty` int(10) NOT NULL DEFAULT 0 AFTER `qty`;

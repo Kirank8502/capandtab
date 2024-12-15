@@ -87,6 +87,14 @@
               </div>
             </div>
             <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">QTY KGs</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="kgs_qty" value="{{ kgs_qty }}" min="0" placeholder="Quantity (KGs)" id="kgs_qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Rate</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -244,29 +252,29 @@ $('#gst_status').change(function() {
     }
 });
 
-$('#qty, #gst, #rate, #gst_status').change(function () {
+$('#kgs_qty, #gst, #rate, #gst_status').change(function () {
   var qty = 0;
   var cal_val = 0;
   if($('#gst_status').is(":checked")){
     var gst_val = 0;
     var amount = 0.00;
     var total_amount = 0;
-    amount = $('#rate').val()*$('#qty').val();
+    amount = $('#rate').val()*$('#kgs_qty').val();
     if($('#gst').val() > 0){
       gst_val = ($('#gst').val())/100;
     }
-    if($('#rate').val() > 0 && $('#qty').val() > 0 && gst_val > 0){
-      cal_val = $('#rate').val()*$('#qty').val()*(gst_val);
+    if($('#rate').val() > 0 && $('#kgs_qty').val() > 0 && gst_val > 0){
+      cal_val = $('#rate').val()*$('#kgs_qty').val()*(gst_val);
     }else{
-      cal_val = $('#rate').val()*$('#qty').val();
+      cal_val = $('#rate').val()*$('#kgs_qty').val();
     }
     $('#amount').val(amount.toFixed(2));
     $('#gst_amount').val(cal_val.toFixed(2));
     total_amount = parseFloat($('#amount').val()) + parseFloat($('#gst_amount').val());
     $('#total_amount').val(total_amount.toFixed(2));
   }else{
-    if($('#rate').val() > 0 && $('#qty').val() > 0){
-      cal_val = $('#rate').val()*$('#qty').val();
+    if($('#rate').val() > 0 && $('#kgs_qty').val() > 0){
+      cal_val = $('#rate').val()*$('#kgs_qty').val();
       $('#amount').val(cal_val.toFixed(2));
       $('#total_amount').val(cal_val.toFixed(2));
     }
