@@ -1,0 +1,305 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" id="receive_save_btn" form="form-receive" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>Receive</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
+      <div class="card-body">
+        <form id="form-receive" action="{{ action }}" method="post" data-oc-toggle="ajax">
+            <div class="row mb-3" id="input-po_no-class-main">
+              <label class="col-sm-1 col-form-label">PO NO</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="orders_id" id="input-po_no-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for order in new_orders %}
+                          <option value="{{ order.orders_id }}"{% if order.orders_id == orders_id %} selected{% endif %}>{{ order.po_no }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-vendor-class-main">
+              <label class="col-sm-1 col-form-label">Vendor</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="vendor_id" id="input-vendor-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for vendor in vendors %}
+                          <option value="{{ vendor.vendor_id }}"{% if vendor.vendor_id == vendor_id %} selected{% endif %}>{{ vendor.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-search-class-main">
+              <label class="col-sm-1 col-form-label">Product List</label>
+              <div class="col-sm-11">
+                <div class="input-group">
+                  <select name="product_id[]" multiple id="product_id" class="form-select">
+                    {% for data in datas %}
+                      <option value="{{ data.product_ids }}"{% if data.product_ids in product_id %} selected{% endif %}>{{ data.name }}</option>
+                    {% endfor %}
+                  </select>
+               </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Receive Date</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="date" name="receive_date" value="{{ receive_date }}" placeholder="Receive Date" id="receive_date" class="form-control date"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Payment Date</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="payment_date" id="input-payment-date" class="form-select">
+                        <option value="0" {% if payment_date == 0 %} selected{% endif %}>None</option>
+                        <option value="30" {% if payment_date == 30 %} selected{% endif %}>30 Days</option>
+                        <option value="45" {% if payment_date == 45 %} selected{% endif %}>45 Days</option>
+                        <option value="60" {% if payment_date == 60 %} selected{% endif %}>60 Days</option>
+                        <option value="90" {% if payment_date == 90 %} selected{% endif %}>90 Days</option>
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">QTY Bags</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="qty" value="{{ qty }}" min="0" placeholder="Quantity" id="qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">QTY Number / KGs</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="kgs_qty" value="{{ kgs_qty }}" min="0" placeholder="Quantity (KGs)" id="kgs_qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Rate</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="rate" value="{{ rate }}" min="0.00" step="0.01" placeholder="rate" id="rate" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">With GST</label>
+              <div class="col-sm-11">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="gst_status" value="0"/>
+                    <input type="checkbox" name="gst_status" value="1" id="gst_status" class="form-check-input" {% if gst_status %}checked{% endif %}/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-gst-class-main">
+              <label class="col-sm-1 col-form-label">GST (in %)</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="gst" value="{{ gst }}" min="0" placeholder="gst" id="gst" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Amount</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="amount" value="{{ amount }}" min="0.00" step="0.01" placeholder="Amount" id="amount" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-gst-amount-class-main">
+              <label class="col-sm-1 col-form-label">GST Amount</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="gst_amount" value="{{ gst_amount }}" min="0.00" step="0.01" placeholder="GST Amount" id="gst_amount" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Total Amount</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="total_amount" value="{{ total_amount }}" min="0.00" step="0.01" placeholder="Total Amount" id="total_amount" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="input-filename" class="col-sm-1 col-form-label">Receive Invoice</label>
+              <div class="col-sm-11">
+                <div class="input-group">
+                  <button type="button" id="button-upload" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload</button>
+                  <input type="text" name="filename" value="{{ file }}" placeholder="FileName" id="input-filename" class="form-control"/>
+                </div>
+              </div>
+            </div>
+          <input type="hidden" name="receive_id" value="{{ receive_id }}" id="input-receive-id"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
+
+<script>
+$(document).ready(function() {
+    $('#product_id').select2({
+        width: '100%'
+    });
+
+    $('#input-vendor-class').select2({
+        width: '100%'
+    });
+
+  var gst_status = $('#gst_status').prop('checked');
+  if(gst_status){
+    $('#input-gst-class-main').show();
+    $('#input-gst-amount-class-main').show();
+  }else{
+    $('#input-gst-class-main').hide();
+    $('#input-gst-amount-class-main').hide();
+  }
+
+});
+
+
+$('#button-upload').on('click', function () {
+    var element = this;
+
+    $('#form-upload').remove();
+
+    $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file"/></form>');
+
+    $('#form-upload input[name=\'file\']').trigger('click');
+
+    $('#form-upload input[name=\'file\']').on('change', function () {
+        if ((this.files[0].size / 1024) > 20000) {
+            $(this).val('');
+
+            alert('{{ error_upload_size }}');
+        }
+    });
+
+    if (typeof timer !== 'undefined') {
+        clearInterval(timer);
+    }
+
+    var timer = setInterval(function () {
+        if ($('#form-upload input[name=\'file\']').val() !== '') {
+            clearInterval(timer);
+
+            $.ajax({
+                url: 'index.php?route=catalog/receive|upload&user_token={{ user_token }}',
+                type: 'post',
+                dataType: 'json',
+                data: new FormData($('#form-upload')[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $(element).button('loading');
+                },
+                complete: function () {
+                    $(element).button('reset');
+                },
+                success: function (json) {
+                    if (json['error']) {
+                        alert(json['error']);
+                    }
+
+                    if (json['success']) {
+                        alert(json['success']);
+
+                        $('#input-filename').val(json['filename']);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                }
+            });
+        }
+    }, 500);
+});
+
+
+$('#gst_status').change(function() {
+    var gst_status = $(this).prop('checked');
+    if(gst_status){
+      $('#input-gst-class-main').show();
+      $('#input-gst-amount-class-main').show();
+    }else{
+      $('#input-gst-class-main').hide();
+      $('#input-gst-amount-class-main').hide();
+    }
+});
+
+$('#kgs_qty, #gst, #rate, #gst_status').change(function () {
+  var qty = 0;
+  var cal_val = 0;
+  if($('#gst_status').is(":checked")){
+    var gst_val = 0;
+    var amount = 0.00;
+    var total_amount = 0;
+    amount = $('#rate').val()*$('#kgs_qty').val();
+    if($('#gst').val() > 0){
+      gst_val = ($('#gst').val())/100;
+    }
+    if($('#rate').val() > 0 && $('#kgs_qty').val() > 0 && gst_val > 0){
+      cal_val = $('#rate').val()*$('#kgs_qty').val()*(gst_val);
+    }else{
+      cal_val = $('#rate').val()*$('#kgs_qty').val();
+    }
+    $('#amount').val(amount.toFixed(2));
+    $('#gst_amount').val(cal_val.toFixed(2));
+    total_amount = parseFloat($('#amount').val()) + parseFloat($('#gst_amount').val());
+    $('#total_amount').val(total_amount.toFixed(2));
+  }else{
+    if($('#rate').val() > 0 && $('#kgs_qty').val() > 0){
+      cal_val = $('#rate').val()*$('#kgs_qty').val();
+      $('#amount').val(cal_val.toFixed(2));
+      $('#total_amount').val(cal_val.toFixed(2));
+    }
+  }
+});
+
+
+$('#input-po_no-class').change(function() {
+    $.ajax({
+    url: 'index.php?route=catalog/receive|getpodata&user_token={{user_token}}&orders_id='+$(this).val(),
+    type: 'GET',
+    success: function(response) {
+      if(response.moulder_id > 0){
+        $('#input-vendor-class').val('mol_'+response.moulder_id).trigger('change');
+      }else if(response.client_id > 0){
+        $('#input-vendor-class').val('cli_'+response.client_id).trigger('change');
+      }
+
+      if(response.datas){
+        $('#product_id').val(response.datas).trigger('change');
+      }
+      // console.log(response);
+      $('#qty').val(response.qty);
+    }
+   });
+});
+
+</script>

@@ -14,7 +14,6 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$data['add'] = $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['delete'] = $this->url->link('catalog/order|delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['send'] = $this->url->link('catalog/order|send', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['list'] = $this->getList();
 		
 		$data['header'] = $this->load->controller('common/header');
@@ -227,7 +226,8 @@ class Order extends \Opencart\System\Engine\Controller {
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['orders_id'], $this->request->post['selected']),				
 				'view'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] .'&view_mode=1'. $url, true),
 				'edit'				=> $this->url->link('catalog/order|form', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true),
-				'export'            => $this->url->link('catalog/order|exportData', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
+				'export'            => $this->url->link('catalog/order|exportData', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true),
+				// 'send'            	=> $this->url->link('catalog/order|send', 'user_token=' . $this->session->data['user_token'] . '&orders_id=' . $result['orders_id'] . $url, true)
 			);
 		}
 
@@ -728,7 +728,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function exportData(){
+	public function exportData($save_export = 0){
 		require_once(DIR_SYSTEM . 'library/dompdf/vendor/autoload.php');
 		$options = new Options();
 		$options->set('isHtml5ParserEnabled', true);
@@ -755,111 +755,253 @@ class Order extends \Opencart\System\Engine\Controller {
 			}
 			$po_date = strtotime($orders['date_added']);
 			$targeted_date = strtotime($orders['targeted_date']);
-			$html = '<html>
+
+			// Old Layout
+
+			// $html = '<html>
+			// <head>
+			// 	<style>
+        	//         /* Inline or local Bootstrap styles */
+        	//         body { font-family: Arial, sans-serif; }
+			// 		.detail_box p{font-size:16px;}
+			// 		table{border-collapse:collapse;}
+			// 		tr,td,th{border-style:solid;border-color:#000;}
+			// 		table > :not(caption) > * > *{border-width: 0 1px;}
+			// 		table > :not(caption) > *{border-width: 1px 0;}
+        	//     </style>
+			// </head>
+			// <body>';
+			// $html .= '<div style="display:flex;flex-direction:column;">';
+			// $html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
+			// $html .= '<h1 class="text-center mt-4" style="text-align:center;margin-top:10px;">Noel Enterprises</h1>';
+			// $html .= '<p style="font-size:15px;text-align:center;margin-bottom:10px;margin-top:0;">Store Office: - Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
+			// $html .= '</div>';
+			// $html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
+			// $html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
+			// $html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
+			// $html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
+			// $html .= '<p>'.$client_moulder_data['address'].'</p>';
+			// if ($this->request->get['show_order_by'] == 1){
+			// 	$html .= '<p>Order By:- '.$orders['order_by'].'</p>';
+			// }
+			// $html .= '</div>';
+			// $html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
+			// $html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
+			// $html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
+			// $html .= '<p>PO Date:- '.date("d-m-Y", $po_date).'</p>';
+			// $html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '<h4 style="text-align:center;margin-top:0.5rem;">Job Work Order</h4>';
+			// $html .= '<div style="max-width: 1320px;border:2px solid;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
+			// $html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;margin-left:20px;" class="mb-1">Please supply following materials as per the terms and conditions mentioned below.</p>';
+			// $html .= '</div>';
+			// $html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+			// $html .= '<thead>';
+			// $html .= '<tr>';
+			// $html .= '<th rowspan="2" style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2"><img src="https://capandtab.com/image/'.(!empty($accessory) ? $accessory["image"] : "" ).'"" width="100" height="100" /></th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Parts Name / Fittings Name</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder Type</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder KG</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder Bags</th>';
+			// $html .= '</tr>';
+			// $html .= '<tr>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['name'].'</td>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($powder['name']) ? $powder['name'] : 'None').'</td>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.($orders['bags'] ? $orders['bags']*25 : 0).'</td>';
+			// if(!empty($powder['qty']) && $powder['qty'] > 0){
+			// 	$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
+			// }elseif(!empty($powder['qty'])){
+			// 	$html .= '<td style="padding:0rem;text-align:center;" class="text-center p-2">';
+				
+			// 	$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+			// 	$html .= '<tr>';
+			// 	$html .= '<th>Total</th>';
+			// 	$html .= '<th>Delivered</th>';
+			// 	$html .= '<th>Balance</th>';
+			// 	$html .= '</tr>';
+			// 	$html .= '<tr>';
+			// 	$html .= '<td>'.($orders['bags']).'</td>';
+			// 	$html .= '<td>'.($orders['bags'] - abs($powder['qty'])).'</td>';
+			// 	$html .= '<td>'.(abs($powder['qty'])).'</td>';
+			// 	$html .= '</tr>';
+			// 	$html .= '</table>';
+				
+			// 	$html .= '</td>';
+			// }else{
+			// 	$html .= '<td style="padding:0rem;text-align:center;" class="text-center p-2">0</td>';
+			// }
+			// $html .= '</tr>';
+			// $html .= '</thead>';
+			// $html .= '</table>';
+			// $html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;" class="container table-bordered my-5">';
+			// $html .= '<thead>';
+			// $html .= '<tr>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Product Weight</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Pigment Quantity</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Master Batch Grams</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Targeted Quantity</th>';
+			// $html .= '</tr>';
+			// $html .= '</thead>';
+			// $html .= '<tbody>';
+			// $html .= '<tr>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['weight'].'</td>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0).'</td>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
+			// $html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($orders['req_qty']) ? $orders['req_qty'] : $orders['qty']).'</td>';
+			// $html .= '</tr>';
+			// $html .= '</tbody>';
+			// $html .= '</table>';
+			// $html .= '<div style="max-width: 1320px;margin:20px auto;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;">';
+			// $html .= '<div style="padding:10px;">';
+			// $html .= '<p style="font-size:12px;" class="mb-3">Mentioned above product’s Die is available with mentioned above moulder. This Die is Asha Enterprises Property. Asha Enterprises have the rights to take back the die without any prior notice.</p>';
+			// $html .= '<p style="font-size:12px;" class="mb-3">All invoices should be sent with full particulars such as purchase order No;, Date with proper instructions, together with E Way bill & E Invoice wherever  applicable. Failure to comply with this will delay the settlement of payments.</p>';
+			// $html .= '<p style="font-size:12px;" class="mb-1">Vendor shall issue GST compliant tax invoices as envisaged under GST Law containing details such as our GSTINs (as communicated), HSNs, tax etc. as required under rule 46 of CGST Act, 2017. Further, such invoice should be captured by the vendor in his outward supplies statements i.e. GSTR1 in the month when the supply was made. Further, relevant tax on such invoice should be duly deposited with the government exchequer by the vendor so as to enable us to claim input tax credit.</p>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '<p style="max-width: 1320px;margin:20px auto;width:100%;" class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
+			// $html .= '</body></html>';
+
+			// Old Layout END
+
+            $html = '<html>
 			<head>
 				<style>
-        	        /* Inline or local Bootstrap styles */
-        	        body { font-family: Arial, sans-serif; }
-					.detail_box p{font-size:16px;}
-					table{border-collapse:collapse;}
-					tr,td,th{border-style:solid;border-color:#000;}
-					table > :not(caption) > * > *{border-width: 0 1px;}
-					table > :not(caption) > *{border-width: 1px 0;}
-        	    </style>
+					body { font-family: Arial, sans-serif; background-color: #f4f7fa; margin: 0; padding: 0; }
+					.container { margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); border: 1px solid #ddd; }
+					h1, h4 { text-align: center; color: #212529; margin-bottom: 10px; }
+					p { font-size: 14px; color: #666; margin-bottom: 5px; }
+					.header { text-align: center; margin-bottom: 30px; }
+					.header h1 { font-size: 30px; color: #212529; }
+					.header p { font-size: 14px; }
+					.detail_box { font-size: 16px; color: #333; margin: 10px 0; }
+					
+					/* Vendor and PO details box styling */
+					.vendor-po-box {
+						border: 2px solid #ddd;
+						padding: 10px 20px;
+						margin: 20px 0;
+						background-color: #f9f9f9;
+						border-radius: 8px;
+					}
+			
+					.vendor-po-box h2 { font-size: 18px; color: #212529; margin-bottom: 15px; }
+			
+					.order-info { margin-bottom: 20px; display: flex; flex-direction: row; justify-content: space-between; }
+					.order-info .left, .order-info .right {
+						padding: 0 10px;
+						box-sizing: border-box; /* Ensure padding doesn\'t affect the width */
+					}
+					.order-info p { margin: 5px 0; }
+			
+					/* Styling the table */
+					table { width: 100%; margin: 20px 0; border-collapse: collapse; border: 1px solid #ddd; }
+					table th, table td { padding: 10px; text-align: center; border: 1px solid #ddd; }
+					table th { background-color: #f8f9fa; font-weight: bold; }
+					table tr:nth-child(even) { background-color: #f2f2f2; }
+					
+					.footer { margin-top: 10px; font-size: 12px; text-align: center; color: #666; }
+					.footer .note { font-size: 13px; color: #333; }
+					img { max-width: 100px; max-height: 100px; }
+				</style>
 			</head>
 			<body>';
-			$html .= '<div style="display:flex;flex-direction:column;">';
-			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
-			$html .= '<h1 class="text-center mt-4" style="text-align:center;margin-top:10px;">Noel Enterprises</h1>';
-			$html .= '<p style="font-size:15px;text-align:center;margin-bottom:10px;margin-top:0;">Store Office: - Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
+			
+			$html .= '<div class="container">';
+			$html .= '<div class="header">';
+			$html .= '<h1>Noel Enterprises</h1>';
+			$html .= '<p>Store Office: Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
 			$html .= '</div>';
-			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
-			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
-			$html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
-			$html .= '<p>Vendor Name:- '.$client_moulder_data['name'].'</p>';
-			$html .= '<p>'.$client_moulder_data['address'].'</p>';
-			if ($this->request->get['show_order_by'] == 1){
-				$html .= '<p>Order By:- '.$orders['order_by'].'</p>';
+			$html .= '<div class="vendor-po-box">';
+			$html .= '<h2>Vendor & PO Details</h2>';
+			$html .= '<div style="display: inline-block; width: 48%; vertical-align: top;">';  // Vendor info column
+			$html .= '<p><strong>Vendor Name:</strong> ' . $client_moulder_data['name'] . '</p>';
+			$html .= '<p><strong>Vendor Address:</strong> ' . $client_moulder_data['address'] . '</p>';
+			if ($this->request->get['show_order_by'] == 1) {
+				$html .= '<p><strong>Order By:</strong> ' . $orders['order_by'] . '</p>';
 			}
+			$html .= '<p><strong>Vendor Code:</strong> AE' . $orders['moulder_id'] . '</p>';
 			$html .= '</div>';
-			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
-			$html .= '<p>Vendor Code:- AE'.$orders['moulder_id'].'</p>';
-			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
-			$html .= '<p>PO Date:- '.date("d-m-Y", $po_date).'</p>';
-			$html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
-			$html .= '</div>';
-			$html .= '</div>';
+			$html .= '<div style="display: inline-block; width: 48%; padding-left: 2%;">';  // PO info column
+			$html .= '<p><strong>PO No:</strong> ' . $orders['po_no'] . '</p>';
+			$html .= '<p><strong>PO Date:</strong> ' . date("d-m-Y", $po_date) . '</p>';
+			$html .= '<p><strong>Delivery Date:</strong> ' . date("d-m-Y", $targeted_date) . '</p>';
 			$html .= '</div>';
 			$html .= '</div>';
-			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Job Work Order</h4>';
-			$html .= '<div style="max-width: 1320px;border:2px solid;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
-			$html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;margin-left:20px;" class="mb-1">Please supply following materials as per the terms and conditions mentioned below.</p>';
-			$html .= '</div>';
-			$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+			$html .= '<h4>Job Work Order</h4>';
+			$html .= '<p><strong>Please supply the following materials as per the terms and conditions below:</strong></p>';			
+			$html .= '<table>';
 			$html .= '<thead>';
 			$html .= '<tr>';
-			$html .= '<th rowspan="2" style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2"><img src="https://capandtab.com/image/'.(!empty($accessory) ? $accessory["image"] : "" ).'"" width="100" height="100" /></th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Parts Name / Fittings Name</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder Type</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder KG</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Powder Bags</th>';
-			$html .= '</tr>';
-			$html .= '<tr>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['name'].'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($powder['name']) ? $powder['name'] : 'None').'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.($orders['bags'] ? $orders['bags']*25 : 0).'</td>';
-			if(!empty($powder['qty']) && $powder['qty'] > 0){
-				$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$orders['bags'].'</td>';
-			}elseif(!empty($powder['qty'])){
-				$html .= '<td style="padding:0rem;text-align:center;" class="text-center p-2">';
-				
-				$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
-				$html .= '<tr>';
-				$html .= '<th>Total</th>';
-				$html .= '<th>Delivered</th>';
-				$html .= '<th>Balance</th>';
-				$html .= '</tr>';
-				$html .= '<tr>';
-				$html .= '<td>'.($orders['bags']).'</td>';
-				$html .= '<td>'.($orders['bags'] - abs($powder['qty'])).'</td>';
-				$html .= '<td>'.(abs($powder['qty'])).'</td>';
-				$html .= '</tr>';
-				$html .= '</table>';
-				
-				$html .= '</td>';
-			}else{
-				$html .= '<td style="padding:0rem;text-align:center;" class="text-center p-2">0</td>';
-			}
-			$html .= '</tr>';
-			$html .= '</thead>';
-			$html .= '</table>';
-			$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;" class="container table-bordered my-5">';
-			$html .= '<thead>';
-			$html .= '<tr>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Product Weight</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Pigment Quantity</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Master Batch Grams</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;" class="text-center p-2">Targeted Quantity</th>';
+			$html .= '<th>Part/Fitting Image</th>';
+			$html .= '<th>Part/Fitting Name</th>';
+			$html .= '<th>Powder Type</th>';
+			$html .= '<th>Powder KG</th>';
+			$html .= '<th>Powder Bags</th>';
 			$html .= '</tr>';
 			$html .= '</thead>';
 			$html .= '<tbody>';
 			$html .= '<tr>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.$accessory['weight'].'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0).'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags']*500)).'</td>';
-			$html .= '<td style="padding:0.5rem;text-align:center;" class="text-center p-2">'.(!empty($orders['req_qty']) ? $orders['req_qty'] : $orders['qty']).'</td>';
+			$html .= '<td><img src="https://capandtab.com/image/' . (!empty($accessory) ? $accessory["image"] : '') . '" alt="Part Image"></td>';
+			$html .= '<td>' . $accessory['name'] . '</td>';
+			$html .= '<td>' . (!empty($powder['name']) ? $powder['name'] : 'None') . '</td>';
+			$html .= '<td>' . ($orders['bags'] ? $orders['bags'] * 25 : 0) . '</td>';
+			if (!empty($powder['qty']) && $powder['qty'] > 0) {
+				$html .= '<td>' . $orders['bags'] . '</td>';
+			} elseif (!empty($powder['qty'])) {
+				$html .= '<td>';
+				$html .= '<table>';
+				$html .= '<tr><th>Total</th><th>Delivered</th><th>Balance</th></tr>';
+				$html .= '<tr><td>' . $orders['bags'] . '</td><td>' . ($orders['bags'] - abs($powder['qty'])) . '</td><td>' . abs($powder['qty']) . '</td></tr>';
+				$html .= '</table>';
+				$html .= '</td>';
+			} else {
+				$html .= '<td>0</td>';
+			}
 			$html .= '</tr>';
 			$html .= '</tbody>';
 			$html .= '</table>';
-			$html .= '<div style="max-width: 1320px;margin:20px auto;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;">';
-			$html .= '<div style="padding:10px;">';
-			$html .= '<p style="font-size:12px;" class="mb-3">Mentioned above product’s Die is available with mentioned above moulder. This Die is Asha Enterprises Property. Asha Enterprises have the rights to take back the die without any prior notice.</p>';
-			$html .= '<p style="font-size:12px;" class="mb-3">All invoices should be sent with full particulars such as purchase order No;, Date with proper instructions, together with E Way bill & E Invoice wherever  applicable. Failure to comply with this will delay the settlement of payments.</p>';
-			$html .= '<p style="font-size:12px;" class="mb-1">Vendor shall issue GST compliant tax invoices as envisaged under GST Law containing details such as our GSTINs (as communicated), HSNs, tax etc. as required under rule 46 of CGST Act, 2017. Further, such invoice should be captured by the vendor in his outward supplies statements i.e. GSTR1 in the month when the supply was made. Further, relevant tax on such invoice should be duly deposited with the government exchequer by the vendor so as to enable us to claim input tax credit.</p>';
+			$html .= '<table class="container table-bordered my-5">';
+			$html .= '<thead>';
+			$html .= '<tr>';
+			$html .= '<th>Product Weight</th>';
+			if($orders['colour_id'] > 0){
+				$html .= '<th>Colour</th>';
+			}
+			if($orders['check_color'] == 1){
+				$html .= '<th>Pigment Quantity</th>';
+			}
+			$html .= '<th>Master Batch Grams</th>';
+			$html .= '<th>Targeted Quantity</th>';
+			$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '<tbody>';
+			$html .= '<tr>';
+			$html .= '<td>' . $accessory['weight'] . '</td>';
+			if($orders['colour_id'] > 0){
+				$html .= '<td>' . $colour['name'] . '</td>';
+			}
+			if($orders['check_color'] == 1){
+				$html .= '<td>' . (($orders['check_color'] == 1 || $orders['check_color'] == 0) ? $orders['bags'] : 0) . '</td>';
+			}
+			$html .= '<td>' . (($orders['check_color'] == 1 || $orders['check_color'] == 0) ? 0 : ($orders['bags'] * 500)) . '</td>';
+			$html .= '<td>' . (!empty($orders['req_qty']) ? $orders['req_qty'] : $orders['qty']) . '</td>';
+			$html .= '</tr>';
+			$html .= '</tbody>';
+			$html .= '</table>';
+			$html .= '<div class="footer">';
+			$html .= '<p class="note">Mentioned above product’s Die is available with mentioned above moulder. This Die is Asha Enterprises Property. Asha Enterprises has the rights to take back the die without any prior notice.</p>';
+			$html .= '<p class="note">All invoices should be sent with full particulars such as purchase order No, Date with proper instructions, together with E Way bill & E Invoice wherever applicable. Failure to comply with this will delay the settlement of payments.</p>';
+			$html .= '<p class="note">Vendor shall issue GST-compliant tax invoices as envisaged under GST Law containing details such as our GSTINs (as communicated), HSNs, tax, etc. as required under rule 46 of CGST Act, 2017.</p>';
+			$html .= '<p><strong>Note:</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
 			$html .= '</div>';
 			$html .= '</div>';
-			$html .= '<p style="max-width: 1320px;margin:20px auto;width:100%;" class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
 			$html .= '</body></html>';
+		
+		// 	echo $html;
+		// die;
 
 		}elseif($orders['client_id'] != 0){
 			$fittings = $this->model_catalog_order->getFittingss($orders['fittings_id']);
@@ -871,70 +1013,253 @@ class Order extends \Opencart\System\Engine\Controller {
 			$payment_date = !empty($this->request->get['date']) ? strtotime($this->request->get['date']) : 0;
 			$targeted_date = strtotime($orders['targeted_date']);
 
+			// Old Layout Start
+
+			// $html = '<html>
+			// <head>
+			// 	<style>
+        	//         /* Inline or local Bootstrap styles */
+        	//         body { font-family: Arial, sans-serif; }
+			// 		.detail_box p{font-size:16px;}
+			// 		table{border-collapse:collapse;}
+			// 		tr,td,th{border-style:solid;border-color:#000;}
+			// 		table > :not(caption) > * > *{border-width: 0 1px;}
+			// 		table > :not(caption) > *{border-width: 1px 0;}
+        	//     </style>
+			// </head>
+			// <body>';
+			// $html .= '<div style="display:flex;flex-direction:column;">';
+			// $html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
+			// $html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
+			// $html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
+			// $html .= '<p>Client Name:- '.$client_moulder_data['name'].'</p>';
+			// $html .= '<p>'.$client_moulder_data['address'].'</p>';
+			// if ($this->request->get['show_order_by'] == 1){
+			// 	$html .= '<p>Order By:- '.$orders['order_by'].'</p>';
+			// }
+			// $html .= '</div>';
+			// $html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
+			// $html .= '<p>Client Code:- AEC'.$orders['client_id'].'</p>';
+			// $html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
+			// $html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
+			// $html .= '<p>Payment Terms:- '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($payment_date) ? date("d-m-Y", $payment_date) : '' ) ).'</p>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
+			// $html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Noel Enterprises, Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
+			// // $html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Store Office: - </p>';
+			// $html .= '</div>';
+			// $html .= '</div>';
+			// $html .= '<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order Received</h4>';
+			// $html .= '<div style="max-width: 1320px;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
+			// $html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;" class="mb-1">Dear Sir” Kindly acknowledge mentioned below order received from you.</p>';
+			// $html .= '</div>';
+			// $html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
+			// $html .= '<thead>';
+			// $html .= '<tr>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Sr No</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Product / Fittings</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Name</th>';
+			// // $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Colour</th>';
+			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Quantity</th>';
+			// $html .= '</tr>';
+			// foreach($fittings as $key => $value){
+			// 	$i = $i + 1;
+			// 	$html .= '<tr>';
+			// 	$html .= '<td style="padding:0.5rem;text-align:center;">'.$i.'</td>';
+			// 	$html .= '<th style="width:20%;padding:0.5rem;text-align:center;"><img src="https://capandtab.com/image/'.$value["image"].'"" width="100" height="100" /></th>';
+			// 	$html .= '<td style="padding:0.5rem;text-align:center;">'.$value['name'].'</td>';
+			// 	// $html .= '<td style="padding:0.5rem;text-align:center;">'.$colour['name'].'</td>';
+			// 	$html .= '<td style="padding:0.5rem;text-align:center;">'.$orders['qty'].'</td>';
+			// 	$html .= '</tr>';
+			// }
+			// $html .= '</thead>';
+			// $html .= '</table>';
+			// $html .= '<p style="max-width: 1320px;margin:20px auto;width:100%;" class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
+			// $html .= '</body></html>';
+			
+			// Old Layout END
+
 			$html = '<html>
 			<head>
 				<style>
-        	        /* Inline or local Bootstrap styles */
-        	        body { font-family: Arial, sans-serif; }
-					.detail_box p{font-size:16px;}
-					table{border-collapse:collapse;}
-					tr,td,th{border-style:solid;border-color:#000;}
-					table > :not(caption) > * > *{border-width: 0 1px;}
-					table > :not(caption) > *{border-width: 1px 0;}
-        	    </style>
+					/* Basic Reset */
+					body, h1, h2, h3, h4, p, table {
+						margin: 0;
+						padding: 0;
+					}
+					body {
+						font-family: Arial, sans-serif;
+						background-color: #f4f4f4;
+						line-height: 1.6;
+					}
+		
+					.container {
+						width: 100%;
+						max-width: 1320px;
+						margin: 0 auto;
+						padding: 20px;
+						background-color: #ffffff;
+						border: 2px solid #212529;
+						border-radius: 5px;
+						box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+					}
+		
+					.header {
+						text-align: center;
+						margin-bottom: 20px;
+					}
+		
+					.header h1 {
+						font-size: 28px;
+						margin-top: 20px;
+						font-weight: bold;
+					}
+		
+					.header p {
+						font-size: 15px;
+						margin-top: 5px;
+						color: #555;
+					}
+		
+					/* Combined Box for Client and PO Details */
+					.details-box {
+						background-color: #f9f9f9;
+						border: 1px solid #ddd;
+						border-radius: 5px;
+						margin-bottom: 20px;
+						// display: flex;
+						// justify-content: space-between;
+					}
+		
+					// .details-box .detail {
+					// 	width: 48%;
+					// 	padding-right: 2%;
+					// }
+		
+					.details-box p {
+						font-size: 14px;
+						margin-bottom: 8px;
+					}
+		
+					.details-box p strong {
+						color: #333;
+					}
+		
+					/* Order Details Table */
+					.order-details-table {
+						width: 100%;
+						border-collapse: collapse;
+						margin-top: 20px;
+						margin-bottom: 20px;
+					}
+		
+					.order-details-table th, .order-details-table td {
+						padding: 10px;
+						border: 1px solid #ddd;
+						text-align: center;
+					}
+		
+					.order-details-table th {
+						background-color: #f1f1f1;
+					}
+		
+					.order-details-table img {
+						max-width: 100px;
+						max-height: 100px;
+					}
+		
+					.note-section {
+						margin-top: 20px;
+						font-size: 14px;
+						color: #666;
+						padding: 10px;
+						background-color: #f9f9f9;
+						border: 1px solid #ddd;
+						border-radius: 5px;
+					}
+		
+					.note-section strong {
+						color: #333;
+					}
+		
+					.footer {
+						text-align: center;
+						margin-top: 30px;
+						font-size: 12px;
+						color: #777;
+					}
+		
+					.footer p {
+						margin-bottom: 5px;
+					}
+		
+					.footer strong {
+						color: #333;
+					}
+				</style>
 			</head>
-			<body>';
-			$html .= '<div style="display:flex;flex-direction:column;">';
-			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;margin-left:auto;margin-right:auto;border:2px solid;display:block;">';
-			$html .= '<div style="margin-left:30px;margin-right:30px;" class="mx-5 my-2 d-flex justify-content-between">';
-			$html .= '<div style="display: inline-block; width: 65%; vertical-align: top;padding:0px 5px;" class="detail_box">';
-			$html .= '<p>Client Name:- '.$client_moulder_data['name'].'</p>';
-			$html .= '<p>'.$client_moulder_data['address'].'</p>';
-			if ($this->request->get['show_order_by'] == 1){
-				$html .= '<p>Order By:- '.$orders['order_by'].'</p>';
-			}
-			$html .= '</div>';
-			$html .= '<div style="display: inline-block; width: 30%; vertical-align: top;" class="detail_box">';
-			$html .= '<p>Client Code:- AEC'.$orders['client_id'].'</p>';
-			$html .= '<p>PO NO:- '.$orders['po_no'].'</p>';
-			$html .= '<p>Delivery Date:- '.date("d-m-Y", $targeted_date).'</p>';
-			$html .= '<p>Payment Terms:- '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($payment_date) ? date("d-m-Y", $payment_date) : '' ) ).'</p>';
-			$html .= '</div>';
-			$html .= '</div>';
-			$html .= '</div>';
-			$html .= '<div style="max-width: 1320px;width:100%;border-width: 2px !important; border-color: #212529 !important;border-style:solid;margin-left:auto;margin-right:auto;margin-bottom:20px;margin-top:20px;display:block;" class="container">';
-			$html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Noel Enterprises, Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>';
-			// $html .= '<p style="font-size:15px;margin-bottom:0;margin-top:0;margin-left:10px;">Store Office: - </p>';
-			$html .= '</div>';
-			$html .= '</div>';
-			$html .= '<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order Received</h4>';
-			$html .= '<div style="max-width: 1320px;margin-left:auto;margin-right:auto;" class="container border border-dark border-2 mt-4">';
-			$html .= '<p style="margin-bottom:0.5rem;margin-top:0.5rem;" class="mb-1">Dear Sir” Kindly acknowledge mentioned below order received from you.</p>';
-			$html .= '</div>';
-			$html .= '<table style="max-width: 1320px;margin:20px auto;width:100%;">';
-			$html .= '<thead>';
-			$html .= '<tr>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Sr No</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Product / Fittings</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Name</th>';
-			// $html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Colour</th>';
-			$html .= '<th style="width:20%;padding:0.5rem;text-align:center;">Quantity</th>';
-			$html .= '</tr>';
-			foreach($fittings as $key => $value){
-				$i = $i + 1;
-				$html .= '<tr>';
-				$html .= '<td style="padding:0.5rem;text-align:center;">'.$i.'</td>';
-				$html .= '<th style="width:20%;padding:0.5rem;text-align:center;"><img src="https://capandtab.com/image/'.$value["image"].'"" width="100" height="100" /></th>';
-				$html .= '<td style="padding:0.5rem;text-align:center;">'.$value['name'].'</td>';
-				// $html .= '<td style="padding:0.5rem;text-align:center;">'.$colour['name'].'</td>';
-				$html .= '<td style="padding:0.5rem;text-align:center;">'.$orders['qty'].'</td>';
-				$html .= '</tr>';
-			}
-			$html .= '</thead>';
-			$html .= '</table>';
-			$html .= '<p style="max-width: 1320px;margin:20px auto;width:100%;" class="container mt-3"><strong>Note:-</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>';
-			$html .= '</body></html>';
-
+			<body>
+				<div class="container">
+					<div class="header">
+						<h1>Noel Enterprises</h1>
+						<p>Sr. No. 132, Gala No. 02, Balaji Chawl, Waghralpada Main Road, Bhoidapada, Rajwal, Vasai East-401208</p>
+					</div>
+		
+					<!-- Combined Box for Client and PO Details -->
+					<div class="details-box" style="padding: 20px;">
+						<div class="detail" style="display:inline-block;width:48%;padding-top:20px;">
+							<p><strong>Client Name:</strong> '.$client_moulder_data['name'].'</p>
+							<p>'.$client_moulder_data['address'].'</p>
+							'.($this->request->get['show_order_by'] == 1 ? '<p><strong>Order By:</strong> '.$orders['order_by'].'</p>' : '').'
+							<p><strong>Client Code:</strong> AEC'.$orders['client_id'].'</p>
+						</div>
+		
+						<div class="detail" style="display:inline-block;width:48%;vertical-align:top;">
+							<p><strong>PO No:</strong> '.$orders['po_no'].'</p>
+							<p><strong>Delivery Date:</strong> '.date("d-m-Y", $targeted_date).'</p>
+							<p><strong>Payment Terms:</strong> '.($this->request->get['term'] == 1 ? 'Advance' : ($this->request->get['term'] == 2 && !empty($payment_date) ? date("d-m-Y", $payment_date) : '' ) ).'</p>
+						</div>
+					</div>
+		
+					<h4 style="text-align:center;margin-top:0.5rem;">Purchase Order Received</h4>
+		
+					<table class="order-details-table">
+						<thead>
+							<tr>
+								<th>Sr No</th>
+								<th>Product / Fittings</th>
+								<th>Name</th>
+								<th>Quantity</th>
+							</tr>
+						</thead>
+						<tbody>';
+						foreach($fittings as $key => $value){
+							$i = $key + 1;
+							$html .= '<tr>
+								<td>'.$i.'</td>
+								<td><img src="https://capandtab.com/image/'.$value["image"].'" alt="Product Image" /></td>
+								<td>'.$value['name'].'</td>
+								<td>'.$orders['qty'].'</td>
+							</tr>';
+						}
+					$html .= '</tbody>
+					</table>
+		
+					<div class="note-section">
+						<p><strong>Note:</strong> This is a <strong>computer-generated</strong> document. No <strong>signature</strong> is <strong>required</strong>.</p>
+					</div>
+		
+					<div class="footer">
+						<p>&copy; '.date('Y').' Noel Enterprises. All Rights Reserved.</p>
+					</div>
+				</div>
+			</body>
+		</html>';
+				
+echo $html;
+die;
 		}
 
         $dompdf->loadHtml($html);
@@ -942,19 +1267,27 @@ class Order extends \Opencart\System\Engine\Controller {
         $dompdf->render();
 		$pdfOutput = $dompdf->output();
 
-		header('Content-Type: application/pdf');
-		header('Content-Disposition: attachment; filename="' . $client_moulder_data['name'] . " PO " . $orders['po_no'] . '.pdf"');
-		echo $pdfOutput;
-		exit;
+		if(isset($this->request->get['mail']) && $this->request->get['mail'] == '1'){
+			$save_path = DIR_DOWNLOAD . $client_moulder_data['name'] . ' PO ' . $orders['po_no'] . '.pdf';
+			file_put_contents($save_path, $pdfOutput);
+			$this->send($this->request->get['orders_id'],$save_path);
+			header("Location: ". $this->url->link('catalog/order', 'user_token=' . $this->session->data['user_token'], true)."");
+			exit();
+		}else{
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: attachment; filename="' . $client_moulder_data['name'] . " PO " . $orders['po_no'] . '.pdf"');
+			echo $pdfOutput;
+			exit;
+		}
         // $dompdf->stream($client_moulder_data['name']." PO ".$orders['po_no'].".pdf", array("Attachment" => 1));
 	}
 
 
-	public function send(){
+	public function send(int $orders_id = 0,string $pdf_path = ''){
 		$data = [];
 		$this->load->model('catalog/order');
-		if (isset($this->request->post['selected'])) {
-			foreach ($this->request->post['selected'] as $orders_id) {
+		// if (isset($this->request->post['selected'])) {
+			// foreach ($this->request->post['selected'] as $orders_id) {
 				$order_data = $this->model_catalog_order->getOrderDetail($orders_id);
 				if($order_data['order_type'] == '0'){
 					$email = $this->model_catalog_order->getMoulder($order_data['moulder_id']);
@@ -972,19 +1305,20 @@ class Order extends \Opencart\System\Engine\Controller {
 						'smtp_timeout'  => $this->config->get('config_mail_smtp_timeout')
 					];
 					$data['name'] = !empty($email['name']) ? $email['name'] : "Sir/Ma'am";
+					$data['po_no'] = !empty($order_data['po_no']) ? $order_data['po_no'] : "None";
 					$mail = new \Opencart\System\Library\Mail($this->config->get('config_mail_engine'), $mail_option);
 					$mail->setTo($email['email']);
 					$mail->setFrom($this->config->get('config_mail_smtp_username'));
-					$mail->setSender('CAPANDTAB');
-					$mail->setSubject('Testing');
+					$mail->setSender('Noel Enterprises');
+					$mail->setSubject('Order');
 					// $data['phone'] = $this->config->get('config_telephone');
 					$mail->setHtml($this->load->view('catalog/lr_copy_mail', $data));
-					if (!empty($order_data)) {
-						$mail->addAttachment(!empty($order_data['image']) ? $order_data['image'] : '');
+					if (!empty($pdf_path)) {
+						$mail->addAttachment(!empty($pdf_path) ? $pdf_path : '');
 					}
 					$mail->send();
 				}
-			}
+			// }
 
 			$this->session->data['success'] = 'Mail Sent Successfully';
 
@@ -993,6 +1327,6 @@ class Order extends \Opencart\System\Engine\Controller {
 			
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode($json));
-		}
+		// }
 	}
 }

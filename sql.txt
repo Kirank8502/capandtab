@@ -314,3 +314,23 @@ ADD COLUMN `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `gst_amount`
 
 ALTER TABLE `dd_purchase`
 ADD COLUMN `kgs_qty` int(10) NOT NULL DEFAULT 0 AFTER `qty`;
+
+
+CREATE TABLE `dd_receive` (
+  `receive_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` varchar(50) NOT NULL DEFAULT '',
+  `file` varchar(255) NOT NULL DEFAULT '',
+  `vendor_id` varchar(50) NOT NULL DEFAULT '',
+  `orders_id` int(11) NOT NULL DEFAULT 0,
+  `qty` int(10) NOT NULL DEFAULT 0,
+  `kgs_qty` int(10) NOT NULL DEFAULT 0,
+  `rate` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `gst_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `gst` int(5) NOT NULL DEFAULT 0,
+  `gst_status` tinyint(1) NOT NULL DEFAULT 0,
+  `receive_date` date NOT NULL DEFAULT '2020-01-01',
+  `date_added` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`receive_id`)
+);

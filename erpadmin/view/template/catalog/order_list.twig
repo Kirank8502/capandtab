@@ -39,7 +39,8 @@
                   {# <a href="{{ order.export }}" data-bs-toggle="tooltip" title="Export" class="btn btn-success"><i class="fa-solid fa-file-arrow-down"></i></a> #}
                   {# <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-order-type="{{order.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-success" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a> #}
                 {# {% else %} #}
-                  <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-order-type="{{order.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-success" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a>
+                  <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-order-type="{{order.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-success export_pdf" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a>
+                  <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ order.export }}" data-toggle="modal" data-order-type="{{order.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-primary export_pdf" id="send_mail"><i class="fa-regular fa-envelope"></i></a>
                 {# {% endif %} #}
               </td>
             </tr>
@@ -103,8 +104,13 @@
 </div>
 
 <script>
-$('#print_pdf').on('click',function(e) {
+$('.export_pdf').on('click',function(e) {
   e.preventDefault();
+  if($(this).attr('id') == 'send_mail'){
+    var mail = 1;
+  }else{
+    var mail = 0;
+  }
   var exporturl = $(this).data('val');
   var order_type = $(this).data('order-type');
   var term = 1;
@@ -114,6 +120,8 @@ $('#print_pdf').on('click',function(e) {
   if(order_type == 0){
     $('#input-payment_term-class-main').hide();
     $('#input-term_date-class-main').hide();
+  }else{
+    $('#input-payment_term-class-main').show();
   }
 
   $('#exampleModalTemp').modal('show');
@@ -122,7 +130,7 @@ $('#print_pdf').on('click',function(e) {
     date = $('#term_date').val();
     order_by = $('#input-show_order_by').val();
     $('#exampleModalTemp').modal('hide');
-    window.location.href = exporturl+'&term='+term+'&show_order_by='+order_by+'&date='+date;
+    window.location.href = exporturl+'&term='+term+'&show_order_by='+order_by+'&date='+date+'&mail='+mail;
     // $.ajax({
     //     url: exporturl+'&term='+term+'&date='+date,
     //     type: 'GET',

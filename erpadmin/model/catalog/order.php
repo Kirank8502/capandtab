@@ -506,11 +506,15 @@ class Order extends \Opencart\System\Engine\Model {
 	}
 
 	public function getAccessoriesDetails($data = array()) {
-		$sql = "SELECT name,weight FROM " . DB_PREFIX . "accessories WHERE status = '1' ";
-
 		$acc_id = ((!empty($data['accessories_id']) && $data['accessories_id'] > 0 && str_starts_with($data['accessories_id'],'acc_')) ? str_replace("acc_","",$data['accessories_id']) : 0);
-
-		$sql .= " AND accessories_id = ".$acc_id."";
+		$fitts_id = ((!empty($data['accessories_id']) && $data['accessories_id'] > 0 && str_starts_with($data['accessories_id'],'fitts_')) ? str_replace("fitts_","",$data['accessories_id']) : 0);
+		if($acc_id){
+			$sql = "SELECT name,weight FROM " . DB_PREFIX . "accessories WHERE status = '1' ";
+			$sql .= " AND accessories_id = ".$acc_id."";
+		}elseif($fitts_id){
+			$sql = "SELECT name,weight FROM " . DB_PREFIX . "fittings WHERE status = '1' ";
+			$sql .= " AND fittings_id = ".$fitts_id."";
+		}
 		// if(!empty($data['qty']) && !empty($data['accessories_id'])){
 		// 	if(str_starts_with($data['accessories_id'],'acc_') != false){
 		// 		$id = explode('_',$data['accessories_id']);

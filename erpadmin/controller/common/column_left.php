@@ -84,6 +84,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			if ($this->user->hasPermission('access', 'catalog/receive')) {
+				$catalog[] = [
+					'name'	   => 'Received',
+					'href'     => $this->url->link('catalog/receive', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			// if ($this->user->hasPermission('access', 'catalog/subscription_plan')) {
 			// 	$catalog[] = [
 			// 		'name'	   => $this->language->get('text_subscription_plan'),
