@@ -256,11 +256,7 @@ class Receive extends \Opencart\System\Engine\Controller {
 				'vendor_id'         => !empty($result['vendor_id']) && str_starts_with($result['vendor_id'],'cli_') ? $cli[str_replace("cli_","",$result['vendor_id'])] : (str_starts_with($result['vendor_id'],'cli_') ? $mol[str_replace("mol_","",$result['vendor_id'])] : 'None'),
 				'qty'				=> $result['qty'],
 				'kgs_qty'			=> $result['kgs_qty'],
-				'rate'				=> $result['rate'],
-				'amount'		    => $result['amount'],
-				'gst_amount'		=> $result['gst_amount'],
-				'total_amount'		    => $result['total_amount'],
-				'file'		        => HTTP_CATALOG .'crm_storage/download/receive/'. $result['file'],
+				'file'		        => !empty($result['file']) ? HTTP_CATALOG .'crm_storage/download/receive/'. $result['file'] : 0,
 				'edit'				=> $this->url->link('catalog/receive|form', 'user_token=' . $this->session->data['user_token'] . '&receive_id=' . $result['receive_id'] . $url, true),
 			);
 		}
@@ -508,68 +504,12 @@ class Receive extends \Opencart\System\Engine\Controller {
 			$data['kgs_qty'] = 0;
 	  	}
 
-		if (isset($this->request->post['payment_date'])) {
-			$data['payment_date'] = $this->request->post['payment_date'];
-	  	} elseif (!empty($order_info)) {
-			$data['payment_date'] = $order_info['payment_date'];
-	  	} else {
-			$data['payment_date'] = 0;
-	  	}
-
         if (isset($this->request->post['file'])) {
 			$data['file'] = $this->request->post['file'];
 	  	} elseif (!empty($order_info)) {
 			$data['file'] = $order_info['file'];
 	  	} else {
 			$data['file'] = '';
-	  	}
-
-        if (isset($this->request->post['rate'])) {
-			$data['rate'] = $this->request->post['rate'];
-	  	} elseif (!empty($order_info)) {
-			$data['rate'] = $order_info['rate'];
-	  	} else {
-			$data['rate'] = 0.00;
-	  	}
-
-        if (isset($this->request->post['amount'])) {
-			$data['amount'] = $this->request->post['amount'];
-	  	} elseif (!empty($order_info)) {
-			$data['amount'] = $order_info['amount'];
-	  	} else {
-			$data['amount'] = 0.00;
-	  	}
-
-		if (isset($this->request->post['gst_amount'])) {
-			$data['gst_amount'] = $this->request->post['gst_amount'];
-	  	} elseif (!empty($order_info)) {
-			$data['gst_amount'] = $order_info['gst_amount'];
-	  	} else {
-			$data['gst_amount'] = 0.00;
-	  	}
-
-		if (isset($this->request->post['total_amount'])) {
-			$data['total_amount'] = $this->request->post['total_amount'];
-	  	} elseif (!empty($order_info)) {
-			$data['total_amount'] = $order_info['total_amount'];
-	  	} else {
-			$data['total_amount'] = 0.00;
-	  	}
-
-        if (isset($this->request->post['gst'])) {
-			$data['gst'] = $this->request->post['gst'];
-	  	} elseif (!empty($order_info)) {
-			$data['gst'] = $order_info['gst'];
-	  	} else {
-			$data['gst'] = 0;
-	  	}
-
-		if (isset($this->request->post['gst_status'])) {
-			$data['gst_status'] = $this->request->post['gst_status'];
-	  	} elseif (!empty($order_info)) {
-			$data['gst_status'] = $order_info['gst_status'];
-	  	} else {
-			$data['gst_status'] = 0;
 	  	}
 
 		if (isset($this->request->post['orders_id'])) {

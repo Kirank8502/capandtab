@@ -18,19 +18,6 @@
       <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
       <div class="card-body">
         <form id="form-receive" action="{{ action }}" method="post" data-oc-toggle="ajax">
-            <div class="row mb-3" id="input-po_no-class-main">
-              <label class="col-sm-1 col-form-label">PO NO</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                   <select name="orders_id" id="input-po_no-class" class="form-select">
-                        <option value="0">None</option>
-                        {% for order in new_orders %}
-                          <option value="{{ order.orders_id }}"{% if order.orders_id == orders_id %} selected{% endif %}>{{ order.po_no }}</option>
-                        {% endfor %}
-                      </select>
-                  </div>
-              </div>
-            </div>
             <div class="row mb-3" id="input-vendor-class-main">
               <label class="col-sm-1 col-form-label">Vendor</label>
               <div class="col-sm-11">
@@ -39,6 +26,19 @@
                         <option value="0">None</option>
                         {% for vendor in vendors %}
                           <option value="{{ vendor.vendor_id }}"{% if vendor.vendor_id == vendor_id %} selected{% endif %}>{{ vendor.name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-po_no-class-main">
+              <label class="col-sm-1 col-form-label">PO NO</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                   <select name="orders_id" id="input-po_no-class" class="form-select">
+                        <option value="0">None</option>
+                        {% for order in new_orders %}
+                          <option value="{{ order.orders_id }}"{% if order.orders_id == orders_id %} selected{% endif %}>{{ order.po_no }}</option>
                         {% endfor %}
                       </select>
                   </div>
@@ -64,7 +64,7 @@
                   </div>
               </div>
             </div>
-            <div class="row mb-3">
+            {# <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Payment Date</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -77,9 +77,9 @@
                       </select>
                   </div>
               </div>
-            </div>
+            </div> #}
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">QTY Bags</label>
+              <label class="col-sm-1 col-form-label">Powder QTY</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="qty" value="{{ qty }}" min="0" placeholder="Quantity" id="qty" class="form-control"/>
@@ -87,14 +87,14 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">QTY Number / KGs</label>
+              <label class="col-sm-1 col-form-label">Required QTY</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="kgs_qty" value="{{ kgs_qty }}" min="0" placeholder="Quantity (KGs)" id="kgs_qty" class="form-control"/>
                   </div>
               </div>
             </div>
-            <div class="row mb-3">
+            {# <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Rate</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -142,7 +142,7 @@
                     <input type="number" name="total_amount" value="{{ total_amount }}" min="0.00" step="0.01" placeholder="Total Amount" id="total_amount" class="form-control"/>
                   </div>
               </div>
-            </div>
+            </div> #}
             <div class="row mb-3">
               <label for="input-filename" class="col-sm-1 col-form-label">Receive Invoice</label>
               <div class="col-sm-11">
@@ -170,14 +170,14 @@ $(document).ready(function() {
         width: '100%'
     });
 
-  var gst_status = $('#gst_status').prop('checked');
-  if(gst_status){
-    $('#input-gst-class-main').show();
-    $('#input-gst-amount-class-main').show();
-  }else{
-    $('#input-gst-class-main').hide();
-    $('#input-gst-amount-class-main').hide();
-  }
+  // var gst_status = $('#gst_status').prop('checked');
+  // if(gst_status){
+  //   $('#input-gst-class-main').show();
+  //   $('#input-gst-amount-class-main').show();
+  // }else{
+  //   $('#input-gst-class-main').hide();
+  //   $('#input-gst-amount-class-main').hide();
+  // }
 
 });
 
@@ -241,45 +241,45 @@ $('#button-upload').on('click', function () {
 });
 
 
-$('#gst_status').change(function() {
-    var gst_status = $(this).prop('checked');
-    if(gst_status){
-      $('#input-gst-class-main').show();
-      $('#input-gst-amount-class-main').show();
-    }else{
-      $('#input-gst-class-main').hide();
-      $('#input-gst-amount-class-main').hide();
-    }
-});
+// $('#gst_status').change(function() {
+//     var gst_status = $(this).prop('checked');
+//     if(gst_status){
+//       $('#input-gst-class-main').show();
+//       $('#input-gst-amount-class-main').show();
+//     }else{
+//       $('#input-gst-class-main').hide();
+//       $('#input-gst-amount-class-main').hide();
+//     }
+// });
 
-$('#kgs_qty, #gst, #rate, #gst_status').change(function () {
-  var qty = 0;
-  var cal_val = 0;
-  if($('#gst_status').is(":checked")){
-    var gst_val = 0;
-    var amount = 0.00;
-    var total_amount = 0;
-    amount = $('#rate').val()*$('#kgs_qty').val();
-    if($('#gst').val() > 0){
-      gst_val = ($('#gst').val())/100;
-    }
-    if($('#rate').val() > 0 && $('#kgs_qty').val() > 0 && gst_val > 0){
-      cal_val = $('#rate').val()*$('#kgs_qty').val()*(gst_val);
-    }else{
-      cal_val = $('#rate').val()*$('#kgs_qty').val();
-    }
-    $('#amount').val(amount.toFixed(2));
-    $('#gst_amount').val(cal_val.toFixed(2));
-    total_amount = parseFloat($('#amount').val()) + parseFloat($('#gst_amount').val());
-    $('#total_amount').val(total_amount.toFixed(2));
-  }else{
-    if($('#rate').val() > 0 && $('#kgs_qty').val() > 0){
-      cal_val = $('#rate').val()*$('#kgs_qty').val();
-      $('#amount').val(cal_val.toFixed(2));
-      $('#total_amount').val(cal_val.toFixed(2));
-    }
-  }
-});
+// $('#kgs_qty, #gst, #rate, #gst_status').change(function () {
+//   var qty = 0;
+//   var cal_val = 0;
+//   if($('#gst_status').is(":checked")){
+//     var gst_val = 0;
+//     var amount = 0.00;
+//     var total_amount = 0;
+//     amount = $('#rate').val()*$('#kgs_qty').val();
+//     if($('#gst').val() > 0){
+//       gst_val = ($('#gst').val())/100;
+//     }
+//     if($('#rate').val() > 0 && $('#kgs_qty').val() > 0 && gst_val > 0){
+//       cal_val = $('#rate').val()*$('#kgs_qty').val()*(gst_val);
+//     }else{
+//       cal_val = $('#rate').val()*$('#kgs_qty').val();
+//     }
+//     $('#amount').val(amount.toFixed(2));
+//     $('#gst_amount').val(cal_val.toFixed(2));
+//     total_amount = parseFloat($('#amount').val()) + parseFloat($('#gst_amount').val());
+//     $('#total_amount').val(total_amount.toFixed(2));
+//   }else{
+//     if($('#rate').val() > 0 && $('#kgs_qty').val() > 0){
+//       cal_val = $('#rate').val()*$('#kgs_qty').val();
+//       $('#amount').val(cal_val.toFixed(2));
+//       $('#total_amount').val(cal_val.toFixed(2));
+//     }
+//   }
+// });
 
 
 $('#input-po_no-class').change(function() {
@@ -301,5 +301,23 @@ $('#input-po_no-class').change(function() {
     }
    });
 });
+
+// $('#input-vendor-class').change(function() {
+//   $.ajax({
+//     url: 'index.php?route=catalog/receive|getpodata&user_token={{user_token}}&vendors_id='+$(this).val(),
+//     type: 'GET',
+//     success: function(response) {
+//       if(response.moulder_id > 0){
+//         $('#input-vendor-class').val('mol_'+response.moulder_id).trigger('change');
+//       }else if(response.client_id > 0){
+//         $('#input-vendor-class').val('cli_'+response.client_id).trigger('change');
+//       }
+//       if(response.datas){
+//         $('#product_id').val(response.datas).trigger('change');
+//       }
+//       $('#qty').val(response.qty);
+//     }
+//   });
+// });
 
 </script>

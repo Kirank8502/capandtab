@@ -57,6 +57,20 @@ class Order extends \Opencart\System\Engine\Model {
 		// 	}
 		// }
 
+		if($data['order_type'] == 0 && $data['powder_id'] != 0){
+			$order_sql = $this->db->query("SELECT bags FROM " . DB_PREFIX . "orders WHERE orders_id= '" . (int)$order_id. "'");
+			$sql = $this->db->query("SELECT qty FROM " . DB_PREFIX . "powder WHERE powder_id LIKE '%".$data['powder_id']."%'");
+			if($order_sql->row['bags'] >= $data['bags']){
+				$diff = $order_sql->row['bags'] - $data['bags'];
+				$cal = $sql->row['qty'] + $diff;
+				$sql_update = $this->db->query("UPDATE " . DB_PREFIX . "powder SET `qty` = ".(int)$cal." WHERE powder_id LIKE '%".$data['powder_id']."%'");
+			}elseif($data['bags'] >= $order_sql->row['bags']){
+				$diff = $data['bags'] - $order_sql->row['bags'];
+				$cal = $sql->row['qty'] - $diff;
+				$sql_update = $this->db->query("UPDATE " . DB_PREFIX . "powder SET `qty` = ".(int)$cal." WHERE powder_id LIKE '%".$data['powder_id']."%'");
+			}
+		}
+
 		$acc_fitts_id = !empty($data['acc_fitts_id']) ? $data['acc_fitts_id'] : 0;
 
 		$fittings_id = isset($data['fittings_ids']) ? (is_array($data['fittings_ids']) ? (implode(',', (!empty($data['fittings_ids']) ? $data['fittings_ids'] : 0))) : 0):0;
