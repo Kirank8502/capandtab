@@ -656,4 +656,84 @@ class Receive extends \Opencart\System\Engine\Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function getpodatabyvendor(){
+		$json = [];
+		$fittingsArray = [];
+		$this->load->model('catalog/receive');
+
+		$data['products'] = $this->model_catalog_receive->getProducts();
+		$data['powders'] = $this->model_catalog_receive->getPowders();
+		$data['master_batchs'] = $this->model_catalog_receive->getMasterBatchs();
+		$data['pigments'] = $this->model_catalog_receive->getPigments();
+		$data['dies'] = $this->model_catalog_receive->getDies();
+		$data['accessories'] = $this->model_catalog_receive->getAccessories();
+		$data['fittings'] = $this->model_catalog_receive->getFittings();
+		$data['clients'] = $this->model_catalog_receive->getClients();
+		$data['colours'] = $this->model_catalog_receive->getColours();
+		$data['moulders'] = $this->model_catalog_receive->getMoulders();
+
+		foreach($data['moulders'] as $key_7 => $value_7) {
+			$mol[$value_7['moulder_id']] = $value_7['name'];
+		}
+		foreach($data['clients'] as $key_8 => $value_8) {
+			$cli[$value_8['client_id']] = $value_8['name'];
+		}
+		foreach($data['accessories'] as $key_1 => $value_1) {
+			$accessory[$value_1['accessories_id']] = $value_1['name'];
+		}
+		foreach($data['fittings'] as $key_2 => $value_2) {
+			$fitts[$value_2['fittings_id']] = $value_2['name'];
+		}
+
+		if (isset($this->request->get['vendors_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$json = $this->model_catalog_receive->getOrders($this->request->get['vendors_id']);
+		}
+
+		// if (!empty($json['fittings_id'])) {
+		// 	$fittings = explode(',', $json['fittings_id']);
+		// 	foreach ($fittings as $index => $fitting) {
+		// 		$fittingsArray[] = 'fitts_' . ($index + 1);
+		// 	}
+		// }		
+
+		// $json['datas'] = array(
+		// 	'prod_'.$json['product_id'],
+		// 	'pow_'.$json['powder_id'],
+		// 	'mb_'.$json['master_batch_id'],
+		// 	'pig_'.$json['pigment_id'],
+		// 	'dies_'.$json['die_id'],
+		// 	'acc_'.$json['accessories_id']
+		// );
+
+		// if(!empty($fittingsArray)){
+		// 	foreach ($fittingsArray as $fitting) {
+		// 		$json['datas'][] = $fitting;
+		// 	}
+		// }
+
+		$data['new_orders'] = [];
+
+		foreach ($json as $key => $value) {
+			if ($value['order_type'] == 0) {
+				$new_order = $value;
+				if (!empty($value['client_id']) && isset($cli[$value['client_id']])) {
+					$new_order['po_no'] = $value['po_no'] . ' | ' . $cli[$value['client_id']] . (!empty($value['product_id']) && isset($product[$value['product_id']]) ? ' | ' . $product[$value['product_id']] : '');
+				} elseif (!empty($value['moulder_id']) && isset($mol[$value['moulder_id']])) {
+					$accessory_name = 0;
+					if (!empty($value['acc_fitts_id'])) {
+						if (str_starts_with($value['acc_fitts_id'], 'acc_') && isset($accessory[str_replace('acc_', '', $value['acc_fitts_id'])])) {
+							$accessory_name = $accessory[str_replace('acc_', '', $value['acc_fitts_id'])];
+						} elseif (str_starts_with($value['acc_fitts_id'], 'fitts_') && isset($fitts[str_replace('fitts_', '', $value['acc_fitts_id'])])) {
+							$accessory_name = $fitts[str_replace('fitts_', '', $value['acc_fitts_id'])];
+						}
+					}
+					$new_order['po_no'] = $value['po_no'] . ' | ' . $mol[$value['moulder_id']] . ' | ' . $accessory_name;
+				}
+				$data['new_orders'][] = $new_order;
+			}
+		}
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($data));
+	}
 }

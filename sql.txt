@@ -328,6 +328,3 @@ CREATE TABLE `dd_receive` (
   `date_added` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`receive_id`)
 );
-
-ALTER TABLE `dd_receive`
-ADD COLUMN `payment_date` int NOT NULL DEFAULT 0 AFTER `purchase_date`;

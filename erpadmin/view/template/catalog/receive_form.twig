@@ -302,22 +302,19 @@ $('#input-po_no-class').change(function() {
    });
 });
 
-// $('#input-vendor-class').change(function() {
-//   $.ajax({
-//     url: 'index.php?route=catalog/receive|getpodata&user_token={{user_token}}&vendors_id='+$(this).val(),
-//     type: 'GET',
-//     success: function(response) {
-//       if(response.moulder_id > 0){
-//         $('#input-vendor-class').val('mol_'+response.moulder_id).trigger('change');
-//       }else if(response.client_id > 0){
-//         $('#input-vendor-class').val('cli_'+response.client_id).trigger('change');
-//       }
-//       if(response.datas){
-//         $('#product_id').val(response.datas).trigger('change');
-//       }
-//       $('#qty').val(response.qty);
-//     }
-//   });
-// });
+$('#input-vendor-class').change(function() {
+  $.ajax({
+    url: 'index.php?route=catalog/receive|getpodatabyvendor&user_token={{user_token}}&vendors_id='+$(this).val(),
+    type: 'GET',
+    success: function(response) {
+      $('#input-po_no-class').find('option').not(':first').remove();
+      if (response.new_orders && Array.isArray(response.new_orders)) {
+        response.new_orders.forEach(function(order) {
+          $('#input-po_no-class').append('<option value="' + order.orders_id + '">' + order.po_no + '</option>');
+        });
+      }
+    }
+  });
+});
 
 </script>

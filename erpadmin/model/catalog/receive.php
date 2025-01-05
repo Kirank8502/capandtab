@@ -265,9 +265,13 @@ class Receive extends \Opencart\System\Engine\Model {
 		return $query->row['total'];
 	}
 
-	public function getOrders() {
+	public function getOrders($data = 0) {
 		$sql = "SELECT orders_id,po_no,client_id,moulder_id,acc_fitts_id,product_id,order_type FROM " . DB_PREFIX . "orders WHERE 1";
-
+		if (str_starts_with($data,'cli_')) {
+			$sql .= ' AND client_id = ' . str_replace("cli_","",$data);
+		} elseif (str_starts_with($data,'mol_')) {
+			$sql .= ' AND moulder_id = ' . str_replace("mol_","",$data);
+		}
 		$query = $this->db->query($sql);
 	
 		return $query->rows;
