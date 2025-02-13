@@ -167,5 +167,27 @@ class Powder extends \Opencart\System\Engine\Model {
 			return 0;
 		}
 	}
+
+	public function getMoulder($moulder_id) {
+		$sql = "SELECT name,address,email FROM " . DB_PREFIX . "moulder WHERE moulder_id = '".$moulder_id."' ";
+
+		$query = $this->db->query($sql);
+	
+		return $query->row;
+	}
+
+	public function getClient($client_id) {
+		$sql = "SELECT name,address FROM " . DB_PREFIX . "client WHERE client_id = '".$client_id."' ";
+
+		$query = $this->db->query($sql);
+	
+		return $query->row;
+	}
+
+	public function exportPowder($powder_id){
+		$sql = "SELECT powder_id,bags,po_no,client_id,moulder_id,targeted_date,order_type FROM ".DB_PREFIX."orders WHERE powder_id=".$powder_id;
+		$query = $this->db->query($sql);
+		return $query->rows;
+	}
 }
 ?>

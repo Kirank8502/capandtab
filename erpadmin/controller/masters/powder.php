@@ -168,7 +168,8 @@ class Powder extends \Opencart\System\Engine\Controller {
 				'qty'				=> $result['qty'],
 				'status'			=> $result['status'],
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['powder_id'], $this->request->post['selected']),				
-				'edit'				=> $this->url->link('masters/powder|form', 'user_token=' . $this->session->data['user_token'] . '&powder_id=' . $result['powder_id'] . $url, true)
+				'edit'				=> $this->url->link('masters/powder|form', 'user_token=' . $this->session->data['user_token'] . '&powder_id=' . $result['powder_id'] . $url, true),
+				'export'			=> $this->url->link('masters/powder|export', 'user_token=' . $this->session->data['user_token'] . '&powder_id=' . $result['powder_id'] . $url, true)
 			);
 		}
 		
@@ -339,5 +340,33 @@ class Powder extends \Opencart\System\Engine\Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('masters/powder_form', $data));
+	}
+
+	public function export(){
+		$this->load->model('masters/powder');
+
+		$powder_data = "Powder,PO No.,Vendor,In,Out,Date\n";
+		$results = $this->model_masters_powder->exportPowder($this->request->get['powder_id']); 
+		$powder = $this->model_masters_powder->getPowder($this->request->get['powder_id']);
+
+    	foreach ($results as $result) {
+			if($result['order_type'] == 0){
+				$vendor_name = $this->model_masters_powder->getMoulder($result['moulder_id']);
+				$cli_in = 0;
+				$mol_out = $result['bags'];
+			}else{
+				$vendor_name = $this->model_masters_powder->getClient($result['client_id']);
+				$mol_out = 0;
+				$cli_in = $result['bags'];
+			}
+			$powder_data .=	$this->db->escape($powder['name']) .",\"". $this->db->escape($result['po_no']) ."\",\"" . $vendor_name['name']  ."\",\"" . $this->db->escape($cli_in)  ."\",\"" . $this->db->escape($mol_out) ."\",\"" . $this->db->escape($result['targeted_date'])  ."\"\n"; 
+		}
+
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Content-Length: " . strlen($powder_data));
+		header("Content-type: text/x-csv");
+		header("Content-Disposition: attachment; filename=powder_in_out_data.csv");
+		echo $powder_data;
+		exit;
 	}
 }

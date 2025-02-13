@@ -19,6 +19,7 @@
               <td class="text-center">{{ powder.qty }}</td>
               <td class="text-center">{% if powder.status %}Enabled{% else %}Disabled{% endif %}</td>
               <td class="text-end">
+                <a href="{{ powder.export }}" target="_blank" data-bs-toggle="tooltip" title="Export" class="btn btn-primary"><i class="fa-solid fa-file-arrow-down"></i></a>
                 <a href="{{ powder.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
               </td>
             </tr>
