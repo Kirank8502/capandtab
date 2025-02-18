@@ -73,7 +73,7 @@ class Sale extends \Opencart\System\Engine\Model {
 	}
 
 	public function getProducts() {
-		$sql = "SELECT product_id,name FROM " . DB_PREFIX . "product WHERE status = '1'";
+		$sql = "SELECT product_id,name,total_price,product_cost FROM " . DB_PREFIX . "product WHERE status = '1'";
 
 		$query = $this->db->query($sql);
 	
@@ -161,7 +161,7 @@ class Sale extends \Opencart\System\Engine\Model {
 	}
 
 	public function getAccessories($data = array()) {
-		$sql = "SELECT accessories_id,name,qty FROM " . DB_PREFIX . "accessories WHERE status = '1'";
+		$sql = "SELECT accessories_id,name,qty,price FROM " . DB_PREFIX . "accessories WHERE status = '1'";
 
 		$query = $this->db->query($sql);
 	
@@ -216,7 +216,7 @@ class Sale extends \Opencart\System\Engine\Model {
 	}
 
 	public function getFittings($data = array()) {
-		$sql = "SELECT fittings_id,name,qty FROM " . DB_PREFIX . "fittings WHERE 1 ";
+		$sql = "SELECT fittings_id,name,qty,price FROM " . DB_PREFIX . "fittings WHERE 1 ";
 		
 		if(!empty($data['fittings_id'])){
 			$sql .= " AND fittings_id = ".$data['fittings_id']."";
@@ -265,9 +265,11 @@ class Sale extends \Opencart\System\Engine\Model {
 		return $query->row['total'];
 	}
 
-	public function getOrders() {
+	public function getOrders($order_id = 0) {
 		$sql = "SELECT orders_id,po_no,client_id,moulder_id,acc_fitts_id,product_id,order_type FROM " . DB_PREFIX . "orders WHERE 1";
-
+		if($order_id > 0){
+			$sql .= " AND orders_id = ".$order_id." ";
+		}
 		$query = $this->db->query($sql);
 	
 		return $query->rows;

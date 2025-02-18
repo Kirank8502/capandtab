@@ -1,7 +1,7 @@
 <?php
 namespace Opencart\Admin\Controller\Catalog;
-// use Dompdf\Dompdf;
-// use Dompdf\Options;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 class Sale extends \Opencart\System\Engine\Controller {
 	private $error = array();
 	public function index():void {
@@ -15,6 +15,7 @@ class Sale extends \Opencart\System\Engine\Controller {
 		$data['add'] = $this->url->link('catalog/sale|form', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['delete'] = $this->url->link('catalog/sale|delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['send'] = $this->url->link('catalog/sale|send', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		$data['exportdata'] = $this->url->link('catalog/sale|exportData', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['list'] = $this->getList();
 		
 		$data['header'] = $this->load->controller('common/header');
@@ -258,6 +259,7 @@ class Sale extends \Opencart\System\Engine\Controller {
 				'rate'				=> $result['rate'],
 				'amount'		    => $result['amount'],
 				'file'		        => HTTP_CATALOG .'crm_storage/download/'. $result['file'],
+				// 'export'            => $this->url->link('catalog/sale|exportData', 'user_token=' . $this->session->data['user_token'] . '&sale_id=' . $result['sale_id'] . $url, true),
 				'edit'				=> $this->url->link('catalog/sale|form', 'user_token=' . $this->session->data['user_token'] . '&sale_id=' . $result['sale_id'] . $url, true),
 			);
 		}
@@ -679,4 +681,348 @@ class Sale extends \Opencart\System\Engine\Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+
+	public function exportData($save_export = 0){
+		require_once(DIR_SYSTEM . 'library/dompdf/vendor/autoload.php');
+		$options = new Options();
+		$options->set('isHtml5ParserEnabled', true);
+		$options->set('isPhpEnabled', true);
+		$options->set('isRemoteEnabled', true);
+		$options->set('debug', true);
+		$dompdf = new Dompdf($options);
+		$this->load->model('catalog/sale');
+		foreach ($this->request->post['selected'] as $sale_id) {
+			$orders[] = $this->model_catalog_sale->getSale($sale_id);
+		}
+		$order_data = $this->model_catalog_sale->getOrders($orders[0]['orders_id']);
+		$this->load->model('tool/image');
+
+		$products = $this->model_catalog_sale->getProducts();
+		$accessories = $this->model_catalog_sale->getAccessories();
+		$fittings = $this->model_catalog_sale->getFittings();
+		$powders = $this->model_catalog_sale->getPowders();
+		$master_batchs = $this->model_catalog_sale->getMasterBatchs();
+		$pigments = $this->model_catalog_sale->getPigments();
+		$dies = $this->model_catalog_sale->getDies();
+		
+		$moulders = $this->model_catalog_sale->getMoulders();
+		$clients = $this->model_catalog_sale->getClients();
+
+		foreach($products as $key => $value) {
+			$product[$value['product_id']] = [
+				'name' => $value['name'],
+				'price' => $value['total_price']
+			];
+		}
+		foreach($accessories as $key_1 => $value_1) {
+			$accessory[$value_1['accessories_id']] = [
+				'name' => $value_1['name'],
+				'price' => $value_1['price']
+			];
+		}
+		foreach($fittings as $key_2 => $value_2) {
+			$fitts[$value_2['fittings_id']] = [
+				'name' => $value_2['name'],
+				'price' => $value_2['price']
+			];
+		}
+        foreach($powders as $key_3 => $value_3) {
+			$pow[$value_3['powder_id']] = $value_3['name'];
+		}
+		foreach($master_batchs as $key_4 => $value_4) {
+			$mb[$value_4['master_batch_id']] = $value_4['name'];
+		}
+		foreach($pigments as $key_5 => $value_5) {
+			$pig[$value_5['pigment_id']] = $value_5['name'];
+		}
+        foreach($dies as $key_6 => $value_6) {
+			$di[$value_6['die_id']] = $value_6['name'];
+		}
+
+		foreach($moulders as $key_7 => $value_7) {
+			$mol[$value_7['moulder_id']] = $value_7['name'];
+		}
+		foreach($clients as $key_8 => $value_8) {
+			$cli[$value_8['client_id']] = $value_8['name'];
+		}
+		foreach ($orders as $order_key => $order_value) {
+		$prod_ids = explode(",",$order_value['product_id']);
+            foreach($prod_ids as $value){
+                if(str_starts_with($value,'acc_')){
+                    $all_prod[] = $accessory[str_replace("acc_","",$value)];
+                }elseif(str_starts_with($value,'fitts_')){
+                    $all_prod[] = $fitts[str_replace("fitts_","",$value)];
+                }elseif(str_starts_with($value,'prod_')){
+                    $all_prod[] = $product[str_replace("prod_","",$value)];
+                }elseif(str_starts_with($value,'pow_')){
+                    $all_prod[] = $pow[str_replace("pow_","",$value)];
+                }elseif(str_starts_with($value,'mb_')){
+                    $all_prod[] = $mb[str_replace("mb_","",$value)];
+                }elseif(str_starts_with($value,'pig_')){
+                    $all_prod[] = $pig[str_replace("pig_","",$value)];
+                }elseif(str_starts_with($value,'dies_')){
+                    $all_prod[] = $di[str_replace("dies_","",$value)];
+                }
+            }
+		}
+
+			$total_price = 0;
+			$client = !empty($orders[0]['vendor_id']) && str_starts_with($orders[0]['vendor_id'],'cli_') ? $this->model_catalog_sale->getClient(str_replace("cli_","",$orders[0]['vendor_id'])) : (str_starts_with($orders[0]['vendor_id'],'mol_') ? $this->model_catalog_sale->getMoulder(str_replace("mol_","",$orders[0]['vendor_id'])) : 'None');
+$html = '
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Invoice</title>
+    <style>
+		html, body{
+			padding:0px;
+			margin:0px;
+		}
+        p {
+            margin: 0;
+        }
+        th, td {
+            padding: 0.5rem;
+            border: 1px solid #000;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table td, .table th {
+            border: 1px solid #000;
+            padding: 0.5rem;
+        }
+        .total-row {
+            text-align: right;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+        }
+        .signature-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .declaration {
+            margin-top: 2rem;
+        }
+        .bank-details, .declaration, .signature-section {
+            border: 1px solid #000;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+	<div style="padding:0 2rem;">
+    <h1>Tax Invoice</h1>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="width: 50%; padding: 0.5rem;">
+                <p><strong>ASHA ENTERPRISE (SANDEEP SHAH 24-25)</strong></p>
+                <p>Shop No.4-B, Ghanshyam Dube Chwal,</p>
+                <p>251, S.V. Road, Opp. Ambawadi</p>
+                <p>Bus Stop, Dahisar (East),</p>
+                <p>Mumbai 400068</p>
+                <p>GSTIN/UIN: 27AGVPS5933R1ZI</p>
+                <p>State Name: Maharashtra, Code: 27</p>
+                <p>Contact: +91-9833233707/ 9897570772</p>
+                <p>E-Mail: ashaenterprises1981@gmail.com</p>
+            </td>
+            <td style="width: 50%; padding: 0.5rem;">
+                <p><strong>Invoice No.</strong>: '.($this->request->post['selected'][0]).'/'.date('Y').'-'.(date('y')+1).'</p>
+                <p><strong>Dated</strong>: '.date('d-M-y', strtotime($orders[0]['sale_date'])).'</p>
+                <p><strong>Delivery Note</strong>: </p>
+                <p><strong>Mode/Terms of Payment</strong>: </p>
+                <p><strong>Reference No. & Date</strong>: dt. '.date('d-M-y', strtotime($orders[0]['sale_date'])).'</p>
+                <p><strong>Other References</strong>: </p>
+                <p><strong>Buyer’s Order No.</strong>: MPPL/PO-39/'.date('y').'-'.(date('y')+1).'</p>
+                <p><strong>Dated</strong>: '.date('d-M-y', strtotime($orders[0]['sale_date'])).'</p>
+                <p><strong>Dispatch Doc No.</strong>: </p>
+                <p><strong>Delivery Note Date</strong>: </p>
+                <p><strong>Dispatched through</strong>: </p>
+                <p><strong>Destination</strong>: </p>
+            </td>
+        </tr>
+    </table>
+		
+	<table class="table">
+	<tr>
+	<td>
+    <p><strong>Buyer (Bill to)</strong></p>
+    <p>'.$client["name"].'</p>
+    <p>'.$client["address"].'</p>
+	</td>
+	</tr>
+	</table>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sl</th>
+                <th>Description of Goods</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>Disc. %</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>';
+
+        $total_price = 0;
+        foreach($all_prod as $key => $value) {
+            $total_price += isset($value['price']) ? $value['price'] : $orders[0]['amount'];
+            $html .= '<tr>
+                <td>'.($key + 1).'</td>
+                <td>'.(isset($value['name']) ? $value['name'] : $value).'</td>
+                <td>'.$orders[0]['qty'].' PCS</td>
+                <td>'.$orders[0]['rate'].'</td>
+                <td></td>
+                <td>'.(isset($value['price']) ? $value['price'] * $orders[0]['qty'] : $orders[0]['amount']).'</td>
+            </tr>';
+        }
+        
+        $gst_price = ($total_price * $orders[0]['gst']) / 100;
+        $after_gst_price = $total_price + $gst_price;
+
+        $html .= '<tr class="total-row">
+            <td colspan="5">Total</td>
+            <td>'.$total_price.'</td>
+        </tr>
+        <tr class="total-row">
+            <td colspan="5">GST @'.$orders[0]['gst'].'%</td>
+            <td>'.$gst_price.'</td>
+        </tr>
+        <tr class="total-row">
+            <td colspan="5">Total (including GST)</td>
+            <td>'.$after_gst_price.'</td>
+        </tr>
+    </tbody>
+    </table>
+	
+	<table class="table">
+	<tr>
+	<td>
+    <p><strong>Amount Chargeable (in words)</strong></p>
+    <p><strong>'.($this->convert_to_words_array(round($after_gst_price))).'</strong></p>
+	</td>
+	</tr>
+	</table>
+
+	<table class="table">
+	<tr>
+	<td>
+    <p><strong>Date & Time</strong>: 6-May-24 at 11:56</p>
+    <p><strong>Company\'s Bank Details</strong></p>
+    <p><strong>Acc Holder\'s Name</strong>: ASHA ENTERPRISE</p>
+	</td>
+	<td>
+    <p><strong>Bank Name</strong>: Asha Enterprise</p>
+    <p><strong>A/c No</strong>: 16210020006903</p>
+    <p><strong>Branch & IFS Code</strong>: Borivali (East) & BARB0BOREAS</p>
+    <p><strong>SWIFT Code</strong>: </p>
+	</td>
+	</tr>
+	</table>
+
+	<table class="table">
+	<tr>
+	<td>
+    <p><strong>Declaration</strong></p>
+    <p>We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</p>
+	</td>
+	</tr>
+	</table>
+
+    <!-- <div class="signature-section">
+        <p>Customer\'s Seal and Signature</p>
+        <p>for ASHA ENTERPRISE (SANDEEP SHAH 24-25)</p>
+    </div> -->
+
+	<div class_2="border border-black p-2 mb-4" style="--tw-border-opacity: 1;border-width: 1px;border-color: rgb(0 0 0 / var(--tw-border-opacity, 1));border-style:solid;padding: 0.5rem;margin-bottom: 1rem;">
+		<div style="display:flex;justify-content:space-between;margin-bottom:40px;">
+        	<p>Customer\'s Seal and Signature</p>
+        	<p class_2="text-right" style="text-align:right;">for ASHA ENTERPRISE (SANDEEP SHAH 24-25)</p>
+		</div>
+        <p class_2="text-right" style="text-align:right;">Authorised Signatory</p>
+    </div>
+
+    <p class="footer">This is a Computer Generated Invoice</p>
+	</div>
+</body>
+</html>';
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+		$pdfOutput = $dompdf->output();
+
+		header('Content-Type: application/pdf');
+		header('Content-Disposition: attachment; filename="Sale ' . $client['name'] . " PO " . $order_data[0]['po_no'] . '.pdf"');
+		echo $pdfOutput;
+		exit;
+	}
+
+	public function convert_to_words_array($number)
+	{
+		$words = array(
+			'0' => 'Zero', '1' => 'One', '2' => 'Two',
+			'3' => 'Three', '4' => 'Four', '5' => 'Five',
+			'6' => 'Six', '7' => 'Seven', '8' => 'Eight',
+			'9' => 'Nine', '10' => 'Ten', '11' => 'Eleven',
+			'12' => 'Twelve', '13' => 'Thirteen', '14' => 'Fourteen',
+			'15' => 'Fifteen', '16' => 'Sixteen', '17' => 'Seventeen',
+			'18' => 'Eighteen', '19' => 'Nineteen', '20' => 'Twenty',
+			'30' => 'Thirty', '40' => 'Forty', '50' => 'Fifty', '60' => 'Sixty',
+			'70' => 'Seventy', '80' => 'Eighty', '90' => 'Ninety'
+		);
+
+		if ($number <= 20) {
+			return $words[$number];
+		}
+		elseif ($number < 100) {
+			return $words[10 * floor($number / 10)]
+				. ($number % 10 > 0 ? ' ' . $words[$number % 10] : '');
+		}
+		else {
+			$output = '';
+			if ($number >= 1000000000) {
+				$output .= $this->convert_to_words_array(floor($number / 1000000000))
+					. ' Billion ';
+				$number %= 1000000000;
+			}
+			if ($number >= 1000000) {
+				$output .= $this->convert_to_words_array(floor($number / 1000000))
+					. ' Million ';
+				$number %= 1000000;
+			}
+			if ($number >= 1000) {
+				$output .= $this->convert_to_words_array(floor($number / 1000))
+					. ' Thousand ';
+				$number %= 1000;
+			}
+			if ($number >= 100) {
+				$output .= $this->convert_to_words_array(floor($number / 100))
+					. ' Hundred ';
+				$number %= 100;
+			}
+			if ($number > 0) {
+				$output .= ($number <= 20) ? $words[$number] :
+				$words[10 * floor($number / 10)] . ' '
+					. ($number % 10 > 0 ? $words[$number % 10] : '');
+			}
+			return trim($output); 
+		}
+	}
+
 }

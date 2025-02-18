@@ -11,7 +11,7 @@
           <td class="text-center">Qty</td>
           <td class="text-center">Sale Date</td>
           <td class="text-center">Invoice</td>
-          <td class="text-end">Action</td>
+          <td class="text-center">Action</td>
         </tr>
       </thead>
       <tbody>
@@ -26,7 +26,8 @@
               <td class="text-center">{{ sale.qty }}</td>
               <td class="text-center">{{ sale.sale_date }}</td>
               <td class="text-center"><a href="{{ sale.file }}" target="_blank" data-bs-toggle="tooltip" title="View" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a></td>
-              <td class="text-end">
+              <td class="text-center">
+              {# <a href="javascript(0);" data-bs-toggle="tooltip" data-val="{{ sale.export }}" data-toggle="modal" data-order-type="{{sale.order_type}}" data-target="#exampleModalTemp" title="Add" class="btn btn-success export_pdf" id="print_pdf"><i class="fa-solid fa-file-arrow-down"></i></a> #}
                 <a href="{{ sale.edit }}" data-bs-toggle="tooltip" title="Edit" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
               </td>
             </tr>
