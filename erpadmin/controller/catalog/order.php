@@ -947,7 +947,7 @@ class Order extends \Opencart\System\Engine\Controller {
 			$html .= '<td><img src="https://capandtab.com/image/' . (!empty($accessory) ? $accessory["image"] : '') . '" alt="Part Image"></td>';
 			$html .= '<td>' . $accessory['name'] . '</td>';
 			$html .= '<td>' . (!empty($powder['name']) ? $powder['name'] : 'None') . '</td>';
-			$html .= '<td>' . ($orders['bags'] ? $orders['bags'] * 25 : 0) . '</td>';
+			$html .= '<td>' . ($orders['bags'] && !empty($orders['powder_id'])  ? $orders['bags'] * 25 : 0) . '</td>';
 			if (!empty($powder['qty']) && $powder['qty'] > 0) {
 				$html .= '<td>' . $orders['bags'] . '</td>';
 			} elseif (!empty($powder['qty'])) {
@@ -1258,8 +1258,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			</body>
 		</html>';
 				
-echo $html;
-die;
+// echo $html;
+// die;
 		}
 
         $dompdf->loadHtml($html);
