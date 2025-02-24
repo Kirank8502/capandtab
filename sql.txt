@@ -328,3 +328,9 @@ CREATE TABLE `dd_receive` (
   `date_added` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`receive_id`)
 );
+
+
+ALTER TABLE `dd_sale`
+ADD COLUMN `labor_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `amount`,
+ADD COLUMN `packaging_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `labor_cost`,
+ADD COLUMN `transportation_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `packaging_cost`;

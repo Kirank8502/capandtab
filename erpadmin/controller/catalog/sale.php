@@ -512,6 +512,30 @@ class Sale extends \Opencart\System\Engine\Controller {
 			$data['file'] = '';
 	  	}
 
+		if (isset($this->request->post['labor_cost'])) {
+			$data['labor_cost'] = $this->request->post['labor_cost'];
+	  	} elseif (!empty($sale_info)) {
+			$data['labor_cost'] = $sale_info['labor_cost'];
+	  	} else {
+			$data['labor_cost'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['packaging_cost'])) {
+			$data['packaging_cost'] = $this->request->post['packaging_cost'];
+	  	} elseif (!empty($sale_info)) {
+			$data['packaging_cost'] = $sale_info['packaging_cost'];
+	  	} else {
+			$data['packaging_cost'] = 0.00;
+	  	}
+
+		if (isset($this->request->post['transportation_cost'])) {
+			$data['transportation_cost'] = $this->request->post['transportation_cost'];
+	  	} elseif (!empty($sale_info)) {
+			$data['transportation_cost'] = $sale_info['transportation_cost'];
+	  	} else {
+			$data['transportation_cost'] = 0.00;
+	  	}
+
         if (isset($this->request->post['rate'])) {
 			$data['rate'] = $this->request->post['rate'];
 	  	} elseif (!empty($sale_info)) {
