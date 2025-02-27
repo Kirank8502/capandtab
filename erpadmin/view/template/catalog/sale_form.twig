@@ -113,14 +113,6 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Amount</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="number" name="amount" value="{{ amount }}" min="0.00" step="0.01" placeholder="Amount" id="amount" class="form-control"/>
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Labour Cost</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -137,10 +129,18 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">transportation Cost</label>
+              <label class="col-sm-1 col-form-label">Transportation Cost</label>
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="transportation_cost" value="{{ transportation_cost }}" min="0.00" step="0.01" placeholder="Transportation Cost" id="transportation_cost" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Amount</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="amount" value="{{ amount }}" min="0.00" step="0.01" placeholder="Amount" id="amount" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -249,26 +249,26 @@ $('#gst_status').change(function() {
     }
 });
 
-$('#qty, #gst, #rate, #gst_status').change(function () {
-  var qty = 0;
-  var cal_val = 0;
-  if($('#gst_status').is(":checked")){
-    var gst_val = 0;
-    if($('#gst').val() > 0){
-      gst_val = ($('#gst').val())/100;
-    }
-    if($('#rate').val() > 0 && $('#qty').val() > 0 && gst_val > 0){
-      cal_val = $('#rate').val()*$('#qty').val()*(gst_val);
-    }else{
-      cal_val = $('#rate').val()*$('#qty').val();
-    }
-  }else{
-    if($('#rate').val() > 0 && $('#qty').val() > 0){
-      cal_val = $('#rate').val()*$('#qty').val();
-    }
-  }
-  $('#amount').val(cal_val.toFixed(2));
-});
+// $('#qty, #gst, #rate, #gst_status').change(function () {
+//   var qty = 0;
+//   var cal_val = 0;
+//   if($('#gst_status').is(":checked")){
+//     var gst_val = 0;
+//     if($('#gst').val() > 0){
+//       gst_val = ($('#gst').val())/100;
+//     }
+//     if($('#rate').val() > 0 && $('#qty').val() > 0 && gst_val > 0){
+//       cal_val = $('#rate').val()*$('#qty').val()*(gst_val);
+//     }else{
+//       cal_val = $('#rate').val()*$('#qty').val();
+//     }
+//   }else{
+//     if($('#rate').val() > 0 && $('#qty').val() > 0){
+//       cal_val = $('#rate').val()*$('#qty').val();
+//     }
+//   }
+//   $('#amount').val(cal_val.toFixed(2));
+// });
 
 $('#input-po_no-class').change(function() {
     $.ajax({
@@ -289,4 +289,52 @@ $('#input-po_no-class').change(function() {
     }
    });
 });
+
+
+$('#product_id').change(function() {
+  $.ajax({
+    url: 'index.php?route=catalog/sale|getRate&user_token={{user_token}}',
+    type: 'POST',
+    data:{'prod_ids':$('#product_id').val()},
+    success: function(response) {
+        $('#rate').val(response[0]['price']);
+        // $('#amount').val($('#qty').val() * ($('#labor_cost').val()+$('#packaging_cost').val()+$('#rate').val()));
+      // if(response.moulder_id > 0){
+      //   $('#input-vendor-class').val('mol_'+response.moulder_id).trigger('change');
+      // }else if(response.client_id > 0){
+      //   $('#input-vendor-class').val('cli_'+response.client_id).trigger('change');
+      // }
+    }
+   });
+});
+
+// $(document).on('change', '#rate, #labor_cost, #packaging_cost, #transportation_cost, #qty', function() {
+// $('#amount').val($('#qty').val() * (parseFloat($('#labor_cost').val())+parseFloat($('#packaging_cost').val())+parseFloat($('#transportation_cost').val())+parseFloat($('#rate').val())));
+// });
+
+$(document).on('change', '#rate, #labor_cost, #packaging_cost, #transportation_cost, #qty, #gst, #gst_status', function() {
+    var qty = parseFloat($('#qty').val()) || 0;
+    var rate = parseFloat($('#rate').val()) || 0;
+    var labor_cost = parseFloat($('#labor_cost').val()) || 0;
+    var packaging_cost = parseFloat($('#packaging_cost').val()) || 0;
+    var transportation_cost = parseFloat($('#transportation_cost').val()) || 0;
+    var gst_val = 0;
+    var cal_val = 0;
+
+    // Check if GST status is checked and calculate accordingly
+    if($('#gst_status').is(":checked") && $('#gst').val() > 0) {
+        gst_val = parseFloat($('#gst').val()) / 100;
+        if(qty > 0 && rate > 0) {
+            cal_val = rate * qty * (1 + gst_val) + labor_cost + packaging_cost + transportation_cost;
+        }
+    } else {
+        if(qty > 0 && rate > 0) {
+            cal_val = rate * qty + labor_cost + packaging_cost + transportation_cost;
+        }
+    }
+
+    // Set the calculated amount
+    $('#amount').val(cal_val.toFixed(2));
+});
+
 </script>
