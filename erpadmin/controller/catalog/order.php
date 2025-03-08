@@ -1129,14 +1129,14 @@ class Order extends \Opencart\System\Engine\Controller {
 						border: 1px solid #ddd;
 						border-radius: 5px;
 						margin-bottom: 20px;
-						// display: flex;
-						// justify-content: space-between;
+						/* display: flex; */
+						/* justify-content: space-between; */
 					}
 		
-					// .details-box .detail {
-					// 	width: 48%;
-					// 	padding-right: 2%;
-					// }
+					/* .details-box .detail { */
+					/* 	width: 48%; */
+					/* 	padding-right: 2%; */
+					/* } */
 		
 					.details-box p {
 						font-size: 14px;

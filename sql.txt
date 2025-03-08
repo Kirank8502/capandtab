@@ -334,3 +334,6 @@ ALTER TABLE `dd_sale`
 ADD COLUMN `labor_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `amount`,
 ADD COLUMN `packaging_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `labor_cost`,
 ADD COLUMN `transportation_cost` decimal(10,2) NOT NULL DEFAULT 0.00 AFTER `packaging_cost`;
+
+ALTER TABLE `dd_sale`
+ADD COLUMN `product_name` varchar(255) NOT NULL DEFAULT '' AFTER `product_id`;

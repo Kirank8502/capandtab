@@ -44,6 +44,14 @@
                   </div>
               </div>
             </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Product Name</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="text" name="product_name" value="{{ product_name }}" placeholder="Name" id="product_name" class="form-control"/>
+                  </div>
+              </div>
+            </div>
             <div class="row mb-3" id="input-search-class-main">
               <label class="col-sm-1 col-form-label">Product List</label>
               <div class="col-sm-11">
@@ -80,39 +88,6 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Quantity</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="number" name="qty" value="{{ qty }}" min="0" placeholder="Quantity" id="qty" class="form-control"/>
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">Rate</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="number" name="rate" value="{{ rate }}" min="0.00" step="0.01" placeholder="rate" id="rate" class="form-control"/>
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label class="col-sm-1 col-form-label">With GST</label>
-              <div class="col-sm-11">
-                  <div class="form-check form-switch form-switch-lg">
-                    <input type="hidden" name="gst_status" value="0"/>
-                    <input type="checkbox" name="gst_status" value="1" id="gst_status" class="form-check-input" {% if gst_status %}checked{% endif %}/>
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3" id="input-gst-class-main">
-              <label class="col-sm-1 col-form-label">GST (in %)</label>
-              <div class="col-sm-11">
-                  <div class="input-group">
-                    <input type="number" name="gst" value="{{ gst }}" min="0" placeholder="gst" id="gst" class="form-control"/>
-                  </div>
-              </div>
-            </div>
-            <div class="row mb-3">
               <label class="col-sm-1 col-form-label">Labour Cost</label>
               <div class="col-sm-11">
                   <div class="input-group">
@@ -133,6 +108,39 @@
               <div class="col-sm-11">
                   <div class="input-group">
                     <input type="number" name="transportation_cost" value="{{ transportation_cost }}" min="0.00" step="0.01" placeholder="Transportation Cost" id="transportation_cost" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Rate</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="rate" value="{{ rate }}" min="0.00" step="0.01" placeholder="rate" id="rate" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">Quantity</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="qty" value="{{ qty }}" min="0" placeholder="Quantity" id="qty" class="form-control"/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-1 col-form-label">With GST</label>
+              <div class="col-sm-11">
+                  <div class="form-check form-switch form-switch-lg">
+                    <input type="hidden" name="gst_status" value="0"/>
+                    <input type="checkbox" name="gst_status" value="1" id="gst_status" class="form-check-input" {% if gst_status %}checked{% endif %}/>
+                  </div>
+              </div>
+            </div>
+            <div class="row mb-3" id="input-gst-class-main">
+              <label class="col-sm-1 col-form-label">GST (in %)</label>
+              <div class="col-sm-11">
+                  <div class="input-group">
+                    <input type="number" name="gst" value="{{ gst }}" min="0" placeholder="gst" id="gst" class="form-control"/>
                   </div>
               </div>
             </div>
@@ -297,7 +305,7 @@ $('#product_id').change(function() {
     type: 'POST',
     data:{'prod_ids':$('#product_id').val()},
     success: function(response) {
-        $('#rate').val(response[0]['price']);
+        $('#rate').val(response['total']);
         // $('#amount').val($('#qty').val() * ($('#labor_cost').val()+$('#packaging_cost').val()+$('#rate').val()));
       // if(response.moulder_id > 0){
       //   $('#input-vendor-class').val('mol_'+response.moulder_id).trigger('change');
@@ -325,11 +333,11 @@ $(document).on('change', '#rate, #labor_cost, #packaging_cost, #transportation_c
     if($('#gst_status').is(":checked") && $('#gst').val() > 0) {
         gst_val = parseFloat($('#gst').val()) / 100;
         if(qty > 0 && rate > 0) {
-            cal_val = rate * qty * (1 + gst_val) + labor_cost + packaging_cost + transportation_cost;
+            cal_val =  qty * (gst_val + rate + labor_cost + packaging_cost + transportation_cost) ;
         }
     } else {
         if(qty > 0 && rate > 0) {
-            cal_val = rate * qty + labor_cost + packaging_cost + transportation_cost;
+            cal_val = qty * (rate + labor_cost + packaging_cost + transportation_cost);
         }
     }
 

@@ -390,10 +390,13 @@ class Sale extends \Opencart\System\Engine\Controller {
 		foreach ($data['datas'] as &$item) {
 			if(isset($item['accessories_id'])){
 				$item['product_ids'] = 'acc_' . $item['accessories_id'];
+				$item['name'] = $item['name'] . ' - Spare Parts ';
 			}elseif(isset($item['fittings_id'])){
 				$item['product_ids'] = 'fitts_' . $item['fittings_id'];
+				$item['name'] = $item['name'] . ' - Fittings ';
 			}elseif(isset($item['product_id'])){
 				$item['product_ids'] = 'prod_' . $item['product_id'];
+				$item['name'] = $item['name'] . ' - Product ';
             }elseif(isset($item['powder_id'])){
 				$item['product_ids'] = 'pow_' . $item['powder_id'];
             }elseif(isset($item['master_batch_id'])){
@@ -510,6 +513,14 @@ class Sale extends \Opencart\System\Engine\Controller {
 			$data['file'] = $sale_info['file'];
 	  	} else {
 			$data['file'] = '';
+	  	}
+
+		if (isset($this->request->post['product_name'])) {
+			$data['product_name'] = $this->request->post['product_name'];
+	  	} elseif (!empty($sale_info)) {
+			$data['product_name'] = $sale_info['product_name'];
+	  	} else {
+			$data['product_name'] = '';
 	  	}
 
 		if (isset($this->request->post['labor_cost'])) {
@@ -886,6 +897,10 @@ $html = '
     <p>'.$client["name"].'</p>
     <p>'.$client["address"].'</p>
 	</td>
+	<td style="vertical-align:top;">
+    	<p><strong>Product Name</strong></p>
+		<p>'.$orders[0]['product_name'].'</p>
+	</td>
 	</tr>
 	</table>
 
@@ -902,43 +917,83 @@ $html = '
         </thead>
         <tbody>';
 
-        $total_price = 0;
+        $total_price_without_other_cost = 0.00;
+		$all_rate = 0.00;
         foreach($all_prod as $key => $value) {
-            $total_price += isset($value['price']) ? $value['price'] : $orders[0]['amount'];
+            $total_price_without_other_cost += !empty($orders[0]['qty']) && !empty($value['price']) ? ($orders[0]['qty'] * $value['price']) : 0;
+			$all_rate += !empty($value['price']) ? $value['price'] : 0;
             $html .= '<tr>
                 <td>'.($key + 1).'</td>
                 <td>'.(isset($value['name']) ? $value['name'] : $value).'</td>
                 <td>'.$orders[0]['qty'].' PCS</td>
-                <td>'.$orders[0]['rate'].'</td>
+                <td>'.(!empty($value['price']) ? $value['price'] : 0).'</td>
            <!-- <td></td> -->
-                <td>'.(isset($value['price']) ? $value['price'] * $orders[0]['qty'] : $orders[0]['amount']).'</td>
+                <td>'.($orders[0]['qty'] * (!empty($value['price']) ? $value['price'] : 0)).'</td>
             </tr>';
         }
-        
-        $gst_price = ($total_price * $orders[0]['gst']) / 100;
-        $after_gst_price = $total_price + $gst_price;
+        $final_cost = $orders[0]['qty'] * ($all_rate + $orders[0]['labor_cost'] + $orders[0]['packaging_cost'] + $orders[0]['transportation_cost']);
+        $gst_price = ($final_cost * $orders[0]['gst']) / 100;
+        $after_gst_price = $final_cost + $gst_price;
+
+		$rate_with_other_cost = $all_rate + $orders[0]['labor_cost'] + $orders[0]['packaging_cost'] + $orders[0]['transportation_cost'];
+
+		$total_cost = $orders[0]['labor_cost'] + $orders[0]['packaging_cost'] + $orders[0]['transportation_cost'];
+
+		$html .= '<tr>
+		<td>'.($key+2).'</td>
+		<td>Labour</td>
+		<td>'.$orders[0]['qty'].' PCS</td>
+		<td>'.(!empty($orders[0]['labor_cost']) ? $orders[0]['labor_cost'] : 0).'</td>
+		<td>'.($orders[0]['qty'] * (!empty($orders[0]['labor_cost']) ? $orders[0]['labor_cost'] : 0)).'</td>
+		</tr>';
+		$html .= '<tr>
+		<td>'.($key+3).'</td>
+		<td>Packing & Transport</td>
+		<td>'.$orders[0]['qty'].' PCS</td>
+		<td>'.(!empty($orders[0]['packaging_cost']) && !empty($orders[0]['transportation_cost']) ? $orders[0]['packaging_cost'] + $orders[0]['transportation_cost'] : 0).'</td>
+		<td>'.($orders[0]['qty'] * (!empty($orders[0]['packaging_cost']) && !empty($orders[0]['transportation_cost']) ? $orders[0]['packaging_cost'] + $orders[0]['transportation_cost'] : 0)).'</td>
+		</tr>';
 
         $html .= '<tr class="total-row">
-            <td colspan="5">Total</td>
-            <td>'.$total_price.'</td>
-        </tr>
-        <tr class="total-row">
-            <td colspan="5">GST @'.$orders[0]['gst'].'%</td>
-            <td>'.$gst_price.'</td>
-        </tr>
-        <tr class="total-row">
-            <td colspan="5">Total (including GST)</td>
-            <td>'.$after_gst_price.'</td>
-        </tr>
-    </tbody>
+            <td colspan="3">Total</td>
+			<td>'.$rate_with_other_cost.'</td>
+            <td>'.$final_cost.'</td>
+        </tr>';
+		// $html .= '<tr class="total-row">
+        //     <td rowspan="2">Total</td>
+        //     <td>Labor Cost</td>
+        //     <td>Packaging Cost</td>
+        //     <td>Transportation Cost</td>
+        //     <td rowspan="2">'.$total_cost.'</td>
+        // </tr>';
+		// $html .= '<tr class="total-row">
+        //     <td>'.$orders[0]['labor_cost'].'</td>
+        //     <td>'.$orders[0]['packaging_cost'].'</td>
+        //     <td>'.$orders[0]['transportation_cost'].'</td>
+        // </tr>';
+		// $html .= '<tr class="total-row">
+		// <td colspan="4">Total (after adding all costs)</td>
+		// <td>'.$final_cost.'</td>
+		// </tr>';
+		if($orders[0]['gst_status']){
+			$html .= '<tr class="total-row">
+				<td colspan="4">GST @'.$orders[0]['gst'].'%</td>
+				<td>'.$gst_price.'</td>
+			</tr>
+			<tr class="total-row">
+				<td colspan="4">Total (including GST)</td>
+				<td>'.$after_gst_price.'</td>
+			</tr>';
+		}
+    $html .= '</tbody>
     </table>
 	
 	<table class="table">
 	<tr>
 	<td>
-    <p><strong>Amount Chargeable (in words)</strong></p>
-    <p><strong>'.($this->convert_to_words_array(round($after_gst_price))).'</strong></p>
-	</td>
+    <p><strong>Amount Chargeable (in words)</strong></p>';
+    $html .= '<p><strong>'.($this->convert_to_words_array(round($after_gst_price))).'</strong></p>';
+	$html .= '</td>
 	</tr>
 	</table>
 
@@ -1009,14 +1064,33 @@ $html = '
 			'30' => 'Thirty', '40' => 'Forty', '50' => 'Fifty', '60' => 'Sixty',
 			'70' => 'Seventy', '80' => 'Eighty', '90' => 'Ninety'
 		);
-
+	
+		// Check if number contains a decimal point
+		if (strpos($number, '.') !== false) {
+			// Split the number into the integer and decimal parts
+			list($integerPart, $decimalPart) = explode('.', (string)$number);
+			
+			// Convert the integer part
+			$integerWords = $this->convert_to_words_array($integerPart);
+	
+			// Convert the decimal part
+			$decimalWords = '';
+			$decimalDigits = str_split($decimalPart);
+			foreach ($decimalDigits as $digit) {
+				$decimalWords .= $words[$digit] . ' ';
+			}
+			
+			return $integerWords . ' Point ' . trim($decimalWords);
+		}
+	
+		// If number is less than or equal to 20
 		if ($number <= 20) {
 			return $words[$number];
-		}
+		} 
 		elseif ($number < 100) {
 			return $words[10 * floor($number / 10)]
 				. ($number % 10 > 0 ? ' ' . $words[$number % 10] : '');
-		}
+		} 
 		else {
 			$output = '';
 			if ($number >= 1000000000) {
@@ -1046,7 +1120,7 @@ $html = '
 			}
 			return trim($output); 
 		}
-	}
+	}	
 
 	public function getRate(){
 		// print_r($this->request->post['prod_ids']);
@@ -1101,14 +1175,19 @@ $html = '
 			$cli[$value_8['client_id']] = $value_8['name'];
 		}
 		
+		$total_price = 0.00;
+
 		// $prod_ids = explode(",",$order_value['product_id']);
 		foreach($this->request->post['prod_ids'] as $value){
 			if(str_starts_with($value,'acc_')){
 				$all_prod[] = $accessory[str_replace("acc_","",$value)];
+				$total_price += $accessory[str_replace("acc_","",$value)]['price'];
 			}elseif(str_starts_with($value,'fitts_')){
 				$all_prod[] = $fitts[str_replace("fitts_","",$value)];
+				$total_price += $fitts[str_replace("fitts_","",$value)]['price'];
 			}elseif(str_starts_with($value,'prod_')){
 				$all_prod[] = $product[str_replace("prod_","",$value)];
+				$total_price += $product[str_replace("prod_","",$value)]['price'];
 			}elseif(str_starts_with($value,'pow_')){
 				$all_prod[] = $pow[str_replace("pow_","",$value)];
 			}elseif(str_starts_with($value,'mb_')){
@@ -1120,6 +1199,8 @@ $html = '
 			}
 		}
 
+		$all_prod['total'] = $total_price;
+		
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($all_prod));
 
